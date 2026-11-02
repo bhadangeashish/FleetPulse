@@ -1,0 +1,6 @@
+{
+  "name": "FleetPulse TMS - Freight & Fleet Operations Console",
+  "description": "Enterprise transportation management system for fleet tracking, multi-drop fruit deliveries, backhaul return load matching, LR lifecycle, and freight payment reconciliation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
