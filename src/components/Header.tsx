@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
-  Truck,
-  Shield,
-  User,
-  Smartphone,
   Bell,
-  ArrowRightLeft,
-  Sparkles,
+  Building2,
   Pencil,
   Lock,
   Check,
   X,
-  Building2,
-  Users,
+  User,
+  ChevronDown,
+  ShieldCheck,
+  Smartphone,
+  LogOut,
+  Building,
+  Wifi,
+  WifiOff,
+  RefreshCw,
 } from 'lucide-react';
 import { useTMS } from '../context/TMSContext';
 import { CompanyProfileModal } from './CompanyProfileModal';
@@ -22,18 +24,44 @@ export const Header: React.FC = () => {
   const {
     role,
     setRole,
-    notifications,
     setActiveTab,
-    activeTab,
+    notifications,
     companyName,
     companyProfile,
     updateCompanyName,
+    syncState,
+    triggerManualSync,
+    currentUser,
+    logout,
   } = useTMS();
   const [isEditingCompany, setIsEditingCompany] = useState(false);
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   const [isUserAccountsModalOpen, setIsUserAccountsModalOpen] = useState(false);
+  const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
   const [companyInput, setCompanyInput] = useState(companyName);
   const [companyFeedback, setCompanyFeedback] = useState<string | null>(null);
+  const [isSyncingNow, setIsSyncingNow] = useState(false);
+
+  const handleManualSyncClick = async () => {
+    setIsSyncingNow(true);
+    try {
+      await triggerManualSync();
+    } finally {
+      setTimeout(() => setIsSyncingNow(false), 800);
+    }
+  };
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsAdminDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const unreadCount = notifications.length;
 
@@ -48,237 +76,284 @@ export const Header: React.FC = () => {
     }
   };
 
+  const gstinDisplay = companyProfile?.gstin || '27AABCM0123K1Z5';
+
   return (
-    <header className="bg-gradient-to-r from-sky-800 via-sky-700 to-sky-600 text-white border-b border-sky-500/30 sticky top-0 z-40 px-4 py-3 select-none shadow-md shadow-sky-900/10">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
-        {/* Brand & Route Title */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-inner shrink-0 overflow-hidden">
-            {companyProfile?.logoUrl ? (
-              <img
-                src={companyProfile.logoUrl}
-                alt={companyName}
-                className="w-full h-full object-contain p-0.5 bg-white/20"
-              />
-            ) : (
-              <Truck className="w-5 h-5 text-sky-100" />
+    <header className="bg-white/85 backdrop-blur-md border-b border-[#DCE8F2] sticky top-0 z-30 px-4 py-2.5 md:px-6 select-none shadow-xs">
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-3">
+        {/* Left: Company Pill + GST Pill */}
+        <div className="flex items-center gap-2.5 min-w-0 flex-wrap">
+          <div
+            onClick={() => role === 'admin' && setIsCompanyModalOpen(true)}
+            className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-[#F0F4F8] border border-[#DCE8F2] text-slate-800 transition-colors ${
+              role === 'admin' ? 'cursor-pointer hover:bg-[#E4EEF8]' : ''
+            }`}
+            title={role === 'admin' ? 'Click to manage Transport Company details & logo' : undefined}
+          >
+            <div className="w-6 h-6 rounded-lg bg-[#BDDDFC] text-[#384959] flex items-center justify-center shrink-0">
+              {companyProfile?.logoUrl ? (
+                <img
+                  src={companyProfile.logoUrl}
+                  alt={companyName}
+                  className="w-full h-full object-contain p-0.5 rounded-lg"
+                />
+              ) : (
+                <Building2 className="w-3.5 h-3.5" />
+              )}
+            </div>
+            <span className="font-heading font-extrabold text-xs text-[#384959] truncate max-w-[280px] sm:max-w-[420px]">
+              {companyName}
+            </span>
+            {role === 'admin' && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCompanyInput(companyName);
+                  setIsEditingCompany(true);
+                }}
+                className="text-slate-400 hover:text-slate-700 p-0.5 cursor-pointer ml-0.5"
+                title="Quick Rename"
+              >
+                <Pencil className="w-2.5 h-2.5" />
+              </button>
             )}
           </div>
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-heading font-extrabold text-lg tracking-tight text-white flex items-center gap-1.5">
-                {companyName}
-              </span>
 
-              {/* Admin Company Registration & Logo Button */}
-              {role === 'admin' ? (
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => setIsCompanyModalOpen(true)}
-                    className="bg-white/15 hover:bg-white/25 text-sky-100 hover:text-white px-2 py-0.5 rounded-md text-[11px] font-bold flex items-center gap-1 transition-all border border-white/20 cursor-pointer"
-                    title="Transport Company Registration & Logo Branding"
-                  >
-                    <Building2 className="w-3 h-3 text-sky-200" />
-                    <span>Company & Logo</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setCompanyInput(companyName);
-                      setIsEditingCompany(true);
-                    }}
-                    className="bg-black/20 hover:bg-black/30 text-sky-200 hover:text-white px-1.5 py-0.5 rounded-md text-[10px] font-medium flex items-center gap-0.5 transition-all border border-white/10 cursor-pointer"
-                    title="Quick rename"
-                  >
-                    <Pencil className="w-2.5 h-2.5 text-sky-300" />
-                  </button>
-                </div>
-              ) : (
-                <span
-                  className="text-sky-200/70 text-[10px] flex items-center gap-1 bg-black/15 px-2 py-0.5 rounded border border-white/10"
-                  title="Company Name can only be changed by Admin"
-                >
-                  <Lock className="w-2.5 h-2.5" />
-                  <span>Admin Locked</span>
-                </span>
-              )}
-
-              <span className="bg-sky-400/25 text-sky-100 border border-sky-300/40 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider font-mono">
-                MH ⇄ Interstate
-              </span>
-            </div>
-            <p className="text-xs text-sky-100/85 font-medium">
-              Maharashtra to Gujarat & Interstate Fruit Transport & Backhaul Return Goods System
-            </p>
+          <div className="hidden sm:flex items-center px-2.5 py-1.5 rounded-xl bg-white border border-[#DCE8F2] text-[11px] font-mono text-slate-600 font-semibold shadow-2xs">
+            <span>GST: {gstinDisplay}</span>
           </div>
         </div>
 
-        {/* Center/Right: 3 Portal Switcher (Admin / User / Driver) */}
-        <div className="flex items-center gap-2">
-          <div className="bg-sky-900/50 backdrop-blur-md p-1 rounded-xl border border-sky-500/40 flex items-center gap-1 text-xs">
-            {/* Admin Portal Button */}
-            <button
-              onClick={() => {
-                setRole('admin');
-                if (activeTab === 'driver_portal') setActiveTab('dashboard');
-              }}
-              className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                role === 'admin'
-                  ? 'bg-white text-sky-900 shadow-sm'
-                  : 'text-sky-100 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              <Shield className={`w-3.5 h-3.5 ${role === 'admin' ? 'text-sky-600' : 'text-sky-200'}`} />
-              <span>Admin Portal</span>
-            </button>
+        {/* Right: Offline/Online Sync Pill + Notification Bell + User Profile Avatar Pill with Dropdown */}
+        <div className="flex items-center gap-2.5 shrink-0 relative" ref={dropdownRef}>
+          {/* Master Offline / Online Sync Status Pill */}
+          <button
+            type="button"
+            onClick={handleManualSyncClick}
+            disabled={isSyncingNow}
+            title={
+              syncState.isOnline
+                ? `Online: ${syncState.pendingCount} queued mutations. Click to force instant cloud synchronization.`
+                : `Offline Mode: IndexedDB active. ${syncState.pendingCount} records waiting for network.`
+            }
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95 ${
+              syncState.isOnline
+                ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100 animate-pulse'
+            }`}
+          >
+            {isSyncingNow ? (
+              <RefreshCw className="w-3.5 h-3.5 text-[#384959] animate-spin" />
+            ) : syncState.isOnline ? (
+              <Wifi className="w-3.5 h-3.5 text-emerald-700" />
+            ) : (
+              <WifiOff className="w-3.5 h-3.5 text-amber-700" />
+            )}
+            <span className="hidden sm:inline">
+              {isSyncingNow
+                ? 'Syncing...'
+                : syncState.isOnline
+                ? syncState.pendingCount > 0
+                  ? `${syncState.pendingCount} Queued`
+                  : 'Cloud Synced'
+                : `Offline (${syncState.pendingCount})`}
+            </span>
+          </button>
 
-            {/* User Portal Button */}
+          {/* Notification Bell */}
+          <div className="relative">
             <button
-              onClick={() => {
-                setRole('operator');
-                if (activeTab === 'driver_portal' || activeTab === 'permissions' || activeTab === 'audit') {
-                  setActiveTab('trips');
-                }
-              }}
-              className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                role === 'operator'
-                  ? 'bg-white text-sky-900 shadow-sm'
-                  : 'text-sky-100 hover:text-white hover:bg-white/10'
-              }`}
+              className="p-2 rounded-xl bg-white hover:bg-[#F0F4F8] text-slate-600 border border-[#DCE8F2] transition-all cursor-pointer relative shadow-2xs group active:scale-95"
+              title={`${unreadCount} notifications`}
             >
-              <User className={`w-3.5 h-3.5 ${role === 'operator' ? 'text-sky-600' : 'text-sky-200'}`} />
-              <span>User Portal</span>
-            </button>
-
-            {/* Driver Portal Button */}
-            <button
-              onClick={() => {
-                setRole('driver');
-                setActiveTab('driver_portal');
-              }}
-              className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                role === 'driver'
-                  ? 'bg-sky-400 text-sky-950 shadow-sm'
-                  : 'text-sky-100 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              <Smartphone className={`w-3.5 h-3.5 ${role === 'driver' ? 'text-sky-950' : 'text-sky-200'}`} />
-              <span>Driver Portal</span>
+              <Bell className="w-4 h-4 text-slate-600 transition-transform duration-200 group-hover:scale-115" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-mono font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+                  {unreadCount}
+                </span>
+              )}
             </button>
           </div>
 
-          {/* User KYC Hub (Admin Only) */}
-          {role === 'admin' && (
-            <button
-              onClick={() => setIsUserAccountsModalOpen(true)}
-              className="p-2 bg-sky-900/50 hover:bg-sky-900/80 border border-sky-500/40 rounded-xl text-sky-100 hover:text-white relative transition-colors cursor-pointer"
-              title="User Accounts & KYC Verification Hub (Master Prompt Section 4)"
-            >
-              <Users className="w-4 h-4 text-sky-200" />
-            </button>
-          )}
-
-          {/* Quick Notification Pill */}
+          {/* User Profile Avatar Pill */}
           <button
-            onClick={() => {
-              if (notifications.length > 0) {
-                alert(
-                  notifications
-                    .map((n, i) => `${i + 1}. [${n.title}] ${n.message}`)
-                    .join('\n\n')
-                );
-              } else {
-                alert('All vehicle documents, ODO reminders, and party payments are up to date!');
-              }
-            }}
-            className="p-2 bg-sky-900/50 hover:bg-sky-900/80 border border-sky-500/40 rounded-xl text-sky-100 hover:text-white relative transition-colors cursor-pointer"
-            title="View Reminders & Alerts"
+            type="button"
+            onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
+            className="flex items-center gap-2.5 p-1 pl-1.5 pr-3 rounded-full bg-white hover:bg-[#F0F4F8] border border-[#DCE8F2] transition-all shadow-2xs cursor-pointer focus:outline-hidden active:scale-[0.98]"
           >
-            <Bell className="w-4 h-4 text-sky-200" />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-amber-400 text-slate-900 text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border-2 border-sky-800 shadow-xs">
-                {unreadCount}
+            <div className="w-7 h-7 rounded-full bg-[#384959] text-white flex items-center justify-center font-heading font-extrabold text-xs shadow-xs transition-transform duration-200 hover:scale-105">
+              {currentUser?.fullName
+                ? currentUser.fullName
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .slice(0, 2)
+                    .toUpperCase()
+                : 'AB'}
+            </div>
+            <div className="hidden sm:block text-left">
+              <span className="font-heading font-extrabold text-xs text-[#384959] block leading-tight">
+                {currentUser?.fullName?.split(' ')[0] || (role === 'admin' ? 'Admin' : 'Operator')}
               </span>
-            )}
+              <span className="text-[10px] text-slate-500 font-medium block leading-tight">
+                {role === 'admin' ? 'Administrator' : 'Operations Staff'}
+              </span>
+            </div>
+            <ChevronDown className="w-3 h-3 text-slate-400 hidden sm:block" />
           </button>
+
+          {/* Admin Profile Dropdown Menu */}
+          {isAdminDropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-[#DCE8F2] p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-xs">
+              <div className="px-3 py-2.5 border-b border-slate-100 mb-1">
+                <span className="font-heading font-extrabold text-slate-900 block">
+                  {currentUser?.fullName || 'Ashish Bhadange'}
+                </span>
+                <span className="text-[11px] text-[#6A89A7] font-medium block">
+                  {currentUser?.email || 'admin@mahagujtranspulse.com'}
+                </span>
+                <div className="mt-1 flex items-center gap-1.5">
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+                    {role === 'admin' ? 'Super Admin' : 'Staff'}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-[#BDDDFC]/50 text-[#384959] text-[10px] font-bold">
+                    Full Access
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-0.5">
+                <button
+                  onClick={() => {
+                    setIsCompanyModalOpen(true);
+                    setIsAdminDropdownOpen(false);
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 hover:bg-[#F0F4F8] transition-colors cursor-pointer text-left"
+                >
+                  <Building2 className="w-4 h-4 text-[#6A89A7]" />
+                  <span className="font-medium">Company Profile & Logo</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsUserAccountsModalOpen(true);
+                    setIsAdminDropdownOpen(false);
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 hover:bg-[#F0F4F8] transition-colors cursor-pointer text-left"
+                >
+                  <ShieldCheck className="w-4 h-4 text-[#6A89A7]" />
+                  <span className="font-medium">Staff Accounts & KYC</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('driver_portal');
+                    setIsAdminDropdownOpen(false);
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 hover:bg-[#F0F4F8] transition-colors cursor-pointer text-left"
+                >
+                  <Smartphone className="w-4 h-4 text-[#6A89A7]" />
+                  <span className="font-medium">Open Driver Mobile PWA</span>
+                </button>
+              </div>
+
+              <div className="pt-1 mt-1 border-t border-slate-100 space-y-0.5">
+                <button
+                  onClick={() => {
+                    setRole(role === 'admin' ? 'operator' : 'admin');
+                    setIsAdminDropdownOpen(false);
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer text-left text-[11px]"
+                >
+                  <User className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Switch Role: Active ({role.toUpperCase()})</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setIsAdminDropdownOpen(false);
+                    logout();
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer text-left text-xs font-bold"
+                >
+                  <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                  <span>Sign Out of FleetPulse</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Transport Company Registration & Logo Branding Modal (Section 3) */}
-      <CompanyProfileModal
-        isOpen={isCompanyModalOpen}
-        onClose={() => setIsCompanyModalOpen(false)}
-      />
-
-      {/* User Accounts & Document Verification Modal (Section 4) */}
-      <UserAccountsModal
-        isOpen={isUserAccountsModalOpen}
-        onClose={() => setIsUserAccountsModalOpen(false)}
-      />
-
-      {/* Quick Company Name Edit Modal */}
-      {isEditingCompany && role === 'admin' && (
-        <div className="fixed inset-0 z-50 bg-sky-950/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-sky-200 shadow-2xl w-full max-w-md p-5 space-y-4 text-xs text-slate-800">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-2">
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-sky-600" />
-                <h3 className="font-heading font-extrabold text-sm text-sky-950">
-                  Edit Company Name (Admin Exclusive)
-                </h3>
-              </div>
+      {/* Quick Edit Company Name Modal */}
+      {isEditingCompany && (
+        <div className="fixed inset-0 z-50 bg-[#384959]/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 className="font-heading font-bold text-sm text-[#384959]">
+                Rename Transport Company
+              </h3>
               <button
                 onClick={() => setIsEditingCompany(false)}
-                className="text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveCompany} className="space-y-3">
+            {companyFeedback && (
+              <div className="p-2.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg text-xs font-medium">
+                {companyFeedback}
+              </div>
+            )}
+
+            <form onSubmit={handleSaveCompany} className="space-y-4">
               <div>
-                <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
-                  Company / Transporter Brand Name
+                <label className="block text-[10px] uppercase font-bold text-slate-700 mb-1 font-heading">
+                  Company Name
                 </label>
                 <input
                   type="text"
                   required
                   value={companyInput}
                   onChange={(e) => setCompanyInput(e.target.value)}
-                  placeholder="e.g. MAHA-GUJ TRANSPULSE or MAHALAXMI FREIGHT CARRIERS"
-                  className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 font-heading font-bold text-sky-950 text-sm focus:outline-sky-500"
+                  className="w-full bg-[#F0F4F8] border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-slate-900 focus:outline-[#88BDF2]"
                 />
               </div>
 
-              {companyFeedback && (
-                <div className="p-2 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg text-xs">
-                  {companyFeedback}
-                </div>
-              )}
-
-              <p className="text-[11px] text-slate-500">
-                This updated name will reflect across the entire portal, LR delivery slips, and printable invoices. Only accounts with Admin privileges can modify this.
-              </p>
-
-              <div className="flex justify-end gap-2 pt-2 border-t border-sky-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setIsEditingCompany(false)}
-                  className="px-4 py-2 font-bold text-sky-800 bg-sky-50 rounded-lg hover:bg-sky-100 cursor-pointer"
+                  className="px-3.5 py-1.5 font-bold text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 cursor-pointer flex items-center gap-1.5"
+                  className="px-4 py-1.5 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-lg shadow-sm cursor-pointer flex items-center gap-1.5"
                 >
                   <Check className="w-3.5 h-3.5" />
-                  <span>Update Company Name</span>
+                  <span>Save Name</span>
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {/* Transport Company Registration & Logo Branding Modal */}
+      <CompanyProfileModal
+        isOpen={isCompanyModalOpen}
+        onClose={() => setIsCompanyModalOpen(false)}
+      />
+
+      {/* User Accounts & Document Verification Modal */}
+      <UserAccountsModal
+        isOpen={isUserAccountsModalOpen}
+        onClose={() => setIsUserAccountsModalOpen(false)}
+      />
     </header>
   );
 };

@@ -19,7 +19,29 @@ import {
   CompanyProfile,
   UserAccount,
   VerificationStatus,
+  OdometerEvent,
+  OdometerActivityType,
+  FuelRecord,
+  FuelType,
+  ServiceRepairRecord,
+  AppLanguage,
+  OfflineSyncStatus,
+  AuthSession,
+  PasswordResetChallenge,
 } from '../types/tms';
+import {
+  hashPassword,
+  verifyPassword,
+  generateOTP,
+  createSessionToken,
+} from '../utils/cryptoAuth';
+import {
+  subscribeToSyncState,
+  enqueueOfflineAction,
+  processOfflineSyncQueue,
+  getSyncQueueSummary,
+} from '../utils/syncEngine';
+import { calculateVehicleFuelAverage } from '../utils/fuelCalculators';
 import { StorageEngine } from '../utils/storageEngine';
 
 interface TMSContextType {
@@ -140,13 +162,76 @@ interface TMSContextType {
   // Backup & Restore
   exportDataJSON: () => string;
   importDataJSON: (jsonStr: string) => { success: boolean; message: string };
+
+  // Activity-Based ODO, Fuel, and Maintenance (Parts 4, 5, 6, 7)
+  odometerEvents: OdometerEvent[];
+  fuelRecords: FuelRecord[];
+  serviceRecords: ServiceRepairRecord[];
+  logOdometerActivity: (params: {
+    vehicleId: string;
+    odometerReading: number;
+    activityType: OdometerActivityType;
+    activityReferenceId?: string;
+    evidencePhotoUrl?: string;
+    driverId?: string;
+    driverName?: string;
+    notes?: string;
+  }) => { success: boolean; message: string; event?: OdometerEvent; isSuspicious?: boolean };
+  requestOdoCorrection: (
+    eventId: string,
+    correctedReading: number,
+    reason: string
+  ) => { success: boolean; message: string };
+  addFuelRecord: (
+    fuelData: Omit<FuelRecord, 'id' | 'syncStatus' | 'recordedAt'>
+  ) => Promise<{ success: boolean; message: string; record?: FuelRecord }>;
+  addServiceRecord: (
+    serviceData: Omit<ServiceRepairRecord, 'id' | 'syncStatus' | 'recordedAt'>
+  ) => Promise<{ success: boolean; message: string; record?: ServiceRepairRecord }>;
+
+  // Multilingual & Driver Vehicle Selection (Parts 2 & 3)
+  appLanguage: AppLanguage;
+  setAppLanguage: (lang: AppLanguage) => void;
+  activeDriverVehicleId: string;
+  setActiveDriverVehicleId: (id: string) => void;
+  activeAssignedVehicle: Vehicle;
+  activeDriver: Driver;
+
+  // Offline Synchronization & Indicators (Part 11)
+  syncState: {
+    isOnline: boolean;
+    status: OfflineSyncStatus;
+    pendingCount: number;
+    lastSyncedAt: string | null;
+  };
+  triggerManualSync: () => Promise<void>;
+
+  // Authentication & Session (Part 1 - Login Screen)
+  isAuthenticated: boolean;
+  login: (
+    emailOrUsername: string,
+    password?: string,
+    rememberMe?: boolean
+  ) => Promise<{ success: boolean; message: string; role?: UserRole }>;
+  loginWithGoogle: () => Promise<{ success: boolean; message: string; role?: UserRole }>;
+  logout: () => void;
+  requestPasswordReset: (
+    email: string
+  ) => Promise<{ success: boolean; message: string; challenge?: PasswordResetChallenge }>;
+  verifyResetOTP: (email: string, otp: string) => Promise<{ success: boolean; message: string }>;
+  completePasswordReset: (email: string, newPassword: string) => Promise<{ success: boolean; message: string }>;
+  activeResetChallenge: PasswordResetChallenge | null;
 }
 
 const TMSContext = createContext<TMSContextType | undefined>(undefined);
 
 export const TMSProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [role, setRole] = useState<UserRole>('admin');
-  const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const initialSession = StorageEngine.getAuthSession();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => Boolean(initialSession));
+  const [role, setRole] = useState<UserRole>(() => (initialSession ? initialSession.role : 'admin'));
+  const [activeTab, setActiveTab] = useState<string>(() =>
+    initialSession ? (initialSession.role === 'driver' ? 'driver_portal' : 'dashboard') : 'dashboard'
+  );
 
   const [userPermissions, setUserPermissions] = useState<UserPermissions>(() => StorageEngine.getPermissions());
   const [driverCanViewDocs, setDriverCanViewDocs] = useState<boolean>(true);
@@ -162,7 +247,341 @@ export const TMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [companyName, setCompanyName] = useState<string>(() => StorageEngine.getCompanyName());
   const [companyProfile, setCompanyProfile] = useState<CompanyProfile>(() => StorageEngine.getCompanyProfile());
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(() => StorageEngine.getUserAccounts());
-  const [currentUser, setCurrentUser] = useState<UserAccount>(() => StorageEngine.getUserAccounts()[0]);
+  const [currentUser, setCurrentUser] = useState<UserAccount>(() =>
+    initialSession ? initialSession.user : StorageEngine.getUserAccounts()[0]
+  );
+  const [activeResetChallenge, setActiveResetChallenge] = useState<PasswordResetChallenge | null>(null);
+
+  // Active Session Expiry Heartbeat - monitors session TTL
+  useEffect(() => {
+    const checkExpiry = () => {
+      if (isAuthenticated) {
+        const session = StorageEngine.getAuthSession();
+        if (!session) {
+          setIsAuthenticated(false);
+          recordAudit('permissions', 'Session Expired', 'User session reached expiration timeout.');
+        }
+      }
+    };
+    const interval = setInterval(checkExpiry, 15000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
+
+  // Activity-based Odometer, Fuel, Service & Multilingual States
+  const [odometerEvents, setOdometerEvents] = useState<OdometerEvent[]>(() => StorageEngine.getOdometerEvents());
+  const [fuelRecords, setFuelRecords] = useState<FuelRecord[]>(() => StorageEngine.getFuelRecords());
+  const [serviceRecords, setServiceRecords] = useState<ServiceRepairRecord[]>(() => StorageEngine.getServiceRecords());
+  const [appLanguage, setAppLanguageState] = useState<AppLanguage>(() => StorageEngine.getLanguage());
+  const [activeDriverVehicleId, setActiveDriverVehicleId] = useState<string>('veh-1');
+
+  // Offline Sync State
+  const [syncState, setSyncState] = useState<{
+    isOnline: boolean;
+    status: OfflineSyncStatus;
+    pendingCount: number;
+    lastSyncedAt: string | null;
+  }>({
+    isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
+    status: 'synced_successfully',
+    pendingCount: 0,
+    lastSyncedAt: null,
+  });
+
+  useEffect(() => {
+    return subscribeToSyncState((summary) => {
+      setSyncState(summary);
+    });
+  }, []);
+
+  useEffect(() => { StorageEngine.setOdometerEvents(odometerEvents); }, [odometerEvents]);
+  useEffect(() => { StorageEngine.setFuelRecords(fuelRecords); }, [fuelRecords]);
+  useEffect(() => { StorageEngine.setServiceRecords(serviceRecords); }, [serviceRecords]);
+
+  const setAppLanguage = (lang: AppLanguage) => {
+    setAppLanguageState(lang);
+    StorageEngine.setLanguage(lang);
+  };
+
+  // Derive active driver and vehicle for the Driver App
+  const activeDriver = drivers.find((d) => d.id === 'drv-1') || drivers[0] || {
+    id: 'drv-1',
+    fullName: 'Sukhwinder Singh',
+    mobile: '+919822044192',
+    address: 'Pune, Maharashtra',
+    licenseNumber: 'MH-12-2015-0091823',
+    licenseExpiry: '2028-09-14',
+    aadhaarNumber: 'XXXX-XXXX-9912',
+    panNumber: 'ABCPS9912K',
+    status: 'on_trip',
+    tripsCompleted: 148,
+    joinedDate: '2022-04-10',
+    assignedVehicleId: 'veh-1',
+    assignedVehicleNumber: 'MH-12-RN-4892',
+    assignedVehicleIds: ['veh-1', 'veh-2', 'veh-3'],
+  };
+
+  const activeAssignedVehicle = vehicles.find((v) => v.id === activeDriverVehicleId) || vehicles[0];
+
+  // PART 4: Log Odometer Activity with Monotonic and Anomaly Validation
+  const logOdometerActivity = (params: {
+    vehicleId: string;
+    odometerReading: number;
+    activityType: OdometerActivityType;
+    activityReferenceId?: string;
+    evidencePhotoUrl?: string;
+    driverId?: string;
+    driverName?: string;
+    notes?: string;
+  }) => {
+    const targetVehicle = vehicles.find((v) => v.id === params.vehicleId);
+    if (!targetVehicle) {
+      return { success: false, message: 'Target vehicle not found.' };
+    }
+
+    const currentVerified = targetVehicle.currentOdometer || 0;
+
+    // Rule 1: Monotonic non-decreasing check
+    if (params.odometerReading < currentVerified && role !== 'admin') {
+      return {
+        success: false,
+        message: `Odometer reading (${params.odometerReading.toLocaleString()} KM) cannot be lower than latest verified reading (${currentVerified.toLocaleString()} KM).`,
+      };
+    }
+
+    // Rule 2: Anomaly Detection (> 1,500 KM single interval jump)
+    const deltaKm = params.odometerReading - currentVerified;
+    const isSuspicious = deltaKm > 1500;
+
+    const eventId = `odo-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    const newEvent: OdometerEvent = {
+      id: eventId,
+      vehicleId: params.vehicleId,
+      vehicleNumber: targetVehicle.number,
+      driverId: params.driverId || activeDriver.id,
+      driverName: params.driverName || activeDriver.fullName,
+      odometerReading: params.odometerReading,
+      activityType: params.activityType,
+      activityReferenceId: params.activityReferenceId,
+      evidencePhotoUrl: params.evidencePhotoUrl,
+      recordedAt: new Date().toISOString(),
+      submissionStatus: 'saved_offline',
+      verificationStatus: isSuspicious ? 'pending_admin_review' : 'verified',
+      flagReason: isSuspicious ? `High distance jump (+ ${deltaKm.toLocaleString()} KM)` : undefined,
+      notes: params.notes,
+    };
+
+    setOdometerEvents((prev) => [newEvent, ...prev]);
+
+    // Update vehicle's verified odometer if not suspicious
+    if (!isSuspicious) {
+      setVehicles((prev) =>
+        prev.map((v) =>
+          v.id === params.vehicleId
+            ? {
+                ...v,
+                currentOdometer: Math.max(v.currentOdometer, params.odometerReading),
+                odometerHistory: [
+                  {
+                    id: `log-${Date.now()}`,
+                    reading: params.odometerReading,
+                    recordedAt: new Date().toISOString(),
+                    recordedBy: params.driverName || activeDriver.fullName,
+                    notes: `Activity: ${params.activityType.replace('_', ' ').toUpperCase()}`,
+                  },
+                  ...(v.odometerHistory || []),
+                ],
+              }
+            : v
+        )
+      );
+    }
+
+    // Enqueue to offline queue
+    enqueueOfflineAction({
+      activityType: 'UPDATE_ODOMETER',
+      summary: `ODO Log: ${targetVehicle.number} -> ${params.odometerReading} KM (${params.activityType})`,
+      payload: newEvent,
+      userId: params.driverId || activeDriver.id,
+      userName: params.driverName || activeDriver.fullName,
+      role,
+      vehicleId: targetVehicle.id,
+      vehicleNumber: targetVehicle.number,
+    });
+
+    recordAudit('vehicles', 'Log Activity ODO', `Logged ${params.odometerReading} KM for ${targetVehicle.number} via ${params.activityType}`, targetVehicle.id);
+
+    return {
+      success: true,
+      message: isSuspicious
+        ? 'Reading flagged for Admin review due to high distance jump.'
+        : 'Odometer activity logged successfully.',
+      event: newEvent,
+      isSuspicious,
+    };
+  };
+
+  // Admin ODO Correction
+  const requestOdoCorrection = (
+    eventId: string,
+    correctedReading: number,
+    reason: string
+  ) => {
+    if (role !== 'admin') {
+      return { success: false, message: 'Access Denied: Only Admin can correct odometer records.' };
+    }
+
+    const event = odometerEvents.find((e) => e.id === eventId);
+    if (!event) return { success: false, message: 'Odometer record not found.' };
+
+    const originalReading = event.odometerReading;
+    const updatedEvent: OdometerEvent = {
+      ...event,
+      odometerReading: correctedReading,
+      verificationStatus: 'corrected',
+      adminCorrection: {
+        originalReading,
+        correctedReading,
+        correctedBy: currentUser.fullName,
+        correctedAt: new Date().toISOString(),
+        reason,
+      },
+    };
+
+    setOdometerEvents((prev) => prev.map((e) => (e.id === eventId ? updatedEvent : e)));
+
+    // Recalculate vehicle verified odometer
+    setVehicles((prev) =>
+      prev.map((v) =>
+        v.id === event.vehicleId
+          ? {
+              ...v,
+              currentOdometer: Math.max(v.currentOdometer, correctedReading),
+            }
+          : v
+      )
+    );
+
+    recordAudit('vehicles', 'Correct ODO', `Admin corrected ${event.vehicleNumber} ODO from ${originalReading} KM to ${correctedReading} KM. Reason: ${reason}`, event.vehicleId);
+
+    return { success: true, message: 'Odometer record corrected and audit logged.' };
+  };
+
+  // PART 5 & 6: Add Fuel Record & Update Average
+  const addFuelRecord = async (
+    fuelData: Omit<FuelRecord, 'id' | 'syncStatus' | 'recordedAt'>
+  ) => {
+    const totalAmount = Math.round(fuelData.fuelQuantity * fuelData.pricePerUnit);
+    const newRecord: FuelRecord = {
+      ...fuelData,
+      totalAmount,
+      id: `fuel-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      recordedAt: new Date().toISOString(),
+      syncStatus: 'saved_offline',
+    };
+
+    const updatedRecords = [newRecord, ...fuelRecords];
+    setFuelRecords(updatedRecords);
+
+    // Also record activity-based ODO
+    logOdometerActivity({
+      vehicleId: fuelData.vehicleId,
+      odometerReading: fuelData.odometerReading,
+      activityType: fuelData.fuelType === 'diesel' ? 'diesel_refuel' : 'cng_refuel',
+      activityReferenceId: newRecord.id,
+      evidencePhotoUrl: fuelData.receiptPhotoUrl,
+      driverId: fuelData.driverId,
+      driverName: fuelData.driverName,
+      notes: `${fuelData.fuelQuantity} ${fuelData.unit} @ ₹${fuelData.pricePerUnit} (${fuelData.fillType})`,
+    });
+
+    // Compute updated vehicle fuel averages
+    const avgStats = calculateVehicleFuelAverage(
+      fuelData.vehicleId,
+      fuelData.vehicleNumber,
+      fuelData.fuelType,
+      updatedRecords
+    );
+
+    setVehicles((prev) =>
+      prev.map((v) =>
+        v.id === fuelData.vehicleId
+          ? {
+              ...v,
+              dieselAverage: fuelData.fuelType === 'diesel' && avgStats.latestAverage > 0 ? avgStats.latestAverage : v.dieselAverage,
+              cngAverage: fuelData.fuelType === 'cng' && avgStats.latestAverage > 0 ? avgStats.latestAverage : v.cngAverage,
+            }
+          : v
+      )
+    );
+
+    // Enqueue to offline sync
+    await enqueueOfflineAction({
+      activityType: 'LOG_REFUEL',
+      summary: `Refuel ${fuelData.vehicleNumber}: ${fuelData.fuelQuantity} ${fuelData.unit} ${fuelData.fuelType.toUpperCase()} (₹${totalAmount})`,
+      payload: newRecord,
+      userId: fuelData.driverId,
+      userName: fuelData.driverName,
+      role,
+      vehicleId: fuelData.vehicleId,
+      vehicleNumber: fuelData.vehicleNumber,
+    });
+
+    recordAudit('vehicles', 'Add Refuel', `Added ${fuelData.fuelQuantity} ${fuelData.unit} ${fuelData.fuelType} for ${fuelData.vehicleNumber} (₹${totalAmount})`, fuelData.vehicleId);
+
+    return { success: true, message: 'Refuel entry recorded successfully.', record: newRecord };
+  };
+
+  // PART 7: Add Service & Repair Record
+  const addServiceRecord = async (
+    serviceData: Omit<ServiceRepairRecord, 'id' | 'syncStatus' | 'recordedAt'>
+  ) => {
+    const newRecord: ServiceRepairRecord = {
+      ...serviceData,
+      id: `srv-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      recordedAt: new Date().toISOString(),
+      syncStatus: 'saved_offline',
+    };
+
+    setServiceRecords((prev) => [newRecord, ...prev]);
+
+    // Also record activity-based ODO
+    logOdometerActivity({
+      vehicleId: serviceData.vehicleId,
+      odometerReading: serviceData.currentOdometer,
+      activityType:
+        serviceData.activityType === 'General Servicing'
+          ? 'general_servicing'
+          : serviceData.activityType === 'Tyre Replacement'
+          ? 'tyre_replacement'
+          : 'repair',
+      activityReferenceId: newRecord.id,
+      evidencePhotoUrl: serviceData.receiptPhotoUrl,
+      driverId: serviceData.driverId,
+      driverName: serviceData.driverName,
+      notes: `${serviceData.activityType} at ${serviceData.workshopName} (₹${serviceData.expenseAmount})`,
+    });
+
+    // Enqueue to offline sync
+    await enqueueOfflineAction({
+      activityType: 'LOG_SERVICE',
+      summary: `Service ${serviceData.vehicleNumber}: ${serviceData.activityType} at ${serviceData.workshopName} (₹${serviceData.expenseAmount})`,
+      payload: newRecord,
+      userId: serviceData.driverId,
+      userName: serviceData.driverName,
+      role,
+      vehicleId: serviceData.vehicleId,
+      vehicleNumber: serviceData.vehicleNumber,
+    });
+
+    recordAudit('vehicles', 'Add Service/Repair', `Added ${serviceData.activityType} for ${serviceData.vehicleNumber} at ${serviceData.workshopName} (₹${serviceData.expenseAmount})`, serviceData.vehicleId);
+
+    return { success: true, message: 'Service & maintenance entry recorded successfully.', record: newRecord };
+  };
+
+  // Manual Trigger Sync
+  const triggerManualSync = async () => {
+    await processOfflineSyncQueue();
+  };
 
   // Automatically sync state mutations to StorageEngine
   useEffect(() => { StorageEngine.setVehicles(vehicles); }, [vehicles]);
@@ -250,6 +669,272 @@ export const TMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setUserAccounts((prev) => [newUser, ...prev]);
     recordAudit('permissions', 'User Registered', `New user "${newUser.fullName}" registered with pending verification.`, newUser.id);
     return { success: true, message: `User "${newUser.fullName}" registered successfully.`, user: newUser };
+  };
+
+  // ========================================================
+  // AUTHENTICATION & LOGIN FLOW (Part 1 - Reference Design)
+  // ========================================================
+  const login = async (
+    emailOrUsername: string,
+    password?: string,
+    rememberMe: boolean = true
+  ): Promise<{ success: boolean; message: string; role?: UserRole }> => {
+    // 1. Validate empty inputs
+    const q = (emailOrUsername || '').trim().toLowerCase();
+    if (!q) {
+      return { success: false, message: 'Please enter your email or username.' };
+    }
+    const cleanPass = (password || '').trim();
+    if (!cleanPass) {
+      return { success: false, message: 'Please enter your password to sign in.' };
+    }
+
+    // 2. Driver Credentials Matching
+    if (
+      q === 'driver@fleetpulse.com' ||
+      q === 'driver' ||
+      q === 'drv-1' ||
+      q.includes('sukhwinder') ||
+      activeDriver.mobile.replace(/\s+/g, '').includes(q.replace(/\s+/g, ''))
+    ) {
+      const isPassValid = await verifyPassword(
+        cleanPass,
+        'c350df0a864529d9936e78bd8768fb50c496e4fe0e3c62d10d2d2b7d1c972c2b', // Driver@123
+        'driver123'
+      );
+      if (!isPassValid) {
+        return { success: false, message: 'Incorrect driver password. Please check your credentials and try again.' };
+      }
+
+      const driverAccount: UserAccount = {
+        id: activeDriver.id,
+        fullName: activeDriver.fullName,
+        mobile: activeDriver.mobile,
+        email: 'driver@fleetpulse.com',
+        role: 'driver',
+        passwordHash: 'c350df0a864529d9936e78bd8768fb50c496e4fe0e3c62d10d2d2b7d1c972c2b',
+        address: activeDriver.address,
+        verificationStatus: 'verified',
+        permissions: {
+          canApproveTrips: false,
+          canSettlePayments: false,
+          canEditReminders: false,
+          canManageDrivers: false,
+          canViewFinancials: false,
+        },
+        documents: [],
+        createdAt: activeDriver.joinedDate,
+      };
+
+      const sessionDuration = rememberMe ? 30 * 24 * 60 * 60 * 1000 : 4 * 60 * 60 * 1000;
+      const session: AuthSession = {
+        user: driverAccount,
+        role: 'driver',
+        token: createSessionToken(),
+        rememberMe,
+        loginTimestamp: Date.now(),
+        expiresAt: Date.now() + sessionDuration,
+      };
+
+      setCurrentUser(driverAccount);
+      setRole('driver');
+      setActiveTab('driver_portal');
+      setIsAuthenticated(true);
+      StorageEngine.setAuthSession(session);
+
+      recordAudit('permissions', 'Driver Sign-In', `Driver ${activeDriver.fullName} authenticated to Mobile PWA.`, activeDriver.id);
+      return { success: true, message: `Welcome, ${activeDriver.fullName}!`, role: 'driver' };
+    }
+
+    // 3. Staff / Admin User Matching
+    const matched = userAccounts.find(
+      (u) =>
+        u.email.toLowerCase() === q ||
+        u.mobile.replace(/\s+/g, '') === q.replace(/\s+/g, '') ||
+        (q === 'admin' && u.role === 'admin') ||
+        (q === 'operator' && u.role === 'operator') ||
+        u.fullName.toLowerCase().includes(q)
+    );
+
+    if (matched) {
+      if (matched.verificationStatus === 'rejected') {
+        return {
+          success: false,
+          message: `Account access rejected: ${matched.rejectionReason || 'Contact your Fleet Administrator.'}`,
+        };
+      }
+
+      const defaultHash =
+        matched.role === 'admin'
+          ? '01599c8267a050fc2afded717e328e972295d07331a970267d29feb82aadbbda' // Admin@123
+          : 'bccea06f67b9d1f24b7a20090d2e24837e5c41df598a454224f0bbeca1b4d515'; // Operator@123
+      const isPassValid = await verifyPassword(
+        cleanPass,
+        matched.passwordHash || defaultHash,
+        matched.password || (matched.role === 'admin' ? 'admin123' : 'operator123')
+      );
+
+      if (!isPassValid) {
+        return { success: false, message: 'Incorrect password. Please verify your credentials and try again.' };
+      }
+
+      const sessionDuration = rememberMe ? 30 * 24 * 60 * 60 * 1000 : 4 * 60 * 60 * 1000;
+      const session: AuthSession = {
+        user: matched,
+        role: matched.role,
+        token: createSessionToken(),
+        rememberMe,
+        loginTimestamp: Date.now(),
+        expiresAt: Date.now() + sessionDuration,
+      };
+
+      setCurrentUser(matched);
+      setRole(matched.role);
+      setIsAuthenticated(true);
+      StorageEngine.setAuthSession(session);
+
+      if (matched.role === 'admin') {
+        setActiveTab('dashboard');
+      } else {
+        setActiveTab('trips');
+      }
+
+      recordAudit('permissions', 'User Sign-In', `User "${matched.fullName}" signed in as ${matched.role.toUpperCase()}.`, matched.id);
+      return { success: true, message: `Welcome back, ${matched.fullName}!`, role: matched.role };
+    }
+
+    return {
+      success: false,
+      message: 'Account not found. Please verify your email or username.',
+    };
+  };
+
+  const loginWithGoogle = async (): Promise<{ success: boolean; message: string; role?: UserRole }> => {
+    const adminAcc = userAccounts[0];
+    const session: AuthSession = {
+      user: adminAcc,
+      role: 'admin',
+      token: createSessionToken(),
+      rememberMe: true,
+      loginTimestamp: Date.now(),
+      expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+    };
+    setCurrentUser(adminAcc);
+    setRole('admin');
+    setActiveTab('dashboard');
+    setIsAuthenticated(true);
+    StorageEngine.setAuthSession(session);
+    recordAudit('permissions', 'Google SSO', `Signed in via Google as ${adminAcc.fullName}.`, adminAcc.id);
+    return { success: true, message: `Signed in as ${adminAcc.fullName} via Google`, role: 'admin' };
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    StorageEngine.setAuthSession(null);
+    recordAudit('permissions', 'User Sign-Out', 'Active session terminated.');
+  };
+
+  const requestPasswordReset = async (
+    email: string
+  ): Promise<{ success: boolean; message: string; challenge?: PasswordResetChallenge }> => {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    if (!cleanEmail) {
+      return { success: false, message: 'Please enter a valid registered email address.' };
+    }
+
+    const userFound =
+      userAccounts.some((u) => u.email.toLowerCase() === cleanEmail) ||
+      cleanEmail === 'driver@fleetpulse.com' ||
+      cleanEmail === 'admin@fleetpulse.com';
+
+    if (!userFound) {
+      return {
+        success: false,
+        message: 'No FleetPulse account is registered with this email address.',
+      };
+    }
+
+    const { code, expiresAt } = generateOTP(60);
+    const challenge: PasswordResetChallenge = {
+      email: cleanEmail,
+      otp: code,
+      expiresAt,
+      verified: false,
+    };
+    setActiveResetChallenge(challenge);
+
+    recordAudit('permissions', 'OTP Generated', `Password reset verification OTP issued for ${cleanEmail}.`);
+    return {
+      success: true,
+      message: `Verification code generated. Valid for 60 seconds.`,
+      challenge,
+    };
+  };
+
+  const verifyResetOTP = async (
+    email: string,
+    otpInput: string
+  ): Promise<{ success: boolean; message: string }> => {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanOTP = (otpInput || '').trim();
+
+    if (!activeResetChallenge || activeResetChallenge.email !== cleanEmail) {
+      return { success: false, message: 'No active OTP verification session found. Please request a new code.' };
+    }
+
+    if (Date.now() > activeResetChallenge.expiresAt) {
+      return {
+        success: false,
+        message: 'OTP has expired! For security, please request a new verification code.',
+      };
+    }
+
+    if (activeResetChallenge.otp !== cleanOTP) {
+      return { success: false, message: 'Invalid OTP code. Please enter the correct 6-digit verification code.' };
+    }
+
+    setActiveResetChallenge({
+      ...activeResetChallenge,
+      verified: true,
+    });
+
+    recordAudit('permissions', 'OTP Verified', `OTP successfully verified for ${cleanEmail}.`);
+    return { success: true, message: 'Email ownership verified successfully!' };
+  };
+
+  const completePasswordReset = async (
+    email: string,
+    newPassword: string
+  ): Promise<{ success: boolean; message: string }> => {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanPass = (newPassword || '').trim();
+
+    if (!cleanPass || cleanPass.length < 6) {
+      return { success: false, message: 'Password must be at least 6 characters long.' };
+    }
+
+    if (!activeResetChallenge || activeResetChallenge.email !== cleanEmail || !activeResetChallenge.verified) {
+      return { success: false, message: 'Verification challenge expired or not verified. Please start over.' };
+    }
+
+    const newHash = await hashPassword(cleanPass);
+
+    setUserAccounts((prev) =>
+      prev.map((u) => {
+        if (u.email.toLowerCase() === cleanEmail) {
+          return {
+            ...u,
+            passwordHash: newHash,
+            password: undefined,
+          };
+        }
+        return u;
+      })
+    );
+
+    setActiveResetChallenge(null);
+    recordAudit('permissions', 'Password Updated', `Password successfully changed for user ${cleanEmail}.`);
+    return { success: true, message: 'Your password has been reset successfully! You can now log in.' };
   };
 
   const updateUserVerification = (userId: string, status: VerificationStatus, reason?: string) => {
@@ -1490,6 +2175,29 @@ export const TMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         uploadStampedLRPhoto,
         exportDataJSON,
         importDataJSON,
+        odometerEvents,
+        fuelRecords,
+        serviceRecords,
+        logOdometerActivity,
+        requestOdoCorrection,
+        addFuelRecord,
+        addServiceRecord,
+        appLanguage,
+        setAppLanguage,
+        activeDriverVehicleId,
+        setActiveDriverVehicleId,
+        activeAssignedVehicle,
+        activeDriver,
+        syncState,
+        triggerManualSync,
+        isAuthenticated,
+        login,
+        loginWithGoogle,
+        logout,
+        requestPasswordReset,
+        verifyResetOTP,
+        completePasswordReset,
+        activeResetChallenge,
       }}
     >
       {children}

@@ -40,6 +40,7 @@ export interface UserAccount {
   mobile: string;
   email: string;
   password?: string;
+  passwordHash?: string;
   address?: string;
   role: UserRole;
   profilePhotoUrl?: string;
@@ -49,6 +50,22 @@ export interface UserAccount {
   permissions: UserPermissions;
   createdAt: string;
   lastLogin?: string;
+}
+
+export interface AuthSession {
+  user: UserAccount;
+  role: UserRole;
+  token: string;
+  rememberMe: boolean;
+  loginTimestamp: number;
+  expiresAt: number;
+}
+
+export interface PasswordResetChallenge {
+  email: string;
+  otp: string;
+  expiresAt: number;
+  verified: boolean;
 }
 
 export interface UserPermissions {
@@ -105,8 +122,13 @@ export interface Vehicle {
   capacityMt: number;
   capacityUnit?: 'KG' | 'Ton';
   currentOdometer: number;
+  fuelType?: 'diesel' | 'cng' | 'dual';
   assignedDriverId?: string;
   assignedDriverName?: string;
+  assignedDriverIds?: string[]; // Multiple driver assignments
+  dieselAverage?: number; // Calculated KM / Litre
+  cngAverage?: number; // Calculated KM / KG
+  lastServiceOdo?: number;
   status: 'active' | 'in_transit' | 'loading' | 'unloaded_idle' | 'inactive';
   currentLocation: string; // Maharashtra or Gujarat city
   documents: VehicleDocument[];
@@ -142,6 +164,7 @@ export interface Driver {
   status: 'active' | 'on_trip' | 'inactive';
   assignedVehicleId?: string;
   assignedVehicleNumber?: string;
+  assignedVehicleIds?: string[]; // Multiple assigned vehicles (Part 3)
   tripsCompleted: number;
   joinedDate: string;
 }
@@ -427,4 +450,203 @@ export interface DriverDailyWork {
   status: 'saved_locally' | 'synced_to_cloud';
   createdAt: string;
 }
+
+// ==========================================
+// PART 4: ACTIVITY-BASED ODOMETER ENGINE
+// ==========================================
+export type OdometerActivityType =
+  | 'trip_start'
+  | 'trip_completion'
+  | 'diesel_refuel'
+  | 'cng_refuel'
+  | 'general_servicing'
+  | 'repair'
+  | 'tyre_replacement'
+  | 'maintenance_other';
+
+export interface OdometerEvent {
+  id: string; // e.g. "odo-uuid"
+  vehicleId: string;
+  vehicleNumber: string;
+  driverId: string;
+  driverName: string;
+  odometerReading: number; // KM
+  activityType: OdometerActivityType;
+  activityReferenceId?: string; // Links to Trip ID, Fuel ID, or Service ID
+  recordedAt: string; // ISO timestamp
+  evidencePhotoUrl?: string; // Cluster photo
+  submissionStatus: 'saved_offline' | 'waiting_to_sync' | 'synced' | 'flagged_suspicious';
+  verificationStatus: 'verified' | 'pending_admin_review' | 'rejected' | 'corrected';
+  flagReason?: string;
+  notes?: string;
+  adminCorrection?: {
+    originalReading: number;
+    correctedReading: number;
+    correctedBy: string;
+    correctedAt: string;
+    reason: string;
+  };
+}
+
+// ==========================================
+// PART 5 & 6: DIESEL AND CNG FUEL MANAGEMENT & FUEL AVERAGE
+// ==========================================
+export type FuelType = 'diesel' | 'cng';
+export type FuelUnit = 'Litres' | 'KG';
+export type FuelFillType = 'full_tank' | 'partial_fill';
+export type FuelPaymentMethod =
+  | 'driver_cash'
+  | 'company_account'
+  | 'fuel_card'
+  | 'fastag'
+  | 'upi'
+  | 'credit_mandi';
+
+export interface FuelRecord {
+  id: string;
+  vehicleId: string;
+  vehicleNumber: string;
+  driverId: string;
+  driverName: string;
+  fuelType: FuelType;
+  odometerReading: number;
+  fuelQuantity: number; // Litres for Diesel, KG for CNG
+  unit: FuelUnit;
+  pricePerUnit: number; // Rate in ₹
+  totalAmount: number; // Auto: quantity * pricePerUnit
+  fillType: FuelFillType;
+  fuelStation: string;
+  paymentMethod: FuelPaymentMethod;
+  receiptPhotoUrl?: string;
+  receiptPhotoName?: string;
+  notes?: string;
+  recordedAt: string;
+  syncStatus: 'saved_offline' | 'waiting_to_sync' | 'synced';
+}
+
+export interface FuelAverageStats {
+  vehicleId: string;
+  vehicleNumber: string;
+  fuelType: FuelType;
+  latestAverage: number; // KM/L or KM/KG
+  monthlyAverage: number;
+  totalDistanceRun: number; // KM
+  totalFuelQuantity: number; // L or KG
+  totalExpenditure: number; // ₹
+  costPerKm: number; // ₹ / KM
+  hasVerifiedCycle: boolean;
+  cycleStatusMessage: string;
+}
+
+// ==========================================
+// PART 7: SERVICE AND REPAIR (12 ACTIVITY TYPES)
+// ==========================================
+export type ServiceActivityType =
+  | 'General Servicing'
+  | 'Engine Oil'
+  | 'Oil Filter'
+  | 'Air Filter'
+  | 'Tyre Replacement'
+  | 'Tyre Repair'
+  | 'Brake Repair'
+  | 'Clutch Repair'
+  | 'Battery'
+  | 'Electrical'
+  | 'Washing and Greasing'
+  | 'Other Repairs';
+
+export interface ServiceRepairRecord {
+  id: string;
+  vehicleId: string;
+  vehicleNumber: string;
+  driverId: string;
+  driverName: string;
+  currentOdometer: number;
+  activityType: ServiceActivityType;
+  date: string; // YYYY-MM-DD
+  workshopName: string;
+  workDescription: string;
+  expenseAmount: number;
+  paidBy: 'driver_cash' | 'company_account' | 'fastag_fuel_card' | 'upi';
+  invoiceNumber: string;
+  receiptPhotoUrl?: string;
+  receiptPhotoName?: string;
+  partsReplaced?: string[];
+  recordedAt: string;
+  syncStatus: 'saved_offline' | 'waiting_to_sync' | 'synced';
+}
+
+// ==========================================
+// PART 11: OFFLINE-FIRST SYNCHRONIZATION QUEUE & PROTOCOL
+// ==========================================
+export type OfflineSyncStatus =
+  | 'saved_offline'
+  | 'waiting_to_sync'
+  | 'syncing'
+  | 'synced_successfully'
+  | 'sync_failed'
+  | 'needs_review'
+  | 'conflict_detected';
+
+export interface OfflineQueueItem {
+  id: string; // Client UUID
+  idempotencyKey: string; // Unique idempotency hash
+  userId: string;
+  userName: string;
+  role: UserRole;
+  vehicleId?: string;
+  vehicleNumber?: string;
+  activityType:
+    | 'SAVE_TRIP'
+    | 'START_TRIP'
+    | 'COMPLETE_TRIP'
+    | 'LOG_REFUEL'
+    | 'LOG_SERVICE'
+    | 'LOG_REPAIR'
+    | 'UPDATE_ODOMETER'
+    | 'SETTLE_PAYMENT'
+    | 'RECORD_PARTIAL_PAY'
+    | 'SAVE_DRIVER_DAILY_WORK'
+    | 'ADMIN_CORRECTION';
+  summary: string;
+  payload: any;
+  createdAt: string; // ISO
+  deviceId: string;
+  status: OfflineSyncStatus;
+  retryCount: number;
+  lastAttemptAt?: string;
+  errorMessage?: string;
+  conflictDetails?: {
+    conflictType: 'odo_regression' | 'duplicate_entry' | 'concurrent_modification' | 'unauthorized_assignment';
+    serverValue?: any;
+    localValue?: any;
+    resolution?: 'pending' | 'resolved_server' | 'resolved_local' | 'admin_override';
+  };
+}
+
+// ==========================================
+// MULTILINGUAL LANGUAGE SUPPORT (Part 2 & 3)
+// ==========================================
+export type AppLanguage = 'en' | 'mr' | 'hi';
+
+// ==========================================
+// PART 8, 9, 10: VEHICLE HEALTH, PERFORMANCE & ANALYTICS
+// ==========================================
+export interface VehicleAnalyticsData {
+  vehicleId: string;
+  vehicleNumber: string;
+  totalKm: number;
+  dieselAverage: number;
+  cngAverage: number;
+  totalFuelLitres: number;
+  totalFuelKg: number;
+  totalFuelExpense: number;
+  fuelCostPerKm: number;
+  maintenanceExpense: number;
+  repairExpense: number;
+  serviceFrequency: number;
+  vehicleDowntimeDays: number;
+  tripsCount: number;
+}
+
 

@@ -128,26 +128,26 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-sky-950/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-2xl overflow-hidden text-xs text-slate-800 animate-in fade-in duration-150 my-6">
+    <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-2xl overflow-hidden text-xs text-slate-800 animate-in fade-in duration-150 my-6">
         {/* Modal Header */}
-        <div className="px-5 py-4 bg-gradient-to-r from-sky-800 via-sky-700 to-sky-600 text-white flex items-center justify-between">
+        <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shrink-0">
-              <Building2 className="w-5 h-5 text-sky-100" />
+              <Building2 className="w-5 h-5 text-[#BDDDFC]" />
             </div>
             <div>
               <h3 className="font-heading font-extrabold text-sm tracking-tight">
                 Transport Company Registration & Branding
               </h3>
-              <p className="text-[11px] text-sky-100/90 font-medium mt-0.5">
+              <p className="text-[11px] text-[#BDDDFC] font-medium mt-0.5">
                 Official entity details, logo branding, and statutory transporter credentials
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-sky-100 hover:text-white p-1.5 rounded-lg hover:bg-white/10 cursor-pointer"
+            className="text-[#BDDDFC] hover:text-white p-1.5 rounded-lg hover:bg-white/10 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -160,8 +160,8 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
           className="p-5 space-y-4 max-h-[80vh] overflow-y-auto"
         >
           {/* Important Security Notice (Master Prompt Section 3) */}
-          <div className="p-3 bg-sky-50 border border-sky-200 rounded-xl flex items-start gap-2.5 text-[11px] text-sky-900">
-            <Shield className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
+          <div className="p-3 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl flex items-start gap-2.5 text-[11px] text-[#384959]">
+            <Shield className="w-4 h-4 text-[#6A89A7] shrink-0 mt-0.5" />
             <div className="space-y-0.5">
               <span className="font-heading font-bold block">
                 Security & Isolation Notice
@@ -193,7 +193,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
             </span>
             <div className="flex flex-col sm:flex-row items-center gap-4">
               {/* Logo Preview Container */}
-              <div className="w-20 h-20 rounded-2xl border-2 border-dashed border-sky-300 bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+              <div className="w-20 h-20 rounded-2xl border-2 border-dashed border-[#DCE8F2] bg-white flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
                 {logoUrl ? (
                   <img
                     src={logoUrl}
@@ -202,7 +202,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                   />
                 ) : (
                   <div className="text-center p-2 text-slate-400">
-                    <FileImage className="w-6 h-6 mx-auto mb-1 text-sky-400" />
+                    <FileImage className="w-6 h-6 mx-auto mb-1 text-[#88BDF2]" />
                     <span className="text-[9px] block">No Logo</span>
                   </div>
                 )}
@@ -211,7 +211,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
               {/* Upload Controls */}
               <div className="flex-1 space-y-1.5 text-center sm:text-left">
                 <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
-                  <label className="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-bold text-xs cursor-pointer flex items-center gap-1.5 shadow-xs transition-all font-heading">
+                  <label className="px-3 py-1.5 bg-[#384959] hover:bg-[#2C3A47] text-white rounded-lg font-bold text-xs cursor-pointer flex items-center gap-1.5 shadow-xs transition-all font-heading">
                     <Upload className="w-3.5 h-3.5" />
                     <span>Upload New Logo</span>
                     <input
@@ -242,7 +242,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
           {/* Primary Company Information */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] font-bold uppercase text-sky-900 mb-1 font-heading">
+              <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                 Company Name *
               </label>
               <input
@@ -251,12 +251,12 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
                 placeholder="e.g. MAHA-GUJ TRANSPULSE"
-                className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 font-heading font-extrabold text-sky-950 text-xs focus:outline-sky-500"
+                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 font-heading font-extrabold text-[#384959] text-xs focus:outline-none focus:border-[#88BDF2]"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold uppercase text-sky-900 mb-1 font-heading">
+              <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                 Owner / Administrator Name *
               </label>
               <input
@@ -265,7 +265,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                 value={ownerName}
                 onChange={(e) => setOwnerName(e.target.value)}
                 placeholder="e.g. Rajesh Sharma"
-                className="w-full bg-white border border-sky-200 rounded-lg px-3 py-2 font-bold text-slate-800 text-xs focus:outline-sky-500"
+                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 font-bold text-slate-800 text-xs focus:outline-none focus:border-[#88BDF2]"
               />
             </div>
           </div>
@@ -273,7 +273,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
           {/* Contact Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+              <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                 Registered Mobile Number *
               </label>
               <div className="relative">
@@ -283,14 +283,14 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
                   placeholder="+91 98220 11988"
-                  className="w-full bg-white border border-sky-200 rounded-lg pl-8 pr-3 py-1.5 font-mono font-bold text-slate-900 text-xs focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg pl-8 pr-3 py-1.5 font-mono font-bold text-slate-900 text-xs focus:outline-none focus:border-[#88BDF2]"
                 />
-                <Phone className="w-3.5 h-3.5 text-sky-500 absolute left-2.5 top-2.5" />
+                <Phone className="w-3.5 h-3.5 text-[#6A89A7] absolute left-2.5 top-2.5" />
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+              <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                 Registered Email Address *
               </label>
               <div className="relative">
@@ -300,9 +300,9 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="operations@transpulse.com"
-                  className="w-full bg-white border border-sky-200 rounded-lg pl-8 pr-3 py-1.5 font-medium text-slate-900 text-xs focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg pl-8 pr-3 py-1.5 font-medium text-slate-900 text-xs focus:outline-none focus:border-[#88BDF2]"
                 />
-                <Mail className="w-3.5 h-3.5 text-sky-500 absolute left-2.5 top-2.5" />
+                <Mail className="w-3.5 h-3.5 text-[#6A89A7] absolute left-2.5 top-2.5" />
               </div>
             </div>
           </div>
@@ -310,7 +310,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
           {/* Address, City, State */}
           <div className="space-y-2">
             <div>
-              <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+              <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                 Registered Head Office / Depot Address
               </label>
               <div className="relative">
@@ -319,15 +319,15 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="e.g. Plot 44, Pune-Nashik Highway Freight Terminal, Chakan MIDC"
-                  className="w-full bg-white border border-sky-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-800 focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-[#88BDF2]"
                 />
-                <MapPin className="w-3.5 h-3.5 text-sky-500 absolute left-2.5 top-2.5" />
+                <MapPin className="w-3.5 h-3.5 text-[#6A89A7] absolute left-2.5 top-2.5" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+                <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                   City
                 </label>
                 <input
@@ -335,18 +335,18 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="Pune / Surat"
-                  className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+                <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                   State
                 </label>
                 <select
                   value={state}
                   onChange={(e) => setState(e.target.value)}
-                  className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
                 >
                   <option value="Maharashtra">Maharashtra</option>
                   <option value="Gujarat">Gujarat</option>
@@ -360,7 +360,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
           {/* Statutory Identifiers */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-slate-100">
             <div>
-              <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+              <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                 GSTIN (Tax Registration)
               </label>
               <input
@@ -368,12 +368,12 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                 value={gstin}
                 onChange={(e) => setGstin(e.target.value.toUpperCase())}
                 placeholder="27AABCU9603R1ZM"
-                className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 text-xs font-mono font-bold uppercase text-slate-900"
+                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-mono font-bold uppercase text-slate-900"
               />
             </div>
 
             <div>
-              <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+              <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                 Company PAN Number
               </label>
               <input
@@ -381,13 +381,13 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                 value={panNumber}
                 onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
                 placeholder="AABCU9603R"
-                className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 text-xs font-mono font-bold uppercase text-slate-900"
+                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-mono font-bold uppercase text-slate-900"
               />
             </div>
           </div>
 
           {/* Action buttons */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-sky-100">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#DCE8F2]">
             <button
               type="button"
               onClick={onClose}
@@ -397,7 +397,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/25 flex items-center gap-1.5 cursor-pointer font-heading"
+              className="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-[#384959] to-[#2C3A47] hover:from-[#2C3A47] hover:to-[#384959] rounded-lg shadow-sm shadow-xs flex items-center gap-1.5 cursor-pointer font-heading"
             >
               <Check className="w-3.5 h-3.5" />
               <span>Save Company Profile & Branding</span>

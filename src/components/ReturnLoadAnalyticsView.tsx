@@ -571,12 +571,12 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
       {/* ========================================================
           TOP HEADER & TIMEFRAME SELECTOR BAR
           ======================================================== */}
-      <div className="bg-white rounded-2xl border border-sky-100 p-5 shadow-xs">
+      <div className="bg-white rounded-2xl border border-[#DCE8F2] p-5 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-sky-100 text-sky-800 border border-sky-200">
-                <Truck className="w-3 h-3 text-sky-600" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#BDDDFC]/30 text-[#384959] border border-[#DCE8F2]">
+                <Truck className="w-3 h-3 text-[#6A89A7]" />
                 Gujarat ⇄ Maharashtra Commercial Backhauls
               </span>
               <span className="text-xs text-slate-400 font-mono">
@@ -595,10 +595,10 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => setIsPrintLedgerOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-sky-700 text-white hover:bg-sky-800 shadow-xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-[#384959] text-white hover:bg-[#2C3A47] shadow-xs transition-colors cursor-pointer"
               title={horizon === 'monthly' ? `Print Full Month Ledger (${activePeriodLabel})` : `Print Full Custom Range Ledger (${activePeriodLabel})`}
             >
-              <Printer className="w-3.5 h-3.5 text-sky-200" />
+              <Printer className="w-3.5 h-3.5 text-[#BDDDFC]" />
               <span>{horizon === 'monthly' ? 'Print Month Ledger' : 'Print Range Ledger'}</span>
             </button>
             <button
@@ -615,14 +615,14 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
         {/* ========================================================
             PRIMARY TIME HORIZON SWITCHER: MONTHLY / CUSTOM RANGE / HALF-YEAR / YEARLY
             ======================================================== */}
-        <div className="mt-5 pt-4 border-t border-sky-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="mt-5 pt-4 border-t border-[#DCE8F2] flex flex-col md:flex-row md:items-center justify-between gap-4">
           {/* Segmented Horizon Control */}
           <div className="inline-flex p-1 bg-slate-100/90 rounded-xl border border-slate-200 text-xs font-bold flex-wrap gap-1">
             <button
               onClick={() => setHorizon('monthly')}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                 horizon === 'monthly'
-                  ? 'bg-sky-700 text-white shadow-xs'
+                  ? 'bg-[#384959] text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -634,7 +634,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
               onClick={() => setHorizon('custom')}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                 horizon === 'custom'
-                  ? 'bg-sky-700 text-white shadow-xs'
+                  ? 'bg-[#384959] text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -646,7 +646,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
               onClick={() => setHorizon('half_year')}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                 horizon === 'half_year'
-                  ? 'bg-sky-700 text-white shadow-xs'
+                  ? 'bg-[#384959] text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -658,7 +658,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
               onClick={() => setHorizon('yearly')}
               className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
                 horizon === 'yearly'
-                  ? 'bg-sky-700 text-white shadow-xs'
+                  ? 'bg-[#384959] text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -677,7 +677,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(Number(e.target.value))}
                   aria-label="Filter analytics by year"
-                  className="bg-white border border-slate-200 text-slate-800 text-xs font-bold px-2.5 py-1.5 rounded-lg focus:outline-sky-500 cursor-pointer shadow-2xs"
+                  className="bg-white border border-slate-200 text-slate-800 text-xs font-bold px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] cursor-pointer shadow-2xs"
                 >
                   {availableYears.map((yr) => (
                     <option key={yr} value={yr}>
@@ -701,7 +701,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(Number(e.target.value))}
                     aria-label="Filter analytics by month"
-                    className="bg-white border border-slate-200 text-slate-800 text-xs font-bold px-2.5 py-1.5 rounded-lg focus:outline-sky-500 cursor-pointer shadow-2xs"
+                    className="bg-white border border-slate-200 text-slate-800 text-xs font-bold px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] cursor-pointer shadow-2xs"
                   >
                     {monthNames.map((name, idx) => (
                       <option key={name} value={idx + 1}>
@@ -727,7 +727,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                       onClick={() => setSelectedHalfYear('H1')}
                       className={`px-3 py-1 rounded-md transition-all cursor-pointer ${
                         selectedHalfYear === 'H1'
-                          ? 'bg-sky-700 text-white shadow-2xs'
+                          ? 'bg-[#384959] text-white shadow-2xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
@@ -737,7 +737,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                       onClick={() => setSelectedHalfYear('H2')}
                       className={`px-3 py-1 rounded-md transition-all cursor-pointer ${
                         selectedHalfYear === 'H2'
-                          ? 'bg-sky-700 text-white shadow-2xs'
+                          ? 'bg-[#384959] text-white shadow-2xs'
                           : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
@@ -747,7 +747,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
 
                   <button
                     onClick={() => setHalfYearStandard((s) => (s === 'financial' ? 'calendar' : 'financial'))}
-                    className="text-[11px] font-semibold text-sky-700 hover:text-sky-800 bg-sky-50 px-2 py-1 rounded-md border border-sky-200 cursor-pointer"
+                    className="text-[11px] font-semibold text-[#6A89A7] hover:text-[#384959] bg-[#F8FAFC] px-2 py-1 rounded-md border border-[#DCE8F2] cursor-pointer"
                     title="Toggle between Fiscal Year and Calendar Year definitions"
                   >
                     {halfYearStandard === 'financial' ? 'Fiscal (FY)' : 'Calendar (CY)'}
@@ -760,7 +760,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
 
         {/* In Custom Range Mode: Dedicated From/To Date Picker & Multi-Month Presets (other controls disappear!) */}
         {horizon === 'custom' && (
-          <div className="mt-4 pt-3 border-t border-sky-100 bg-sky-50/80 p-3.5 rounded-xl border border-sky-200">
+          <div className="mt-4 pt-3 border-t border-[#DCE8F2] bg-[#F8FAFC] p-3.5 rounded-xl border border-[#DCE8F2]">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
               {/* Date Inputs */}
               <div className="flex items-center gap-3 flex-wrap">
@@ -770,7 +770,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                     type="date"
                     value={customStartDate}
                     onChange={(e) => setCustomStartDate(e.target.value)}
-                    className="bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-sky-500 shadow-2xs"
+                    className="bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs"
                   />
                 </div>
 
@@ -780,11 +780,11 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                     type="date"
                     value={customEndDate}
                     onChange={(e) => setCustomEndDate(e.target.value)}
-                    className="bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-sky-500 shadow-2xs"
+                    className="bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs"
                   />
                 </div>
 
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-900 border border-sky-200 font-mono">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-[#BDDDFC]/30 text-[#384959] border border-[#DCE8F2] font-mono">
                   {customSpanMonths} Months Span • {stats.totalCount} Loads
                 </span>
               </div>
@@ -795,7 +795,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => applyCustomSpanPreset(3)}
-                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-900 font-bold border border-slate-200 shadow-2xs cursor-pointer text-[11px] transition-colors"
+                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F8FAFC] text-slate-700 hover:text-[#384959] font-bold border border-slate-200 shadow-2xs cursor-pointer text-[11px] transition-colors"
                   title="Last 3 Months (Aug - Oct 2026)"
                 >
                   3 Months
@@ -803,7 +803,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => applyCustomSpanPreset(4)}
-                  className="px-2.5 py-1 rounded-lg bg-sky-700 text-white font-bold shadow-2xs cursor-pointer text-[11px] hover:bg-sky-800 transition-colors"
+                  className="px-2.5 py-1 rounded-lg bg-[#384959] text-white font-bold shadow-2xs cursor-pointer text-[11px] hover:bg-[#2C3A47] transition-colors"
                   title="Last 4 Months (Jul - Oct 2026)"
                 >
                   4 Months
@@ -811,7 +811,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => applyCustomSpanPreset(6)}
-                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-900 font-bold border border-slate-200 shadow-2xs cursor-pointer text-[11px] transition-colors"
+                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F8FAFC] text-slate-700 hover:text-[#384959] font-bold border border-slate-200 shadow-2xs cursor-pointer text-[11px] transition-colors"
                   title="Last 6 Months (May - Oct 2026)"
                 >
                   6 Months
@@ -822,7 +822,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                     setCustomStartDate('2026-04-01');
                     setCustomEndDate('2026-10-31');
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-900 font-bold border border-slate-200 shadow-2xs cursor-pointer text-[11px] transition-colors"
+                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F8FAFC] text-slate-700 hover:text-[#384959] font-bold border border-slate-200 shadow-2xs cursor-pointer text-[11px] transition-colors"
                   title="Fiscal Year 2026-27 to Date (Apr - Oct 2026)"
                 >
                   FY 26-27 YTD
@@ -833,7 +833,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                     setCustomStartDate('2026-01-01');
                     setCustomEndDate('2026-12-31');
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-900 font-bold border border-slate-200 shadow-2xs cursor-pointer text-[11px] transition-colors"
+                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-[#F8FAFC] text-slate-700 hover:text-[#384959] font-bold border border-slate-200 shadow-2xs cursor-pointer text-[11px] transition-colors"
                   title="Entire Year 2026"
                 >
                   Full Year 2026
@@ -844,10 +844,10 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
         )}
 
         {/* Current Active Period Banner */}
-        <div className="mt-3.5 bg-sky-50/70 border border-sky-100 rounded-xl px-3.5 py-2 flex items-center justify-between text-xs">
+        <div className="mt-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl px-3.5 py-2 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
-            <span className="font-extrabold text-sky-900">Current Scope:</span>
-            <span className="font-bold text-sky-700">{activePeriodLabel}</span>
+            <span className="font-extrabold text-[#384959]">Current Scope:</span>
+            <span className="font-bold text-[#6A89A7]">{activePeriodLabel}</span>
             <span className="text-slate-400">•</span>
             <span className="text-slate-600 font-medium">
               {stats.totalCount} Commercial Backhaul Trips Recorded
@@ -857,7 +857,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
             <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
               {stats.clearanceRate}% Settled
             </span>
-            <span className="text-sky-700 font-bold bg-sky-100/60 px-2 py-0.5 rounded-md border border-sky-200">
+            <span className="text-[#6A89A7] font-bold bg-[#BDDDFC]/20 px-2 py-0.5 rounded-md border border-[#DCE8F2]">
               {stats.lrSubmissionRate}% LR Handed Over
             </span>
           </div>
@@ -869,10 +869,10 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
           ======================================================== */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         {/* Total Billed */}
-        <div className="bg-white p-3.5 rounded-xl border border-sky-100 shadow-2xs">
+        <div className="bg-white p-3.5 rounded-xl border border-[#DCE8F2] shadow-2xs">
           <div className="flex items-center justify-between text-slate-500 text-xs">
             <span className="font-medium">Total Billed</span>
-            <CreditCard className="w-4 h-4 text-sky-600" />
+            <CreditCard className="w-4 h-4 text-[#6A89A7]" />
           </div>
           <div className="text-lg md:text-xl font-black text-slate-900 mt-1 font-mono">
             ₹{stats.totalBilled.toLocaleString('en-IN')}
@@ -925,24 +925,24 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
         </div>
 
         {/* Stamped LR Submission */}
-        <div className="bg-sky-50/60 p-3.5 rounded-xl border border-sky-200/70 shadow-2xs">
-          <div className="flex items-center justify-between text-sky-800 text-xs">
+        <div className="bg-[#F8FAFC] p-3.5 rounded-xl border border-[#DCE8F2]/70 shadow-2xs">
+          <div className="flex items-center justify-between text-[#384959] text-xs">
             <span className="font-bold">LR Handover Status</span>
-            <FileCheck2 className="w-4 h-4 text-sky-600" />
+            <FileCheck2 className="w-4 h-4 text-[#6A89A7]" />
           </div>
-          <div className="text-lg md:text-xl font-black text-sky-900 mt-1 font-mono">
+          <div className="text-lg md:text-xl font-black text-[#384959] mt-1 font-mono">
             {stats.lrSubmittedCount} / {stats.totalCount}
           </div>
-          <div className="text-[11px] text-sky-700 mt-0.5 font-medium">
+          <div className="text-[11px] text-[#6A89A7] mt-0.5 font-medium">
             {stats.lrPendingCount > 0 ? `${stats.lrPendingCount} LR pending delivery` : 'All LRs Submitted'}
           </div>
         </div>
 
         {/* Turnaround Days */}
-        <div className="bg-white p-3.5 rounded-xl border border-sky-100 shadow-2xs">
+        <div className="bg-white p-3.5 rounded-xl border border-[#DCE8F2] shadow-2xs">
           <div className="flex items-center justify-between text-slate-500 text-xs">
             <span className="font-medium">Avg Settlement Speed</span>
-            <TrendingUp className="w-4 h-4 text-sky-600" />
+            <TrendingUp className="w-4 h-4 text-[#6A89A7]" />
           </div>
           <div className="text-lg md:text-xl font-black text-slate-900 mt-1 font-mono">
             {stats.avgTurnaroundDays} <span className="text-xs font-sans font-bold text-slate-500">Days</span>
@@ -958,7 +958,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
           ======================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Main Bar Chart: Billed vs Settled Breakdown */}
-        <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-sky-100 shadow-xs">
+        <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-[#DCE8F2] shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
             <div>
               <h2 className="text-sm font-extrabold text-slate-900">
@@ -974,7 +974,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
             {/* Legend */}
             <div className="flex items-center gap-3 text-xs font-bold">
               <div className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-xs bg-sky-600 inline-block" />
+                <span className="w-3 h-3 rounded-xs bg-[#384959] inline-block" />
                 <span className="text-slate-600">Billed</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -1007,7 +1007,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                     }}
                   >
                     {/* Tooltip on Hover */}
-                    <div className="opacity-0 group-hover:opacity-100 pointer-events-none absolute -top-14 bg-slate-900 text-white text-[11px] py-1.5 px-2.5 rounded-lg shadow-lg z-20 whitespace-nowrap transition-opacity">
+                    <div className="opacity-0 group-hover:opacity-100 pointer-events-none absolute -top-14 bg-[#384959] text-white text-[11px] py-1.5 px-2.5 rounded-lg shadow-lg z-20 whitespace-nowrap transition-opacity">
                       <div className="font-bold">{bar.fullLabel}</div>
                       <div>Billed: ₹{bar.billed.toLocaleString('en-IN')}</div>
                       <div>Settled: ₹{bar.settled.toLocaleString('en-IN')} ({bar.clearanceRate}%)</div>
@@ -1020,8 +1020,8 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                         style={{ height: `${Math.max(billedHeight, 4)}%` }}
                         className={`w-1/2 rounded-t-xs transition-all ${
                           bar.isSelected
-                            ? 'bg-sky-700 ring-2 ring-sky-300'
-                            : 'bg-sky-500/80 group-hover:bg-sky-600'
+                            ? 'bg-[#384959] ring-2 ring-[#88BDF2]'
+                            : 'bg-[#88BDF2] group-hover:bg-[#384959]'
                         }`}
                         title={`Billed: ₹${bar.billed.toLocaleString('en-IN')}`}
                       />
@@ -1043,7 +1043,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 <div
                   key={idx}
                   className={`flex-1 text-center transition-colors ${
-                    bar.isSelected ? 'text-sky-900 font-extrabold underline decoration-sky-500 underline-offset-4' : ''
+                    bar.isSelected ? 'text-[#384959] font-extrabold underline decoration-sky-500 underline-offset-4' : ''
                   }`}
                 >
                   <span>{bar.label}</span>
@@ -1055,14 +1055,14 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
           {/* Quick Bar Summary Footer */}
           <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
             <span>Peak Month Capacity: ₹{maxChartBilled.toLocaleString('en-IN')}</span>
-            <span className="font-medium text-sky-800">
+            <span className="font-medium text-[#384959]">
               {horizon === 'monthly' ? 'Click on any month to inspect details' : 'Active period comparative chart'}
             </span>
           </div>
         </div>
 
         {/* Right Panel: Payment Status Distribution & Pipeline */}
-        <div className="bg-white p-5 rounded-2xl border border-sky-100 shadow-xs flex flex-col justify-between">
+        <div className="bg-white p-5 rounded-2xl border border-[#DCE8F2] shadow-xs flex flex-col justify-between">
           <div>
             <h2 className="text-sm font-extrabold text-slate-900">
               Payment Status Distribution
@@ -1149,7 +1149,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
           <div className="mt-5 pt-4 border-t border-slate-100">
             <h3 className="text-xs font-extrabold text-slate-800 flex items-center justify-between">
               <span>LR Clearance Pipeline</span>
-              <span className="text-[11px] text-sky-700 font-bold">{stats.lrSubmissionRate}% Converted</span>
+              <span className="text-[11px] text-[#6A89A7] font-bold">{stats.lrSubmissionRate}% Converted</span>
             </h3>
 
             <div className="mt-3 space-y-2 text-xs">
@@ -1175,11 +1175,11 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
       {/* ========================================================
           CONSIGNOR / PARTY SETTLEMENT MATRIX
           ======================================================== */}
-      <div className="bg-white rounded-2xl border border-sky-100 p-5 shadow-xs">
+      <div className="bg-white rounded-2xl border border-[#DCE8F2] p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
           <div>
             <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-              <Building className="w-4 h-4 text-sky-700" />
+              <Building className="w-4 h-4 text-[#6A89A7]" />
               <span>Consignor & Party Settlement Performance</span>
             </h2>
             <p className="text-xs text-slate-500">
@@ -1195,7 +1195,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-sky-50/70 border-b border-sky-200 text-sky-950 font-bold">
+              <tr className="bg-[#F8FAFC] border-b border-[#DCE8F2] text-[#384959] font-bold">
                 <th className="py-2.5 px-3">Party Name & Corridor</th>
                 <th className="py-2.5 px-3 text-center">Loads</th>
                 <th className="py-2.5 px-3 text-right">Total Billed</th>
@@ -1207,7 +1207,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {partyPerformance.map((pty, idx) => (
-                <tr key={idx} className="hover:bg-sky-50/30 transition-colors">
+                <tr key={idx} className="hover:bg-[#F8FAFC] transition-colors">
                   <td className="py-3 px-3">
                     <div className="font-bold text-slate-900">{pty.partyName}</div>
                     <div className="text-[11px] text-slate-500 font-mono mt-0.5">
@@ -1235,7 +1235,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                             pty.clearanceRate === 100
                               ? 'bg-emerald-500'
                               : pty.clearanceRate >= 70
-                              ? 'bg-sky-500'
+                              ? 'bg-[#88BDF2]'
                               : 'bg-amber-500'
                           }`}
                         />
@@ -1251,7 +1251,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                         pty.tier === 'Prompt'
                           ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                           : pty.tier === 'Steady'
-                          ? 'bg-sky-100 text-sky-800 border border-sky-200'
+                          ? 'bg-[#BDDDFC]/30 text-[#384959] border border-[#DCE8F2]'
                           : 'bg-rose-100 text-rose-800 border border-rose-200'
                       }`}
                     >
@@ -1275,15 +1275,15 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
       {/* ========================================================
           DETAILED TRANSACTIONS LEDGER FOR THE ACTIVE PERIOD
           ======================================================== */}
-      <div className="bg-white rounded-2xl border border-sky-100 p-5 shadow-xs">
+      <div className="bg-white rounded-2xl border border-[#DCE8F2] p-5 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-4 border-b border-slate-100">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-sky-700" />
+                <FileText className="w-4 h-4 text-[#6A89A7]" />
                 <span>Return Load Payments Ledger</span>
               </h2>
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-sky-100 text-sky-900 border border-sky-200 font-mono">
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#BDDDFC]/30 text-[#384959] border border-[#DCE8F2] font-mono">
                 {activePeriodLabel}
               </span>
             </div>
@@ -1298,7 +1298,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
             <div className="flex items-center gap-1.5">
               <button
                 onClick={() => setIsPrintLedgerOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-700 hover:bg-sky-800 text-white shadow-sm shadow-sky-700/20 transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[#384959] hover:bg-[#2C3A47] text-white shadow-sm shadow-xs transition-all cursor-pointer"
                 title={horizon === 'monthly' ? `Print Full Month Ledger (${activePeriodLabel})` : `Print Custom Range Ledger (${activePeriodLabel})`}
               >
                 <Printer className="w-3.5 h-3.5" />
@@ -1321,7 +1321,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 placeholder="Search party, vehicle, LR..."
                 value={ledgerSearch}
                 onChange={(e) => setLedgerSearch(e.target.value)}
-                className="pl-8 pr-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-sky-500 w-44"
+                className="pl-8 pr-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#88BDF2] w-44"
               />
             </div>
 
@@ -1330,7 +1330,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 onClick={() => setLedgerStatusFilter('all')}
                 className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                   ledgerStatusFilter === 'all'
-                    ? 'bg-sky-700 text-white shadow-2xs'
+                    ? 'bg-[#384959] text-white shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -1340,7 +1340,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 onClick={() => setLedgerStatusFilter('settled')}
                 className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                   ledgerStatusFilter === 'settled'
-                    ? 'bg-sky-700 text-white shadow-2xs'
+                    ? 'bg-[#384959] text-white shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -1350,7 +1350,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 onClick={() => setLedgerStatusFilter('pending')}
                 className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                   ledgerStatusFilter === 'pending'
-                    ? 'bg-sky-700 text-white shadow-2xs'
+                    ? 'bg-[#384959] text-white shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -1360,7 +1360,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 onClick={() => setLedgerStatusFilter('overdue')}
                 className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
                   ledgerStatusFilter === 'overdue'
-                    ? 'bg-sky-700 text-white shadow-2xs'
+                    ? 'bg-[#384959] text-white shadow-2xs'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -1374,7 +1374,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="bg-sky-50/70 border-b border-sky-200 text-sky-950 font-bold">
+              <tr className="bg-[#F8FAFC] border-b border-[#DCE8F2] text-[#384959] font-bold">
                 <th className="py-2.5 px-3">Date</th>
                 <th className="py-2.5 px-3">Vehicle & Route</th>
                 <th className="py-2.5 px-3">Party Name</th>
@@ -1386,12 +1386,12 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredLedger.map((record) => (
-                <tr key={record.id} className="hover:bg-sky-50/30 transition-colors">
+                <tr key={record.id} className="hover:bg-[#F8FAFC] transition-colors">
                   <td className="py-3 px-3 font-mono font-medium text-slate-700 whitespace-nowrap">
                     {record.tripDate || '—'}
                   </td>
                   <td className="py-3 px-3">
-                    <span className="font-mono font-bold text-sky-900 bg-sky-50 px-2 py-0.5 rounded border border-sky-200 inline-block">
+                    <span className="font-mono font-bold text-[#384959] bg-[#F8FAFC] px-2 py-0.5 rounded border border-[#DCE8F2] inline-block">
                       {record.vehicleNumber}
                     </span>
                     <div className="text-[11px] text-slate-500 mt-0.5 font-medium">
@@ -1462,7 +1462,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                       {!record.isSettled && (
                         <button
                           onClick={() => handleOpenSettle(record)}
-                          className="px-2 py-1 rounded-md text-[11px] font-bold bg-sky-700 text-white hover:bg-sky-800 transition-colors cursor-pointer"
+                          className="px-2 py-1 rounded-md text-[11px] font-bold bg-[#384959] text-white hover:bg-[#2C3A47] transition-colors cursor-pointer"
                         >
                           Settle
                         </button>
@@ -1494,8 +1494,8 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
           MODAL: QUICK SETTLE RETURN LOAD
           ======================================================== */}
       {settlingRecord && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-sky-200">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl border border-[#DCE8F2]">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-base font-extrabold text-slate-900">
                 Settle Return Load Payment
@@ -1509,8 +1509,8 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
             </div>
 
             <form onSubmit={handleConfirmSettle} className="mt-4 space-y-4">
-              <div className="bg-sky-50 p-3 rounded-xl border border-sky-100 text-xs">
-                <div className="font-bold text-sky-950">{settlingRecord.partyName}</div>
+              <div className="bg-[#F8FAFC] p-3 rounded-xl border border-[#DCE8F2] text-xs">
+                <div className="font-bold text-[#384959]">{settlingRecord.partyName}</div>
                 <div className="text-slate-600 font-mono mt-0.5">
                   Route: {settlingRecord.route} • Vehicle: {settlingRecord.vehicleNumber}
                 </div>
@@ -1531,7 +1531,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                   required
                   value={settleAmountInput}
                   onChange={(e) => setSettleAmountInput(Number(e.target.value))}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold font-mono focus:outline-sky-500"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-bold font-mono focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
@@ -1544,7 +1544,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                   value={settleNotesInput}
                   onChange={(e) => setSettleNotesInput(e.target.value)}
                   placeholder="e.g. Cleared via IMPS / Cheque on Stamped LR receipt"
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-sky-500"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
@@ -1572,11 +1572,11 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
           MODAL: PRINT RETURN LOAD STATEMENT (SINGLE RECORD)
           ======================================================== */}
       {printModalRecord && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-sky-200">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-[#DCE8F2]">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <Printer className="w-4 h-4 text-sky-700" />
+                <Printer className="w-4 h-4 text-[#6A89A7]" />
                 <span>Return Load Official Print Voucher</span>
               </h3>
               <button
@@ -1588,8 +1588,8 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
             </div>
 
             {/* Quick Switcher: 1-Day Slip vs Full Range Ledger */}
-            <div className="mt-3 p-2.5 rounded-xl bg-sky-50 border border-sky-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-              <div className="text-sky-950">
+            <div className="mt-3 p-2.5 rounded-xl bg-[#F8FAFC] border border-[#DCE8F2] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+              <div className="text-[#384959]">
                 <span className="font-extrabold block">1-Day Consignment Voucher</span>
                 <span className="text-[11px] text-slate-500 font-mono">
                   {printModalRecord.vehicleNumber} • {printModalRecord.tripDate || '—'}
@@ -1601,10 +1601,10 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                   setPrintModalRecord(null);
                   setIsPrintLedgerOpen(true);
                 }}
-                className="px-2.5 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-800 text-white font-bold transition-colors cursor-pointer text-[11px] flex items-center gap-1.5 self-start sm:self-auto shrink-0 shadow-2xs"
+                className="px-2.5 py-1.5 rounded-lg bg-[#384959] hover:bg-[#2C3A47] text-white font-bold transition-colors cursor-pointer text-[11px] flex items-center gap-1.5 self-start sm:self-auto shrink-0 shadow-2xs"
                 title={`Print full ledger for ${activePeriodLabel}`}
               >
-                <Printer className="w-3 h-3 text-sky-200" />
+                <Printer className="w-3 h-3 text-[#BDDDFC]" />
                 <span>Print Full Period Ledger ({filteredLedger.length} Loads)</span>
               </button>
             </div>
@@ -1612,7 +1612,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
             {/* Printable Content Box */}
             <div id="printable-return-load-slip" className="mt-4 p-5 border border-slate-300 rounded-xl bg-slate-50 font-sans space-y-4 text-xs">
               <div className="text-center border-b border-slate-200 pb-3">
-                <h4 className="text-base font-black text-sky-950 uppercase tracking-tight">
+                <h4 className="text-base font-black text-[#384959] uppercase tracking-tight">
                   {companyName}
                 </h4>
                 <p className="text-[11px] text-slate-500">
@@ -1696,7 +1696,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 onClick={() => {
                   window.print();
                 }}
-                className="px-4 py-2 text-xs font-bold bg-sky-700 hover:bg-sky-800 text-white rounded-lg shadow-xs flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 text-xs font-bold bg-[#384959] hover:bg-[#2C3A47] text-white rounded-lg shadow-xs flex items-center gap-1.5 cursor-pointer"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Print Document</span>
@@ -1710,11 +1710,11 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
           MODAL: PRINT PERIOD ANALYTICS SUMMARY REPORT
           ======================================================== */}
       {isPrintSummaryOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-sky-200 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-[#DCE8F2] max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <Printer className="w-4 h-4 text-sky-700" />
+                <Printer className="w-4 h-4 text-[#6A89A7]" />
                 <span>Return Load Analytics Executive Summary</span>
               </h3>
               <button
@@ -1727,13 +1727,13 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
 
             <div id="printable-return-load-summary" className="mt-4 p-5 border border-slate-300 rounded-xl bg-slate-50 font-sans space-y-4 text-xs">
               <div className="text-center border-b border-slate-200 pb-3">
-                <h4 className="text-lg font-black text-sky-950 uppercase">
+                <h4 className="text-lg font-black text-[#384959] uppercase">
                   {companyName}
                 </h4>
                 <p className="text-xs text-slate-600 font-bold">
                   Return Load Payment Status & Stamped LR Reconciliation Report
                 </p>
-                <p className="text-xs text-sky-800 font-extrabold mt-0.5">
+                <p className="text-xs text-[#384959] font-extrabold mt-0.5">
                   Period: {activePeriodLabel}
                 </p>
               </div>
@@ -1772,7 +1772,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-slate-500 block text-[10px]">LR Handover Rate:</span>
-                  <span className="font-extrabold text-sky-800">{stats.lrSubmissionRate}%</span>
+                  <span className="font-extrabold text-[#384959]">{stats.lrSubmissionRate}%</span>
                 </div>
               </div>
 
@@ -1802,7 +1802,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                             <td className="py-1 px-2 text-right font-mono font-bold">₹{item.billed.toLocaleString('en-IN')}</td>
                             <td className="py-1 px-2 text-right font-mono text-emerald-700">₹{item.settled.toLocaleString('en-IN')}</td>
                             <td className="py-1 px-2 text-right font-mono text-rose-700">{item.due > 0 ? `₹${item.due.toLocaleString('en-IN')}` : '₹0'}</td>
-                            <td className="py-1 px-2 text-right font-mono font-bold text-sky-800">{item.clearanceRate}%</td>
+                            <td className="py-1 px-2 text-right font-mono font-bold text-[#384959]">{item.clearanceRate}%</td>
                           </tr>
                         ))}
                       </tbody>
@@ -1888,7 +1888,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                   onClick={() => {
                     window.print();
                   }}
-                  className="px-4 py-2 text-xs font-bold bg-sky-700 hover:bg-sky-800 text-white rounded-lg shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2 text-xs font-bold bg-[#384959] hover:bg-[#2C3A47] text-white rounded-lg shadow-xs flex items-center gap-1.5 cursor-pointer"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   <span>Print Official Summary</span>
@@ -1903,12 +1903,12 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
           MODAL: PRINT FULL PERIOD / CUSTOM RANGE RETURN LOAD LEDGER
           ======================================================== */}
       {isPrintLedgerOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-          <div className="bg-white rounded-2xl max-w-4xl w-full p-4 sm:p-6 shadow-2xl border border-sky-200 my-auto max-h-[92vh] flex flex-col">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-4xl w-full p-4 sm:p-6 shadow-2xl border border-[#DCE8F2] my-auto max-h-[92vh] flex flex-col">
             {/* Modal Header */}
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 shrink-0">
               <div className="flex items-center gap-2">
-                <Printer className="w-5 h-5 text-sky-700" />
+                <Printer className="w-5 h-5 text-[#6A89A7]" />
                 <div>
                   <h3 className="text-base font-extrabold text-slate-900">
                     {horizon === 'monthly' ? 'Print Full Month Payments Ledger' : 'Print Custom Range Payments Ledger'}
@@ -1936,8 +1936,8 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 {/* Formal Letterhead */}
                 <div className="text-center border-b-2 border-slate-800 pb-3">
                   <div className="flex items-center justify-center gap-2">
-                    <Truck className="w-5 h-5 text-sky-800" />
-                    <h4 className="text-xl font-black text-sky-950 uppercase tracking-tight font-heading">
+                    <Truck className="w-5 h-5 text-[#384959]" />
+                    <h4 className="text-xl font-black text-[#384959] uppercase tracking-tight font-heading">
                       {companyName}
                     </h4>
                   </div>
@@ -1950,12 +1950,12 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                 </div>
 
                 {/* Scope & Metadata Strip */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-sky-50/80 rounded-xl border border-sky-200 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2] text-xs">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-sky-800 block">
+                    <span className="text-[10px] uppercase font-bold text-[#384959] block">
                       Statement Period / Scope
                     </span>
-                    <span className="font-extrabold text-sm text-sky-950 font-heading block mt-0.5">
+                    <span className="font-extrabold text-sm text-[#384959] font-heading block mt-0.5">
                       {activePeriodLabel}
                     </span>
                     <span className="text-[11px] text-slate-600 font-mono">
@@ -1964,7 +1964,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                     </span>
                   </div>
                   <div className="sm:text-right">
-                    <span className="text-[10px] uppercase font-bold text-sky-800 block">
+                    <span className="text-[10px] uppercase font-bold text-[#384959] block">
                       Statement Date & Time
                     </span>
                     <span className="font-mono font-bold text-xs text-slate-800 block mt-0.5">
@@ -2008,12 +2008,12 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                     <span className="text-[10px] text-rose-600 block">Outstanding</span>
                   </div>
 
-                  <div className="bg-sky-50/80 p-2.5 rounded-lg border border-sky-200">
-                    <span className="text-[10px] text-sky-800 uppercase font-bold block">LR Handed Over</span>
-                    <span className="text-base font-black text-sky-950 font-mono">
+                  <div className="bg-[#F8FAFC] p-2.5 rounded-lg border border-[#DCE8F2]">
+                    <span className="text-[10px] text-[#384959] uppercase font-bold block">LR Handed Over</span>
+                    <span className="text-base font-black text-[#384959] font-mono">
                       {ledgerStats.lrSubmittedCount} / {filteredLedger.length}
                     </span>
-                    <span className="text-[10px] text-sky-700 block">
+                    <span className="text-[10px] text-[#6A89A7] block">
                       {filteredLedger.length > 0 ? Math.round((ledgerStats.lrSubmittedCount / filteredLedger.length) * 100) : 0}% Stamped
                     </span>
                   </div>
@@ -2045,7 +2045,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                             <td className="py-2 px-2.5 font-mono text-slate-700 whitespace-nowrap">
                               {record.tripDate || '—'}
                             </td>
-                            <td className="py-2 px-2 font-mono font-bold text-sky-950 whitespace-nowrap">
+                            <td className="py-2 px-2 font-mono font-bold text-[#384959] whitespace-nowrap">
                               {record.vehicleNumber}
                             </td>
                             <td className="py-2 px-2.5">
@@ -2104,7 +2104,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                     </tbody>
                     {filteredLedger.length > 0 && (
                       <tfoot>
-                        <tr className="bg-sky-100/70 border-t-2 border-sky-300 font-bold text-slate-900 text-xs">
+                        <tr className="bg-[#BDDDFC]/20 border-t-2 border-[#DCE8F2] font-bold text-slate-900 text-xs">
                           <td colSpan={5} className="py-2.5 px-2.5 text-right font-heading uppercase">
                             Grand Totals ({filteredLedger.length} Consignments):
                           </td>
@@ -2163,7 +2163,7 @@ export const ReturnLoadAnalyticsView: React.FC = () => {
                   onClick={() => {
                     window.print();
                   }}
-                  className="px-4 py-2 font-bold text-white bg-sky-700 hover:bg-sky-800 rounded-lg shadow-sm shadow-sky-700/20 cursor-pointer flex items-center gap-1.5 text-xs"
+                  className="px-4 py-2 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-lg shadow-sm shadow-xs cursor-pointer flex items-center gap-1.5 text-xs"
                   title="Print or Save as PDF in browser preview"
                 >
                   <Printer className="w-4 h-4" />

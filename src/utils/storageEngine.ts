@@ -11,6 +11,11 @@ import {
   UserRole,
   CompanyProfile,
   UserAccount,
+  AuthSession,
+  OdometerEvent,
+  FuelRecord,
+  ServiceRepairRecord,
+  AppLanguage,
 } from '../types/tms';
 import {
   INITIAL_VEHICLES,
@@ -21,6 +26,9 @@ import {
   INITIAL_NOTIFICATIONS,
   INITIAL_PARTIES,
   INITIAL_DRIVER_DAILY_WORKS,
+  INITIAL_ODOMETER_EVENTS,
+  INITIAL_FUEL_RECORDS,
+  INITIAL_SERVICE_RECORDS,
 } from '../data/mockData';
 
 const STORAGE_KEYS = {
@@ -36,6 +44,11 @@ const STORAGE_KEYS = {
   USER_ACCOUNTS: 'fleetpulse_user_accounts_v2',
   PERMISSIONS: 'fleetpulse_user_permissions_v2',
   AUDIT_LOGS: 'fleetpulse_audit_logs_v2',
+  ODOMETER_EVENTS: 'fleetpulse_odometer_events_v2',
+  FUEL_RECORDS: 'fleetpulse_fuel_records_v2',
+  SERVICE_RECORDS: 'fleetpulse_service_records_v2',
+  LANGUAGE: 'fleetpulse_app_language_v2',
+  AUTH_SESSION: 'fleetpulse_auth_session_v2',
 };
 
 const DEFAULT_COMPANY_PROFILE: CompanyProfile = {
@@ -59,6 +72,7 @@ const DEFAULT_USER_ACCOUNTS: UserAccount[] = [
     mobile: '+91 98220 11988',
     email: 'admin@fleetpulse.com',
     role: 'admin',
+    passwordHash: '01599c8267a050fc2afded717e328e972295d07331a970267d29feb82aadbbda', // Admin@123
     address: 'Pune Head Office, Maharashtra',
     verificationStatus: 'verified',
     permissions: {
@@ -86,6 +100,7 @@ const DEFAULT_USER_ACCOUNTS: UserAccount[] = [
     mobile: '+91 98224 88201',
     email: 'amit@fleetpulse.com',
     role: 'operator',
+    passwordHash: 'bccea06f67b9d1f24b7a20090d2e24837e5c41df598a454224f0bbeca1b4d515', // Operator@123
     address: 'Surat Ring Road Booking Office, Gujarat',
     verificationStatus: 'verified',
     permissions: {
@@ -113,6 +128,7 @@ const DEFAULT_USER_ACCOUNTS: UserAccount[] = [
     mobile: '+91 98228 33100',
     email: 'pooja@fleetpulse.com',
     role: 'operator',
+    passwordHash: 'bccea06f67b9d1f24b7a20090d2e24837e5c41df598a454224f0bbeca1b4d515', // Operator@123
     address: 'Pune Market Yard Office, Maharashtra',
     verificationStatus: 'pending',
     permissions: {
@@ -197,6 +213,19 @@ export const StorageEngine = {
     safeGet(STORAGE_KEYS.USER_ACCOUNTS, DEFAULT_USER_ACCOUNTS),
   setUserAccounts: (users: UserAccount[]) => safeSet(STORAGE_KEYS.USER_ACCOUNTS, users),
 
+  getAuthSession: (): AuthSession | null => {
+    const session = safeGet<AuthSession | null>(STORAGE_KEYS.AUTH_SESSION, null);
+    if (!session) return null;
+    // Enforce cryptographic session expiry check
+    if (session.expiresAt && Date.now() > session.expiresAt) {
+      StorageEngine.setAuthSession(null);
+      return null;
+    }
+    return session;
+  },
+  setAuthSession: (session: AuthSession | null) =>
+    safeSet(STORAGE_KEYS.AUTH_SESSION, session),
+
   getPermissions: (): UserPermissions => safeGet(STORAGE_KEYS.PERMISSIONS, INITIAL_USER_PERMISSIONS),
   setPermissions: (p: UserPermissions) => safeSet(STORAGE_KEYS.PERMISSIONS, p),
 
@@ -227,6 +256,21 @@ export const StorageEngine = {
     StorageEngine.setAuditLogs(updated);
     return newEntry;
   },
+
+  getOdometerEvents: (): OdometerEvent[] =>
+    safeGet(STORAGE_KEYS.ODOMETER_EVENTS, INITIAL_ODOMETER_EVENTS),
+  setOdometerEvents: (events: OdometerEvent[]) => safeSet(STORAGE_KEYS.ODOMETER_EVENTS, events),
+
+  getFuelRecords: (): FuelRecord[] =>
+    safeGet(STORAGE_KEYS.FUEL_RECORDS, INITIAL_FUEL_RECORDS),
+  setFuelRecords: (records: FuelRecord[]) => safeSet(STORAGE_KEYS.FUEL_RECORDS, records),
+
+  getServiceRecords: (): ServiceRepairRecord[] =>
+    safeGet(STORAGE_KEYS.SERVICE_RECORDS, INITIAL_SERVICE_RECORDS),
+  setServiceRecords: (records: ServiceRepairRecord[]) => safeSet(STORAGE_KEYS.SERVICE_RECORDS, records),
+
+  getLanguage: (): AppLanguage => safeGet(STORAGE_KEYS.LANGUAGE, 'en'),
+  setLanguage: (lang: AppLanguage) => safeSet(STORAGE_KEYS.LANGUAGE, lang),
 
   exportBackupJSON: (): string => {
     const backup = {

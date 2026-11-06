@@ -40,13 +40,13 @@ export const AuditLogView: React.FC = () => {
       case 'payments':
         return <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Payments</span>;
       case 'trips':
-        return <span className="bg-sky-100 text-sky-800 border border-sky-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Trips</span>;
+        return <span className="bg-[#BDDDFC]/30 text-[#384959] border border-[#DCE8F2] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Trips</span>;
       case 'vehicles':
         return <span className="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Vehicles</span>;
       case 'drivers':
         return <span className="bg-purple-100 text-purple-800 border border-purple-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Drivers</span>;
       case 'documents':
-        return <span className="bg-blue-100 text-blue-800 border border-blue-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Documents</span>;
+        return <span className="bg-[#BDDDFC]/30 text-[#384959] border border-[#DCE8F2] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Documents</span>;
       default:
         return <span className="bg-slate-100 text-slate-700 border border-slate-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">{module}</span>;
     }
@@ -76,32 +76,32 @@ export const AuditLogView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-sky-100/90 via-sky-50 to-white p-5 border border-sky-200 rounded-xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white p-5 border border-[#DCE8F2] rounded-xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="font-heading text-lg font-extrabold text-sky-950">
+            <h2 className="font-heading text-lg font-extrabold text-[#384959]">
               System Audit Logs & Activity Trail
             </h2>
-            <span className="bg-sky-200/80 text-sky-900 border border-sky-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+            <span className="bg-[#BDDDFC]/30 text-[#384959] border border-[#BDDDFC] text-xs font-bold px-2.5 py-0.5 rounded-full">
               Compliance & Security
             </span>
           </div>
-          <p className="text-xs text-sky-800/80 mt-1 font-medium">
+          <p className="text-xs text-[#6A89A7] mt-1 font-medium">
             Immutable tracking of financial payments, trip approvals/rejections, LR updates, vehicle ODO revisions, and permission changes.
           </p>
         </div>
 
         <button
           onClick={handleDownloadCSV}
-          className="px-3.5 py-2 text-xs font-bold text-sky-900 bg-white hover:bg-sky-50 border border-sky-300 rounded-lg shadow-xs flex items-center gap-2 transition-all cursor-pointer"
+          className="px-3.5 py-2 text-xs font-bold text-[#384959] bg-white hover:bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg shadow-xs flex items-center gap-2 transition-all cursor-pointer"
         >
-          <Download className="w-4 h-4 text-sky-600" />
+          <Download className="w-4 h-4 text-[#6A89A7]" />
           <span>Export Audit Log (CSV)</span>
         </button>
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs flex flex-col sm:flex-row items-center gap-3">
+      <div className="bg-white p-4 rounded-xl border border-[#DCE8F2] shadow-xs flex flex-col sm:flex-row items-center gap-3">
         <div className="relative flex-1 w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
           <input
@@ -109,7 +109,7 @@ export const AuditLogView: React.FC = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search action, details, user, or entity ID..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:border-sky-500"
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:border-[#88BDF2]"
           />
         </div>
 
@@ -143,10 +143,10 @@ export const AuditLogView: React.FC = () => {
       </div>
 
       {/* Audit Log Table */}
-      <div className="bg-white border border-sky-100 rounded-xl shadow-xs overflow-hidden">
+      <div className="bg-white border border-[#DCE8F2] rounded-xl shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-sky-50/70 border-b border-sky-100 text-sky-900 font-heading font-bold uppercase text-[11px]">
+            <thead className="bg-[#F8FAFC]/70 border-b border-[#DCE8F2] text-[#384959] font-heading font-bold uppercase text-[11px]">
               <tr>
                 <th className="py-3 px-4">Date & Time</th>
                 <th className="py-3 px-3">Actor / Role</th>
@@ -165,7 +165,7 @@ export const AuditLogView: React.FC = () => {
                 </tr>
               ) : (
                 filteredLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-sky-50/30 transition-colors">
+                  <tr key={log.id} className="hover:bg-[#F8FAFC]/30 transition-colors">
                     <td className="py-3 px-4 text-slate-600 font-mono text-[11px] whitespace-nowrap">
                       {new Date(log.timestamp).toLocaleString('en-IN', {
                         year: 'numeric',
@@ -177,13 +177,13 @@ export const AuditLogView: React.FC = () => {
                       })}
                     </td>
                     <td className="py-3 px-3 whitespace-nowrap">
-                      <span className="font-bold text-sky-950 block">{log.userName}</span>
+                      <span className="font-bold text-[#384959] block">{log.userName}</span>
                       <span className="text-[10px] text-slate-400 uppercase font-mono">{log.userRole}</span>
                     </td>
                     <td className="py-3 px-3 whitespace-nowrap">
                       {getModuleBadge(log.module)}
                     </td>
-                    <td className="py-3 px-3 font-bold text-sky-900 whitespace-nowrap">
+                    <td className="py-3 px-3 font-bold text-[#384959] whitespace-nowrap">
                       {log.action}
                     </td>
                     <td className="py-3 px-4 text-slate-700 max-w-md">

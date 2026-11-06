@@ -38,17 +38,17 @@ export const TenantRBACView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-sky-100/90 via-sky-50 to-white p-5 border border-sky-200 rounded-xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white p-5 border border-[#DCE8F2] rounded-xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="font-heading text-lg font-extrabold text-sky-950">
+            <h2 className="font-heading text-lg font-extrabold text-[#384959]">
               Admin User Rights & Permission Management
             </h2>
-            <span className="bg-sky-200/80 text-sky-900 border border-sky-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+            <span className="bg-[#BDDDFC]/30 text-[#384959] border border-[#BDDDFC] text-xs font-bold px-2.5 py-0.5 rounded-full">
               Admin Authority (PRD Specification)
             </span>
           </div>
-          <p className="text-xs text-sky-800/80 mt-1 font-medium">
+          <p className="text-xs text-[#6A89A7] mt-1 font-medium">
             The Admin can handle all work, register users, verify soft copies, assign operational rights, and toggle document visibility for Drivers.
           </p>
         </div>
@@ -56,7 +56,7 @@ export const TenantRBACView: React.FC = () => {
         {role === 'admin' && (
           <button
             onClick={() => setIsUserModalOpen(true)}
-            className="px-4 py-2.5 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 text-white font-bold text-xs rounded-lg shadow-sm shadow-sky-600/25 flex items-center gap-2 cursor-pointer transition-all self-start md:self-auto font-heading shrink-0"
+            className="px-4 py-2.5 bg-[#384959] hover:bg-[#2C3A47] text-white font-bold text-xs rounded-lg shadow-sm shadow-xs flex items-center gap-2 cursor-pointer transition-all self-start md:self-auto font-heading shrink-0"
           >
             <Users className="w-4 h-4" />
             <span>Manage Users & KYC Verification ({userAccounts.length})</span>
@@ -66,18 +66,18 @@ export const TenantRBACView: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Section 1: User Rights Assignment */}
-        <div className="bg-white border border-sky-100 rounded-xl p-5 shadow-xs space-y-4">
-          <div className="flex items-center gap-2 pb-2 border-b border-sky-100">
-            <UserCheck className="w-5 h-5 text-sky-600" />
-            <h3 className="font-heading font-bold text-sm text-sky-950">
+        <div className="bg-white border border-[#DCE8F2] rounded-xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#DCE8F2]">
+            <UserCheck className="w-5 h-5 text-[#6A89A7]" />
+            <h3 className="font-heading font-bold text-sm text-[#384959]">
               User / Manager Operational Permissions
             </h3>
           </div>
 
           <div className="space-y-3 text-xs">
-            <div className="flex items-center justify-between p-3.5 bg-sky-50/40 rounded-xl border border-sky-100">
+            <div className="flex items-center justify-between p-3.5 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2]">
               <div>
-                <span className="font-heading font-bold text-sky-950 block">
+                <span className="font-heading font-bold text-[#384959] block">
                   1. Can Approve / Reject Driver Trips
                 </span>
                 <span className="text-slate-500 text-[11px]">
@@ -87,7 +87,7 @@ export const TenantRBACView: React.FC = () => {
               <button
                 onClick={() => handleToggle('canApproveTrips')}
                 className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  userPermissions.canApproveTrips ? 'bg-sky-600' : 'bg-slate-300'
+                  userPermissions.canApproveTrips ? 'bg-[#384959]' : 'bg-slate-300'
                 }`}
               >
                 <div
@@ -98,9 +98,9 @@ export const TenantRBACView: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between p-3.5 bg-sky-50/40 rounded-xl border border-sky-100">
+            <div className="flex items-center justify-between p-3.5 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2]">
               <div>
-                <span className="font-heading font-bold text-sky-950 block">
+                <span className="font-heading font-bold text-[#384959] block">
                   2. Can Settle Return Load Payments
                 </span>
                 <span className="text-slate-500 text-[11px]">
@@ -110,7 +110,7 @@ export const TenantRBACView: React.FC = () => {
               <button
                 onClick={() => handleToggle('canSettlePayments')}
                 className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  userPermissions.canSettlePayments ? 'bg-sky-600' : 'bg-slate-300'
+                  userPermissions.canSettlePayments ? 'bg-[#384959]' : 'bg-slate-300'
                 }`}
               >
                 <div
@@ -121,9 +121,9 @@ export const TenantRBACView: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between p-3.5 bg-sky-50/40 rounded-xl border border-sky-100">
+            <div className="flex items-center justify-between p-3.5 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2]">
               <div>
-                <span className="font-heading font-bold text-sky-950 block">
+                <span className="font-heading font-bold text-[#384959] block">
                   3. Can Manage Drivers & WhatsApp Links
                 </span>
                 <span className="text-slate-500 text-[11px]">
@@ -133,7 +133,7 @@ export const TenantRBACView: React.FC = () => {
               <button
                 onClick={() => handleToggle('canManageDrivers')}
                 className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  userPermissions.canManageDrivers ? 'bg-sky-600' : 'bg-slate-300'
+                  userPermissions.canManageDrivers ? 'bg-[#384959]' : 'bg-slate-300'
                 }`}
               >
                 <div
@@ -144,9 +144,9 @@ export const TenantRBACView: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between p-3.5 bg-sky-50/40 rounded-xl border border-sky-100">
+            <div className="flex items-center justify-between p-3.5 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2]">
               <div>
-                <span className="font-heading font-bold text-sky-950 block">
+                <span className="font-heading font-bold text-[#384959] block">
                   4. Can View Financial Balances
                 </span>
                 <span className="text-slate-500 text-[11px]">
@@ -156,7 +156,7 @@ export const TenantRBACView: React.FC = () => {
               <button
                 onClick={() => handleToggle('canViewFinancials')}
                 className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  userPermissions.canViewFinancials ? 'bg-sky-600' : 'bg-slate-300'
+                  userPermissions.canViewFinancials ? 'bg-[#384959]' : 'bg-slate-300'
                 }`}
               >
                 <div
@@ -170,19 +170,19 @@ export const TenantRBACView: React.FC = () => {
         </div>
 
         {/* Section 2: Driver Permissions (Admin Controlled) */}
-        <div className="bg-white border border-sky-100 rounded-xl p-5 shadow-xs space-y-4">
-          <div className="flex items-center gap-2 pb-2 border-b border-sky-100">
-            <Truck className="w-5 h-5 text-sky-600" />
-            <h3 className="font-heading font-bold text-sm text-sky-950">
+        <div className="bg-white border border-[#DCE8F2] rounded-xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 pb-2 border-b border-[#DCE8F2]">
+            <Truck className="w-5 h-5 text-[#6A89A7]" />
+            <h3 className="font-heading font-bold text-sm text-[#384959]">
               Driver Portal Permissions (Controlled by Admin)
             </h3>
           </div>
 
           <div className="space-y-3 text-xs">
             {/* Permission: Driver Can see all Vehicle Documentation (PRD Requirement) */}
-            <div className="flex items-center justify-between p-4 bg-sky-50/60 rounded-xl border border-sky-200">
+            <div className="flex items-center justify-between p-4 bg-[#F8FAFC]/60 rounded-xl border border-[#DCE8F2]">
               <div>
-                <span className="font-heading font-extrabold text-sky-950 text-sm block">
+                <span className="font-heading font-extrabold text-[#384959] text-sm block">
                   Allow Drivers to View Vehicle Documentation
                 </span>
                 <p className="text-slate-600 text-xs mt-1 leading-relaxed">
@@ -195,7 +195,7 @@ export const TenantRBACView: React.FC = () => {
               <button
                 onClick={() => setDriverCanViewDocs(!driverCanViewDocs)}
                 className={`w-14 h-7 rounded-full transition-colors relative shrink-0 ml-4 cursor-pointer ${
-                  driverCanViewDocs ? 'bg-sky-600' : 'bg-slate-300'
+                  driverCanViewDocs ? 'bg-[#384959]' : 'bg-slate-300'
                 }`}
               >
                 <div
@@ -206,8 +206,8 @@ export const TenantRBACView: React.FC = () => {
               </button>
             </div>
 
-            <div className="p-3.5 bg-sky-50/30 border border-sky-100 rounded-xl text-slate-600 space-y-1">
-              <span className="font-heading font-bold text-sky-950 block text-xs">Driver Fixed Privileges:</span>
+            <div className="p-3.5 bg-[#F8FAFC]/30 border border-[#DCE8F2] rounded-xl text-slate-600 space-y-1">
+              <span className="font-heading font-bold text-[#384959] block text-xs">Driver Fixed Privileges:</span>
               <ul className="list-disc pl-4 space-y-0.5 text-[11px] text-slate-600">
                 <li>Can save Daily Work (Trip) with destinations & fruit items</li>
                 <li>Can upload Stamped LR photos from delivered locations</li>
@@ -220,12 +220,12 @@ export const TenantRBACView: React.FC = () => {
       </div>
 
       {/* Section 3: Registered Staff & Document Verification Roster (Master Prompt Section 4) */}
-      <div className="bg-white border border-sky-100 rounded-xl p-5 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-sky-100">
+      <div className="bg-white border border-[#DCE8F2] rounded-xl p-5 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#DCE8F2]">
           <div className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-sky-600" />
+            <Users className="w-5 h-5 text-[#6A89A7]" />
             <div>
-              <h3 className="font-heading font-extrabold text-sm text-sky-950">
+              <h3 className="font-heading font-extrabold text-sm text-[#384959]">
                 Staff User Roster & Verification Status
               </h3>
               <p className="text-[11px] text-slate-500 font-medium">
@@ -237,7 +237,7 @@ export const TenantRBACView: React.FC = () => {
           {role === 'admin' && (
             <button
               onClick={() => setIsUserModalOpen(true)}
-              className="px-3.5 py-1.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-800 rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1.5 font-heading self-start sm:self-auto"
+              className="px-3.5 py-1.5 bg-[#F8FAFC] hover:bg-[#BDDDFC]/30 border border-[#DCE8F2] text-[#384959] rounded-lg text-xs font-bold cursor-pointer flex items-center gap-1.5 font-heading self-start sm:self-auto"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Register User / Review Soft Copies</span>
@@ -249,11 +249,11 @@ export const TenantRBACView: React.FC = () => {
           {userAccounts.map((u) => (
             <div
               key={u.id}
-              className="p-3 bg-sky-50/40 rounded-xl border border-sky-200 text-xs space-y-2 hover:border-sky-300 transition-all flex flex-col justify-between"
+              className="p-3 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2] text-xs space-y-2 hover:border-[#DCE8F2] transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between gap-1">
-                  <span className="font-heading font-bold text-sky-950 truncate">{u.fullName}</span>
+                  <span className="font-heading font-bold text-[#384959] truncate">{u.fullName}</span>
                   <span
                     className={`text-[9px] font-bold px-2 py-0.2 rounded-full uppercase border font-mono ${
                       u.verificationStatus === 'verified'
@@ -269,12 +269,12 @@ export const TenantRBACView: React.FC = () => {
                 <div className="text-[10px] text-slate-500 font-mono mt-0.5">{u.mobile} • {u.role}</div>
               </div>
 
-              <div className="pt-2 border-t border-sky-100/80 flex items-center justify-between text-[11px]">
+              <div className="pt-2 border-t border-[#DCE8F2] flex items-center justify-between text-[11px]">
                 <span className="text-slate-500">{u.documents.length} KYC Doc(s)</span>
                 {role === 'admin' && (
                   <button
                     onClick={() => setIsUserModalOpen(true)}
-                    className="text-sky-700 hover:text-sky-900 font-bold hover:underline cursor-pointer"
+                    className="text-[#6A89A7] hover:text-[#384959] font-bold hover:underline cursor-pointer"
                   >
                     Inspect
                   </button>

@@ -36,6 +36,7 @@ import { useTMS } from '../context/TMSContext';
 import { PartyPaymentRecord, Party, PartyDocument } from '../types/tms';
 import { ReturnLoadAnalyticsView } from './ReturnLoadAnalyticsView';
 import { readFileAsDataURL } from '../utils/fileUploadHelper';
+import { EmptyState } from './common/EmptyState';
 
 export const FinancialReportsView: React.FC = () => {
   const {
@@ -392,19 +393,19 @@ export const FinancialReportsView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner with 3 Tab Switchers (Parties / Documents / Payments) */}
-      <div className="bg-gradient-to-r from-sky-100/90 via-sky-50 to-white p-5 border border-sky-200 rounded-2xl shadow-xs">
+      <div className="bg-white p-5 border border-[#DCE8F2] rounded-2xl shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="font-heading text-lg font-extrabold text-sky-950 flex items-center gap-2">
-                <Building className="w-5 h-5 text-sky-700" />
+              <h2 className="font-heading text-lg font-extrabold text-[#384959] flex items-center gap-2">
+                <Building className="w-5 h-5 text-[#6A89A7]" />
                 <span>Parties, Statutory Documents & Settlements Hub</span>
               </h2>
-              <span className="bg-sky-200/80 text-sky-900 border border-sky-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+              <span className="bg-[#BDDDFC]/30 text-[#384959] border border-[#BDDDFC] text-xs font-bold px-2.5 py-0.5 rounded-full">
                 Aadhaar • PAN • GST • Mandi KYC • Backhaul LR
               </span>
             </div>
-            <p className="text-xs text-sky-800/80 mt-1 font-medium">
+            <p className="text-xs text-[#6A89A7] mt-1 font-medium">
               Manage all client parties with complete KYC compliance (Aadhaar, PAN, GST, Mandi License), centralized document repository, and LR payments.
             </p>
           </div>
@@ -413,22 +414,22 @@ export const FinancialReportsView: React.FC = () => {
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => handleOpenPartyReportModal()}
-              className="bg-sky-700 hover:bg-sky-800 text-white px-3.5 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
+              className="bg-[#384959] hover:bg-[#2C3A47] text-white px-3.5 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
               title="Print custom date range party statement or download PDF"
             >
-              <Printer className="w-4 h-4 text-sky-200" />
+              <Printer className="w-4 h-4 text-[#BDDDFC]" />
               <span>Print Party Report / PDF</span>
             </button>
             <button
               onClick={() => handleOpenAddDocModal()}
-              className="bg-white hover:bg-sky-50 text-sky-800 border border-sky-300 px-3.5 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
+              className="bg-white hover:bg-[#F3F7FB] text-[#384959] border border-[#DCE8F2] px-3.5 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
             >
-              <FileCheck2 className="w-4 h-4 text-sky-600" />
+              <FileCheck2 className="w-4 h-4 text-[#6A89A7]" />
               <span>+ Add Document</span>
             </button>
             <button
               onClick={() => setIsAddPartyModalOpen(true)}
-              className="bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 text-white px-3.5 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-sm shadow-sky-600/20 transition-all cursor-pointer"
+              className="bg-[#88BDF2] hover:bg-[#6A89A7] text-[#384959] hover:text-white px-3.5 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>+ Register New Party</span>
@@ -437,13 +438,13 @@ export const FinancialReportsView: React.FC = () => {
         </div>
 
         {/* 3 Prominent Navigation Tabs inside Party Module */}
-        <div className="mt-5 pt-3 border-t border-sky-200/70 flex items-center gap-2 overflow-x-auto no-scrollbar">
+        <div className="mt-5 pt-3 border-t border-[#DCE8F2] flex items-center gap-2 overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveSubTab('parties')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
               activeSubTab === 'parties'
-                ? 'bg-sky-700 text-white shadow-sm shadow-sky-800/30'
-                : 'bg-white text-slate-700 hover:bg-sky-100/70 hover:text-sky-950 border border-sky-200'
+                ? 'bg-[#384959] text-white shadow-xs'
+                : 'bg-white text-[#6A89A7] hover:bg-[#F3F7FB] hover:text-[#384959] border border-[#DCE8F2]'
             }`}
           >
             <Building className="w-4 h-4" />
@@ -454,8 +455,8 @@ export const FinancialReportsView: React.FC = () => {
             onClick={() => setActiveSubTab('documents')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
               activeSubTab === 'documents'
-                ? 'bg-sky-700 text-white shadow-sm shadow-sky-800/30'
-                : 'bg-white text-slate-700 hover:bg-sky-100/70 hover:text-sky-950 border border-sky-200'
+                ? 'bg-[#384959] text-white shadow-xs'
+                : 'bg-white text-[#6A89A7] hover:bg-[#F3F7FB] hover:text-[#384959] border border-[#DCE8F2]'
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -466,8 +467,8 @@ export const FinancialReportsView: React.FC = () => {
             onClick={() => setActiveSubTab('payments')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
               activeSubTab === 'payments'
-                ? 'bg-sky-700 text-white shadow-sm shadow-sky-800/30'
-                : 'bg-white text-slate-700 hover:bg-sky-100/70 hover:text-sky-950 border border-sky-200'
+                ? 'bg-[#384959] text-white shadow-xs'
+                : 'bg-white text-[#6A89A7] hover:bg-[#F3F7FB] hover:text-[#384959] border border-[#DCE8F2]'
             }`}
           >
             <CreditCard className="w-4 h-4" />
@@ -478,8 +479,8 @@ export const FinancialReportsView: React.FC = () => {
             onClick={() => setActiveSubTab('analytics')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-heading text-xs font-extrabold transition-all cursor-pointer whitespace-nowrap ${
               activeSubTab === 'analytics'
-                ? 'bg-sky-700 text-white shadow-sm shadow-sky-800/30'
-                : 'bg-white text-slate-700 hover:bg-sky-100/70 hover:text-sky-950 border border-sky-200'
+                ? 'bg-[#384959] text-white shadow-xs'
+                : 'bg-white text-[#6A89A7] hover:bg-[#F3F7FB] hover:text-[#384959] border border-[#DCE8F2]'
             }`}
           >
             <TrendingUp className="w-4 h-4 text-emerald-400" />
@@ -494,7 +495,7 @@ export const FinancialReportsView: React.FC = () => {
       {activeSubTab === 'parties' && (
         <div className="space-y-5">
           {/* Top Filter and Search Bar */}
-          <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="bg-white p-4 rounded-xl border border-[#DCE8F2] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
               <input
@@ -502,7 +503,7 @@ export const FinancialReportsView: React.FC = () => {
                 placeholder="Search party by name, contact, city, Aadhaar, PAN..."
                 value={partySearch}
                 onChange={(e) => setPartySearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-sky-500"
+                className="w-full pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#88BDF2]"
               />
             </div>
 
@@ -512,8 +513,8 @@ export const FinancialReportsView: React.FC = () => {
                 onClick={() => setPartyTypeFilter('all')}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   partyTypeFilter === 'all'
-                    ? 'bg-sky-700 text-white shadow-xs'
-                    : 'bg-slate-50 text-slate-700 hover:bg-sky-50 hover:text-sky-900 border border-slate-200'
+                    ? 'bg-[#384959] text-white shadow-xs'
+                    : 'bg-slate-50 text-slate-700 hover:bg-[#F8FAFC] hover:text-[#384959] border border-slate-200'
                 }`}
               >
                 All Parties ({parties.length})
@@ -522,8 +523,8 @@ export const FinancialReportsView: React.FC = () => {
                 onClick={() => setPartyTypeFilter('return_load_consignor')}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   partyTypeFilter === 'return_load_consignor'
-                    ? 'bg-sky-700 text-white shadow-xs'
-                    : 'bg-slate-50 text-slate-700 hover:bg-sky-50 hover:text-sky-900 border border-slate-200'
+                    ? 'bg-[#384959] text-white shadow-xs'
+                    : 'bg-slate-50 text-slate-700 hover:bg-[#F8FAFC] hover:text-[#384959] border border-slate-200'
                 }`}
               >
                 Return Load Parties
@@ -532,8 +533,8 @@ export const FinancialReportsView: React.FC = () => {
                 onClick={() => setPartyTypeFilter('fruit_buyer')}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   partyTypeFilter === 'fruit_buyer'
-                    ? 'bg-sky-700 text-white shadow-xs'
-                    : 'bg-slate-50 text-slate-700 hover:bg-sky-50 hover:text-sky-900 border border-slate-200'
+                    ? 'bg-[#384959] text-white shadow-xs'
+                    : 'bg-slate-50 text-slate-700 hover:bg-[#F8FAFC] hover:text-[#384959] border border-slate-200'
                 }`}
               >
                 Fruit Buyers & Mandi
@@ -542,8 +543,8 @@ export const FinancialReportsView: React.FC = () => {
                 onClick={() => setPartyTypeFilter('gujarat')}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   partyTypeFilter === 'gujarat'
-                    ? 'bg-sky-700 text-white shadow-xs'
-                    : 'bg-slate-50 text-slate-700 hover:bg-sky-50 hover:text-sky-900 border border-slate-200'
+                    ? 'bg-[#384959] text-white shadow-xs'
+                    : 'bg-slate-50 text-slate-700 hover:bg-[#F8FAFC] hover:text-[#384959] border border-slate-200'
                 }`}
               >
                 Gujarat (GJ)
@@ -552,8 +553,8 @@ export const FinancialReportsView: React.FC = () => {
                 onClick={() => setPartyTypeFilter('maharashtra')}
                 className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   partyTypeFilter === 'maharashtra'
-                    ? 'bg-sky-700 text-white shadow-xs'
-                    : 'bg-slate-50 text-slate-700 hover:bg-sky-50 hover:text-sky-900 border border-slate-200'
+                    ? 'bg-[#384959] text-white shadow-xs'
+                    : 'bg-slate-50 text-slate-700 hover:bg-[#F8FAFC] hover:text-[#384959] border border-slate-200'
                 }`}
               >
                 Maharashtra (MH)
@@ -562,7 +563,7 @@ export const FinancialReportsView: React.FC = () => {
               {/* Dedicated Print Statement & Download PDF Button */}
               <button
                 onClick={() => handleOpenPartyReportModal()}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-700 hover:bg-sky-800 text-white shadow-xs transition-all cursor-pointer ml-auto"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-[#384959] hover:bg-[#2C3A47] text-white shadow-xs transition-all cursor-pointer ml-auto"
                 title="Print custom date range party statement or download PDF"
               >
                 <Printer className="w-3.5 h-3.5" />
@@ -583,17 +584,17 @@ export const FinancialReportsView: React.FC = () => {
               return (
                 <div
                   key={party.id}
-                  className="bg-white rounded-xl border border-sky-100 hover:border-sky-300 shadow-xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
+                  className="bg-white rounded-xl border border-[#DCE8F2] hover:border-[#DCE8F2] shadow-xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
                 >
                   <div className="p-4 space-y-3.5">
                     {/* Header */}
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-2.5 min-w-0">
-                        <div className="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 border border-sky-200 font-bold">
+                        <div className="w-9 h-9 rounded-xl bg-[#BDDDFC]/30 text-[#6A89A7] flex items-center justify-center shrink-0 border border-[#DCE8F2] font-bold">
                           <Building className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-heading font-extrabold text-sm text-sky-950 truncate leading-snug">
+                          <h3 className="font-heading font-extrabold text-sm text-[#384959] truncate leading-snug">
                             {party.name}
                           </h3>
                           <p className="text-[11px] text-slate-500 truncate font-medium">
@@ -626,8 +627,8 @@ export const FinancialReportsView: React.FC = () => {
                           <User className="w-3.5 h-3.5 text-slate-400" />
                           <span className="font-semibold text-slate-800">{party.contactPerson}</span>
                         </span>
-                        <span className="flex items-center gap-1 font-mono text-sky-800 font-bold">
-                          <Phone className="w-3 h-3 text-sky-600" />
+                        <span className="flex items-center gap-1 font-mono text-[#384959] font-bold">
+                          <Phone className="w-3 h-3 text-[#6A89A7]" />
                           <span>{party.mobile}</span>
                         </span>
                       </div>
@@ -641,15 +642,15 @@ export const FinancialReportsView: React.FC = () => {
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-400 font-heading">
                         <span>Statutory KYC Documents</span>
-                        <span className="text-sky-700 font-mono">{party.documents.length} Uploaded</span>
+                        <span className="text-[#6A89A7] font-mono">{party.documents.length} Uploaded</span>
                       </div>
 
                       {/* Aadhaar Card Box */}
-                      <div className="flex items-center justify-between p-2 rounded-lg bg-sky-50/70 border border-sky-100 text-xs">
+                      <div className="flex items-center justify-between p-2 rounded-lg bg-[#F8FAFC] border border-[#DCE8F2] text-xs">
                         <div className="flex items-center gap-2 min-w-0">
-                          <ShieldCheck className="w-4 h-4 text-sky-600 shrink-0" />
+                          <ShieldCheck className="w-4 h-4 text-[#6A89A7] shrink-0" />
                           <div className="min-w-0">
-                            <span className="text-[10px] uppercase font-bold text-sky-800 block leading-tight font-heading">
+                            <span className="text-[10px] uppercase font-bold text-[#384959] block leading-tight font-heading">
                               Aadhaar Card
                             </span>
                             <span className="font-mono text-xs font-bold text-slate-800 truncate block">
@@ -665,7 +666,7 @@ export const FinancialReportsView: React.FC = () => {
                         ) : (
                           <button
                             onClick={() => handleOpenAddDocModal(party.id)}
-                            className="text-[10px] text-sky-700 hover:text-sky-900 font-bold underline cursor-pointer"
+                            className="text-[10px] text-[#6A89A7] hover:text-[#384959] font-bold underline cursor-pointer"
                           >
                             + Add
                           </button>
@@ -708,7 +709,7 @@ export const FinancialReportsView: React.FC = () => {
                           </span>
                         )}
                         {otherDocsCount > 0 && (
-                          <span className="text-[10px] bg-sky-100 text-sky-800 font-mono font-semibold px-2 py-0.5 rounded border border-sky-200">
+                          <span className="text-[10px] bg-[#BDDDFC]/30 text-[#384959] font-mono font-semibold px-2 py-0.5 rounded border border-[#DCE8F2]">
                             +{otherDocsCount} More Docs (Mandi/Agreement)
                           </span>
                         )}
@@ -717,10 +718,10 @@ export const FinancialReportsView: React.FC = () => {
                   </div>
 
                   {/* Card Action Footer */}
-                  <div className="bg-slate-50 px-4 py-2.5 border-t border-sky-100 flex items-center justify-between gap-2">
+                  <div className="bg-slate-50 px-4 py-2.5 border-t border-[#DCE8F2] flex items-center justify-between gap-2">
                     <button
                       onClick={() => setSelectedPartyForDetail(party)}
-                      className="text-xs font-heading font-extrabold text-sky-800 hover:text-sky-950 flex items-center gap-1 transition-colors cursor-pointer"
+                      className="text-xs font-heading font-extrabold text-[#384959] hover:text-[#384959] flex items-center gap-1 transition-colors cursor-pointer"
                     >
                       <Eye className="w-3.5 h-3.5" />
                       <span>View All Docs ({party.documents.length})</span>
@@ -729,7 +730,7 @@ export const FinancialReportsView: React.FC = () => {
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => handleOpenPartyReportModal(party.name)}
-                        className="text-xs font-heading font-bold text-slate-700 hover:text-sky-900 bg-white hover:bg-sky-50 border border-slate-200 px-2 py-1 rounded-lg flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
+                        className="text-xs font-heading font-bold text-slate-700 hover:text-[#384959] bg-white hover:bg-[#F8FAFC] border border-slate-200 px-2 py-1 rounded-lg flex items-center gap-1 transition-all cursor-pointer shadow-2xs"
                         title={`Print ${party.name} statement report`}
                       >
                         <Printer className="w-3 h-3 text-slate-500" />
@@ -738,7 +739,7 @@ export const FinancialReportsView: React.FC = () => {
 
                       <button
                         onClick={() => handleOpenAddDocModal(party.id)}
-                        className="text-xs font-heading font-bold text-white bg-sky-600 hover:bg-sky-700 px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all cursor-pointer shadow-xs"
+                        className="text-xs font-heading font-bold text-white bg-[#384959] hover:bg-[#384959] px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all cursor-pointer shadow-xs"
                       >
                         <Plus className="w-3 h-3" />
                         <span>Add Doc</span>
@@ -758,7 +759,7 @@ export const FinancialReportsView: React.FC = () => {
       {activeSubTab === 'documents' && (
         <div className="space-y-5">
           {/* Document Center Controls */}
-          <div className="bg-white p-4 rounded-xl border border-sky-100 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="bg-white p-4 rounded-xl border border-[#DCE8F2] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="flex items-center gap-2 flex-1 flex-wrap">
               <div className="relative flex-1 min-w-[220px] max-w-sm">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
@@ -767,7 +768,7 @@ export const FinancialReportsView: React.FC = () => {
                   placeholder="Search by document number, name, or party..."
                   value={docSearch}
                   onChange={(e) => setDocSearch(e.target.value)}
-                  className="w-full pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-sky-500"
+                  className="w-full pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
@@ -775,7 +776,7 @@ export const FinancialReportsView: React.FC = () => {
               <select
                 value={docTypeFilter}
                 onChange={(e) => setDocTypeFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold px-3 py-1.5 text-slate-700 focus:outline-sky-500"
+                className="bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold px-3 py-1.5 text-slate-700 focus:outline-none focus:border-[#88BDF2]"
               >
                 <option value="all">All Document Types</option>
                 <option value="Aadhaar Card">Aadhaar Card</option>
@@ -791,7 +792,7 @@ export const FinancialReportsView: React.FC = () => {
               <select
                 value={docPartyFilter}
                 onChange={(e) => setDocPartyFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold px-3 py-1.5 text-slate-700 focus:outline-sky-500"
+                className="bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold px-3 py-1.5 text-slate-700 focus:outline-none focus:border-[#88BDF2]"
               >
                 <option value="all">All Parties ({parties.length})</option>
                 {parties.map((p) => (
@@ -805,7 +806,7 @@ export const FinancialReportsView: React.FC = () => {
             {/* Direct Add Document Button */}
             <button
               onClick={() => handleOpenAddDocModal()}
-              className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-sm shadow-sky-600/20 cursor-pointer shrink-0"
+              className="bg-[#384959] hover:bg-[#384959] text-white px-4 py-2 rounded-xl text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-sm shadow-xs cursor-pointer shrink-0"
             >
               <Plus className="w-4 h-4" />
               <span>+ Add New Document</span>
@@ -813,11 +814,11 @@ export const FinancialReportsView: React.FC = () => {
           </div>
 
           {/* Documents Table / Grid View */}
-          <div className="bg-white rounded-xl border border-sky-100 shadow-xs overflow-hidden">
+          <div className="bg-white rounded-xl border border-[#DCE8F2] shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="bg-sky-50/80 text-sky-950 font-heading font-extrabold uppercase text-[10px] tracking-wider border-b border-sky-100">
+                  <tr className="bg-[#F8FAFC] text-[#384959] font-heading font-extrabold uppercase text-[10px] tracking-wider border-b border-[#DCE8F2]">
                     <th className="py-3 px-4">Document Type & Name</th>
                     <th className="py-3 px-4">Registered Party</th>
                     <th className="py-3 px-4">Document Number</th>
@@ -830,8 +831,13 @@ export const FinancialReportsView: React.FC = () => {
                 <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                   {filteredDocuments.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="py-8 text-center text-slate-400">
-                        No documents found matching your filter criteria. Click "+ Add New Document" to upload Aadhaar, PAN, or GST!
+                      <td colSpan={7} className="py-6">
+                        <EmptyState
+                          title="No KYC / Party Documents Found"
+                          description="No documents found matching your filter criteria. Click '+ Add New Document' to upload Aadhaar, PAN, or GST certificates."
+                          actionLabel="+ Add New Document"
+                          onAction={() => setIsAddDocModalOpen(true)}
+                        />
                       </td>
                     </tr>
                   ) : (
@@ -841,18 +847,18 @@ export const FinancialReportsView: React.FC = () => {
                       const isGst = doc.type === 'GST Certificate';
 
                       return (
-                        <tr key={doc.id} className="hover:bg-sky-50/40 transition-colors">
+                        <tr key={doc.id} className="hover:bg-[#F8FAFC] transition-colors">
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-2.5">
                               <div
                                 className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
                                   isAadhaar
-                                    ? 'bg-sky-100 text-sky-700'
+                                    ? 'bg-[#BDDDFC]/30 text-[#6A89A7]'
                                     : isPan
                                     ? 'bg-amber-100 text-amber-800'
                                     : isGst
                                     ? 'bg-emerald-100 text-emerald-800'
-                                    : 'bg-indigo-100 text-indigo-800'
+                                    : 'bg-[#BDDDFC]/30 text-[#6A89A7]'
                                 }`}
                               >
                                 {isAadhaar ? (
@@ -866,7 +872,7 @@ export const FinancialReportsView: React.FC = () => {
                                 )}
                               </div>
                               <div>
-                                <span className="font-heading font-extrabold text-sky-950 block">
+                                <span className="font-heading font-extrabold text-[#384959] block">
                                   {doc.type}
                                 </span>
                                 <span className="text-[11px] text-slate-500 block truncate max-w-xs">
@@ -885,7 +891,7 @@ export const FinancialReportsView: React.FC = () => {
                             </span>
                           </td>
 
-                          <td className="py-3 px-4 font-mono font-bold text-sky-900 text-xs">
+                          <td className="py-3 px-4 font-mono font-bold text-[#384959] text-xs">
                             {doc.documentNumber}
                           </td>
 
@@ -919,10 +925,10 @@ export const FinancialReportsView: React.FC = () => {
                           <td className="py-3 px-4">
                             <button
                               onClick={() => setPreviewingDoc(doc)}
-                              className="inline-flex items-center gap-1 text-[11px] font-mono text-sky-700 hover:text-sky-900 font-bold bg-sky-50 hover:bg-sky-100 px-2.5 py-1 rounded-md border border-sky-200 transition-colors cursor-pointer"
+                              className="inline-flex items-center gap-1 text-[11px] font-mono text-[#6A89A7] hover:text-[#384959] font-bold bg-[#F8FAFC] hover:bg-[#BDDDFC]/30 px-2.5 py-1 rounded-md border border-[#DCE8F2] transition-colors cursor-pointer"
                               title="Click to view full softcopy preview"
                             >
-                              <FileText className="w-3 h-3 text-sky-600" />
+                              <FileText className="w-3 h-3 text-[#6A89A7]" />
                               <span className="truncate max-w-[140px]">{doc.softCopyName || 'View Document'}</span>
                             </button>
                           </td>
@@ -931,7 +937,7 @@ export const FinancialReportsView: React.FC = () => {
                             <div className="flex items-center justify-end gap-1.5">
                               <button
                                 onClick={() => setPreviewingDoc(doc)}
-                                className="p-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg bg-[#F8FAFC] hover:bg-[#BDDDFC]/30 text-[#6A89A7] transition-colors cursor-pointer"
                                 title="Preview Document"
                               >
                                 <Eye className="w-3.5 h-3.5" />
@@ -979,13 +985,13 @@ export const FinancialReportsView: React.FC = () => {
       {activeSubTab === 'payments' && (
         <div className="space-y-6">
           {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 bg-sky-100/60 p-1.5 rounded-xl text-xs font-bold border border-sky-200/60 flex-wrap">
+          <div className="flex items-center gap-1.5 bg-[#BDDDFC]/20 p-1.5 rounded-xl text-xs font-bold border border-[#DCE8F2] flex-wrap">
             <button
               onClick={() => setFilterType('all')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 filterType === 'all'
-                  ? 'bg-white text-sky-950 shadow-xs'
-                  : 'text-sky-800 hover:text-sky-950 hover:bg-white/50'
+                  ? 'bg-white text-[#384959] shadow-xs'
+                  : 'text-[#384959] hover:text-[#384959] hover:bg-white/50'
               }`}
             >
               All Payment Records ({partyPayments.length})
@@ -994,8 +1000,8 @@ export const FinancialReportsView: React.FC = () => {
               onClick={() => setFilterType('return_load')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 filterType === 'return_load'
-                  ? 'bg-white text-sky-950 shadow-xs'
-                  : 'text-sky-800 hover:text-sky-950 hover:bg-white/50'
+                  ? 'bg-white text-[#384959] shadow-xs'
+                  : 'text-[#384959] hover:text-[#384959] hover:bg-white/50'
               }`}
             >
               Return Load Parties
@@ -1004,8 +1010,8 @@ export const FinancialReportsView: React.FC = () => {
               onClick={() => setFilterType('fruit')}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 filterType === 'fruit'
-                  ? 'bg-white text-sky-950 shadow-xs'
-                  : 'text-sky-800 hover:text-sky-950 hover:bg-white/50'
+                  ? 'bg-white text-[#384959] shadow-xs'
+                  : 'text-[#384959] hover:text-[#384959] hover:bg-white/50'
               }`}
             >
               Fruit Delivery Outbound
@@ -1023,7 +1029,7 @@ export const FinancialReportsView: React.FC = () => {
                   className={`bg-white rounded-xl border p-4 shadow-xs transition-all flex flex-col justify-between ${
                     isSettled
                       ? 'border-emerald-200 bg-gradient-to-br from-white to-emerald-50/20'
-                      : 'border-sky-200 hover:border-sky-300'
+                      : 'border-[#DCE8F2] hover:border-[#DCE8F2]'
                   }`}
                 >
                   <div className="space-y-3">
@@ -1040,7 +1046,7 @@ export const FinancialReportsView: React.FC = () => {
                           <Building className="w-4 h-4" />
                         </div>
                         <div>
-                          <h3 className="font-heading font-extrabold text-sm text-sky-950">
+                          <h3 className="font-heading font-extrabold text-sm text-[#384959]">
                             {payment.partyName}
                           </h3>
                           <span className="text-[11px] text-slate-500 font-medium">
@@ -1066,14 +1072,14 @@ export const FinancialReportsView: React.FC = () => {
                     </div>
 
                     {/* Prominent Vehicle Number Banner */}
-                    <div className="bg-sky-50/80 border border-sky-200/80 rounded-lg p-2.5 flex items-center justify-between text-xs">
+                    <div className="bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg p-2.5 flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2">
-                        <Truck className="w-4 h-4 text-sky-700" />
+                        <Truck className="w-4 h-4 text-[#6A89A7]" />
                         <div>
-                          <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block leading-none">
+                          <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block leading-none">
                             Assigned Vehicle
                           </span>
-                          <span className="font-mono text-sm font-extrabold text-sky-950 tracking-wider">
+                          <span className="font-mono text-sm font-extrabold text-[#384959] tracking-wider">
                             {payment.vehicleNumber}
                           </span>
                         </div>
@@ -1115,7 +1121,7 @@ export const FinancialReportsView: React.FC = () => {
                     </div>
 
                     {/* Stamped LR Status */}
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-sky-50/40 border border-sky-100 text-xs">
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-[#F8FAFC] border border-[#DCE8F2] text-xs">
                       <div className="flex items-center gap-1.5">
                         <FileCheck2
                           className={`w-4 h-4 ${
@@ -1136,7 +1142,7 @@ export const FinancialReportsView: React.FC = () => {
 
                       <button
                         onClick={() => toggleLRSubmitted(payment.id)}
-                        className="text-[11px] font-bold text-sky-700 hover:text-sky-900 underline cursor-pointer"
+                        className="text-[11px] font-bold text-[#6A89A7] hover:text-[#384959] underline cursor-pointer"
                       >
                         {payment.lrSubmittedToParty ? 'Mark Unsubmitted' : 'Mark as Submitted'}
                       </button>
@@ -1147,9 +1153,9 @@ export const FinancialReportsView: React.FC = () => {
                   <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                     <button
                       onClick={() => setPrintModalRecord(payment)}
-                      className="bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 px-3 py-1.5 rounded-lg text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+                      className="bg-[#F8FAFC] hover:bg-[#BDDDFC]/30 text-[#384959] border border-[#DCE8F2] px-3 py-1.5 rounded-lg text-xs font-heading font-extrabold flex items-center gap-1.5 shadow-2xs transition-all cursor-pointer"
                     >
-                      <Printer className="w-3.5 h-3.5 text-sky-700" />
+                      <Printer className="w-3.5 h-3.5 text-[#6A89A7]" />
                       <span>Print Slip</span>
                     </button>
 
@@ -1157,9 +1163,9 @@ export const FinancialReportsView: React.FC = () => {
                       {!isSettled && (
                         <button
                           onClick={() => handleOpenPartialPay(payment)}
-                          className="bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-300 px-3 py-1.5 rounded-lg text-xs font-heading font-extrabold flex items-center gap-1 shadow-2xs transition-all cursor-pointer"
+                          className="bg-[#F8FAFC] hover:bg-[#BDDDFC]/30 text-[#384959] border border-[#DCE8F2] px-3 py-1.5 rounded-lg text-xs font-heading font-extrabold flex items-center gap-1 shadow-2xs transition-all cursor-pointer"
                         >
-                          <CreditCard className="w-3.5 h-3.5 text-sky-600" />
+                          <CreditCard className="w-3.5 h-3.5 text-[#6A89A7]" />
                           <span>Pay Partial</span>
                         </button>
                       )}
@@ -1196,15 +1202,15 @@ export const FinancialReportsView: React.FC = () => {
           MODAL 1: ADD DOCUMENT MODAL ("add Document tab to add documents")
           ======================================================== */}
       {isAddDocModalOpen && (
-        <div className="fixed inset-0 z-50 bg-sky-950/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#BDDDFC]/30 text-[#6A89A7] flex items-center justify-center">
                   <FileCheck2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-sm text-sky-950">
+                  <h3 className="font-heading font-extrabold text-sm text-[#384959]">
                     Add Party Statutory Document
                   </h3>
                   <p className="text-[11px] text-slate-500 font-medium">
@@ -1223,14 +1229,14 @@ export const FinancialReportsView: React.FC = () => {
             <form onSubmit={handleCreateDocument} className="space-y-3.5">
               {/* Party Selection */}
               <div>
-                <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                   Select Transporter / Mandi Party *
                 </label>
                 <select
                   required
                   value={newDocForm.partyId}
                   onChange={(e) => setNewDocForm({ ...newDocForm, partyId: e.target.value })}
-                  className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 text-xs font-bold text-sky-950 focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                 >
                   <option value="" disabled>
                     -- Select Party --
@@ -1246,7 +1252,7 @@ export const FinancialReportsView: React.FC = () => {
               {/* Document Type & Number */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Document Type *
                   </label>
                   <select
@@ -1262,7 +1268,7 @@ export const FinancialReportsView: React.FC = () => {
                         softCopyName: `${selectedType.replace(/[\s/]+/g, '_')}_Scan.pdf`,
                       });
                     }}
-                    className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 text-xs font-bold text-sky-950 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   >
                     <option value="Aadhaar Card">Aadhaar Card (UIDAI)</option>
                     <option value="PAN Card">PAN Card (Income Tax)</option>
@@ -1275,7 +1281,7 @@ export const FinancialReportsView: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Document / Registration Number *
                   </label>
                   <input
@@ -1292,14 +1298,14 @@ export const FinancialReportsView: React.FC = () => {
                     }
                     value={newDocForm.documentNumber}
                     onChange={(e) => setNewDocForm({ ...newDocForm, documentNumber: e.target.value })}
-                    className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 font-mono text-xs font-bold text-sky-950 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 font-mono text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
               </div>
 
               {/* Document Title / Description */}
               <div>
-                <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                   Document Title / Holder Name
                 </label>
                 <input
@@ -1307,7 +1313,7 @@ export const FinancialReportsView: React.FC = () => {
                   placeholder="e.g. Aadhaar Card - Proprietor Rajeshbhai Patel"
                   value={newDocForm.documentName}
                   onChange={(e) => setNewDocForm({ ...newDocForm, documentName: e.target.value })}
-                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-medium text-slate-800 focus:outline-sky-500"
+                  className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-medium text-slate-800 focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
@@ -1322,9 +1328,9 @@ export const FinancialReportsView: React.FC = () => {
                       type="checkbox"
                       checked={newDocForm.isNonExpiring}
                       onChange={(e) => setNewDocForm({ ...newDocForm, isNonExpiring: e.target.checked })}
-                      className="rounded text-sky-600 focus:ring-sky-500"
+                      className="rounded text-[#6A89A7] focus:ring-sky-500"
                     />
-                    <span className="font-semibold text-sky-900">Permanent / Non-Expiring</span>
+                    <span className="font-semibold text-[#384959]">Permanent / Non-Expiring</span>
                   </label>
                 </div>
 
@@ -1360,13 +1366,13 @@ export const FinancialReportsView: React.FC = () => {
               {/* Status & Soft Copy Attachment */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Verification Status
                   </label>
                   <select
                     value={newDocForm.status}
                     onChange={(e) => setNewDocForm({ ...newDocForm, status: e.target.value as PartyDocument['status'] })}
-                    className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 text-xs font-bold text-sky-950 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   >
                     <option value="verified">Verified (Active KYC)</option>
                     <option value="pending_verification">Pending Verification</option>
@@ -1374,7 +1380,7 @@ export const FinancialReportsView: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Softcopy File Name / Attachment
                   </label>
                   <input
@@ -1382,7 +1388,7 @@ export const FinancialReportsView: React.FC = () => {
                     value={newDocForm.softCopyName}
                     onChange={(e) => setNewDocForm({ ...newDocForm, softCopyName: e.target.value })}
                     placeholder="e.g. Aadhaar_Scan_Signed.pdf"
-                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 focus:outline-sky-500"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-800 focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
               </div>
@@ -1402,7 +1408,7 @@ export const FinancialReportsView: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="flex justify-end gap-2 pt-3 border-t border-sky-100">
+              <div className="flex justify-end gap-2 pt-3 border-t border-[#DCE8F2]">
                 <button
                   type="button"
                   onClick={() => setIsAddDocModalOpen(false)}
@@ -1412,7 +1418,7 @@ export const FinancialReportsView: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 cursor-pointer flex items-center gap-1.5"
+                  className="px-4 py-2 font-bold text-white bg-gradient-to-r from-[#384959] to-[#2C3A47] hover:from-[#2C3A47] hover:to-[#384959] rounded-lg shadow-sm shadow-xs cursor-pointer flex items-center gap-1.5"
                 >
                   <Check className="w-4 h-4" />
                   <span>Save Document</span>
@@ -1427,15 +1433,15 @@ export const FinancialReportsView: React.FC = () => {
           MODAL 2: REGISTER NEW PARTY MODAL
           ======================================================== */}
       {isAddPartyModalOpen && (
-        <div className="fixed inset-0 z-50 bg-sky-950/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-xl p-5 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-xl p-5 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-[#BDDDFC]/30 text-[#6A89A7] flex items-center justify-center">
                   <Building className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-sm text-sky-950">
+                  <h3 className="font-heading font-extrabold text-sm text-[#384959]">
                     Register New Transporter Party
                   </h3>
                   <p className="text-[11px] text-slate-500 font-medium">
@@ -1454,7 +1460,7 @@ export const FinancialReportsView: React.FC = () => {
             <form onSubmit={handleCreateParty} className="space-y-3.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Party / Trading Name *
                   </label>
                   <input
@@ -1463,18 +1469,18 @@ export const FinancialReportsView: React.FC = () => {
                     placeholder="e.g. Surat Shreenathji Textiles"
                     value={newPartyForm.name}
                     onChange={(e) => setNewPartyForm({ ...newPartyForm, name: e.target.value })}
-                    className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 text-xs font-bold text-sky-950 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Party Type *
                   </label>
                   <select
                     value={newPartyForm.partyType}
                     onChange={(e) => setNewPartyForm({ ...newPartyForm, partyType: e.target.value as Party['partyType'] })}
-                    className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 text-xs font-bold text-sky-950 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   >
                     <option value="return_load_consignor">Return Load Consignor (Backhaul Goods)</option>
                     <option value="fruit_buyer">Fruit Buyer (Wholesale Mandi)</option>
@@ -1487,7 +1493,7 @@ export const FinancialReportsView: React.FC = () => {
               {/* Contact Person & Mobile */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Contact Person Name *
                   </label>
                   <input
@@ -1501,7 +1507,7 @@ export const FinancialReportsView: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Mobile / WhatsApp *
                   </label>
                   <input
@@ -1518,7 +1524,7 @@ export const FinancialReportsView: React.FC = () => {
               {/* City & State (No hardcoded Gujarat - configurable) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     City / Mandi Hub *
                   </label>
                   <input
@@ -1532,13 +1538,13 @@ export const FinancialReportsView: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     State *
                   </label>
                   <select
                     value={newPartyForm.state}
                     onChange={(e) => setNewPartyForm({ ...newPartyForm, state: e.target.value })}
-                    className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 text-xs font-bold text-sky-950 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   >
                     <option value="Gujarat">Gujarat</option>
                     <option value="Maharashtra">Maharashtra</option>
@@ -1564,13 +1570,13 @@ export const FinancialReportsView: React.FC = () => {
               </div>
 
               {/* Statutory Documents (Aadhaar & PAN direct inputs) */}
-              <div className="bg-sky-50/70 p-3.5 rounded-xl border border-sky-100 space-y-2.5">
-                <span className="font-heading font-extrabold text-xs text-sky-950 block">
+              <div className="bg-[#F8FAFC] p-3.5 rounded-xl border border-[#DCE8F2] space-y-2.5">
+                <span className="font-heading font-extrabold text-xs text-[#384959] block">
                   Statutory KYC Documents (Auto-registers Documents)
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-900 mb-0.5 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-0.5 font-heading">
                       Aadhaar Number
                     </label>
                     <input
@@ -1578,12 +1584,12 @@ export const FinancialReportsView: React.FC = () => {
                       placeholder="XXXX XXXX XXXX"
                       value={newPartyForm.aadhaarNumber}
                       onChange={(e) => setNewPartyForm({ ...newPartyForm, aadhaarNumber: e.target.value })}
-                      className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 font-mono text-xs"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 font-mono text-xs"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-900 mb-0.5 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-0.5 font-heading">
                       PAN Card Number
                     </label>
                     <input
@@ -1591,12 +1597,12 @@ export const FinancialReportsView: React.FC = () => {
                       placeholder="ABCDE1234F"
                       value={newPartyForm.panNumber}
                       onChange={(e) => setNewPartyForm({ ...newPartyForm, panNumber: e.target.value.toUpperCase() })}
-                      className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 font-mono text-xs"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 font-mono text-xs"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-900 mb-0.5 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-0.5 font-heading">
                       GSTIN Number
                     </label>
                     <input
@@ -1604,14 +1610,14 @@ export const FinancialReportsView: React.FC = () => {
                       placeholder="24ABCDE1234F1Z5"
                       value={newPartyForm.gstin}
                       onChange={(e) => setNewPartyForm({ ...newPartyForm, gstin: e.target.value.toUpperCase() })}
-                      className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 font-mono text-xs"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 font-mono text-xs"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Buttons */}
-              <div className="flex justify-end gap-2 pt-3 border-t border-sky-100">
+              <div className="flex justify-end gap-2 pt-3 border-t border-[#DCE8F2]">
                 <button
                   type="button"
                   onClick={() => setIsAddPartyModalOpen(false)}
@@ -1621,7 +1627,7 @@ export const FinancialReportsView: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 cursor-pointer flex items-center gap-1.5"
+                  className="px-4 py-2 font-bold text-white bg-gradient-to-r from-[#384959] to-[#2C3A47] hover:from-[#2C3A47] hover:to-[#384959] rounded-lg shadow-sm shadow-xs cursor-pointer flex items-center gap-1.5"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Register Party</span>
@@ -1636,15 +1642,15 @@ export const FinancialReportsView: React.FC = () => {
           MODAL 3: PARTY DETAILS & ALL DOCUMENTS MODAL
           ======================================================== */}
       {selectedPartyForDetail && (
-        <div className="fixed inset-0 z-50 bg-sky-950/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-2xl p-6 space-y-5 text-xs text-slate-800 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-2xl p-6 space-y-5 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-xl bg-[#BDDDFC]/30 text-[#6A89A7] flex items-center justify-center font-bold">
                   <Building className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-base text-sky-950">
+                  <h3 className="font-heading font-extrabold text-base text-[#384959]">
                     {selectedPartyForDetail.name}
                   </h3>
                   <p className="text-xs text-slate-500 font-medium">
@@ -1668,7 +1674,7 @@ export const FinancialReportsView: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-400 block font-heading">Phone / Mobile</span>
-                <span className="font-bold font-mono text-sky-800">{selectedPartyForDetail.mobile}</span>
+                <span className="font-bold font-mono text-[#384959]">{selectedPartyForDetail.mobile}</span>
               </div>
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-400 block font-heading">Total Trips</span>
@@ -1685,26 +1691,26 @@ export const FinancialReportsView: React.FC = () => {
             {/* Attached Statutory Documents List */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h4 className="font-heading font-extrabold text-sm text-sky-950 flex items-center gap-1.5">
-                  <FileText className="w-4 h-4 text-sky-700" />
+                <h4 className="font-heading font-extrabold text-sm text-[#384959] flex items-center gap-1.5">
+                  <FileText className="w-4 h-4 text-[#6A89A7]" />
                   <span>Statutory KYC Documents ({selectedPartyForDetail.documents.length})</span>
                 </h4>
                 <button
                   onClick={() => {
                     handleOpenAddDocModal(selectedPartyForDetail.id);
                   }}
-                  className="bg-sky-600 hover:bg-sky-700 text-white px-3 py-1.5 rounded-lg text-xs font-heading font-bold flex items-center gap-1 shadow-xs cursor-pointer"
+                  className="bg-[#384959] hover:bg-[#384959] text-white px-3 py-1.5 rounded-lg text-xs font-heading font-bold flex items-center gap-1 shadow-xs cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>+ Add Document to Party</span>
                 </button>
               </div>
 
-              <div className="divide-y divide-sky-100 border border-sky-100 rounded-xl overflow-hidden">
+              <div className="divide-y divide-sky-100 border border-[#DCE8F2] rounded-xl overflow-hidden">
                 {selectedPartyForDetail.documents.map((doc) => (
-                  <div key={doc.id} className="p-3 bg-white hover:bg-sky-50/50 flex items-center justify-between gap-3">
+                  <div key={doc.id} className="p-3 bg-white hover:bg-[#F8FAFC] flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-[#BDDDFC]/30 text-[#6A89A7] flex items-center justify-center shrink-0">
                         {doc.type === 'Aadhaar Card' ? (
                           <ShieldCheck className="w-4 h-4" />
                         ) : doc.type === 'PAN Card' ? (
@@ -1715,10 +1721,10 @@ export const FinancialReportsView: React.FC = () => {
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-heading font-bold text-xs text-sky-950 truncate">
+                          <span className="font-heading font-bold text-xs text-[#384959] truncate">
                             {doc.type}
                           </span>
-                          <span className="font-mono text-xs font-extrabold text-sky-800 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
+                          <span className="font-mono text-xs font-extrabold text-[#384959] bg-[#F8FAFC] px-2 py-0.5 rounded border border-[#DCE8F2]">
                             {doc.documentNumber}
                           </span>
                         </div>
@@ -1746,13 +1752,13 @@ export const FinancialReportsView: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-between items-center pt-2 border-t border-sky-100 flex-wrap gap-2">
+            <div className="flex justify-between items-center pt-2 border-t border-[#DCE8F2] flex-wrap gap-2">
               <button
                 type="button"
                 onClick={() => {
                   handleOpenPartyReportModal(selectedPartyForDetail.name);
                 }}
-                className="px-4 py-2 font-bold text-white bg-sky-700 hover:bg-sky-800 rounded-lg cursor-pointer flex items-center gap-1.5 shadow-xs text-xs"
+                className="px-4 py-2 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-lg cursor-pointer flex items-center gap-1.5 shadow-xs text-xs"
               >
                 <Printer className="w-3.5 h-3.5" />
                 <span>Print Party Statement / PDF</span>
@@ -1772,13 +1778,13 @@ export const FinancialReportsView: React.FC = () => {
           MODAL 4: DOCUMENT SOFTCOPY PREVIEW MODAL
           ======================================================== */}
       {previewingDoc && (
-        <div className="fixed inset-0 z-50 bg-sky-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-lg p-6 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-6 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-sky-600" />
+                <ShieldCheck className="w-5 h-5 text-[#6A89A7]" />
                 <div>
-                  <h3 className="font-heading font-extrabold text-sm text-sky-950">
+                  <h3 className="font-heading font-extrabold text-sm text-[#384959]">
                     Statutory Document Soft Copy Preview
                   </h3>
                   <p className="text-[11px] text-slate-500 font-mono">
@@ -1795,14 +1801,14 @@ export const FinancialReportsView: React.FC = () => {
             </div>
 
             {/* Simulated Government Document Paper Preview */}
-            <div className="p-6 bg-gradient-to-b from-sky-50/50 to-white border-2 border-dashed border-sky-200 rounded-xl space-y-4 relative overflow-hidden">
-              <div className="flex items-center justify-between border-b border-sky-200/60 pb-3">
+            <div className="p-6 bg-gradient-to-b from-[#F8FAFC] to-white border-2 border-dashed border-[#DCE8F2] rounded-xl space-y-4 relative overflow-hidden">
+              <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-sky-700 text-white flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 rounded-lg bg-[#384959] text-white flex items-center justify-center font-bold">
                     <Building className="w-4 h-4" />
                   </div>
                   <div>
-                    <span className="font-heading font-extrabold text-xs text-sky-950 block">
+                    <span className="font-heading font-extrabold text-xs text-[#384959] block">
                       {companyName}
                     </span>
                     <span className="text-[10px] text-slate-500">
@@ -1817,10 +1823,10 @@ export const FinancialReportsView: React.FC = () => {
 
               <div className="space-y-2 py-2">
                 <div className="text-center space-y-1">
-                  <span className="text-[11px] uppercase font-bold text-sky-800 font-heading">
+                  <span className="text-[11px] uppercase font-bold text-[#384959] font-heading">
                     {previewingDoc.type}
                   </span>
-                  <div className="text-base font-extrabold font-mono text-sky-950 tracking-wider">
+                  <div className="text-base font-extrabold font-mono text-[#384959] tracking-wider">
                     {previewingDoc.documentNumber}
                   </div>
                   <div className="text-xs text-slate-600 font-medium">
@@ -1828,7 +1834,7 @@ export const FinancialReportsView: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 pt-3 text-[11px] border-t border-sky-100">
+                <div className="grid grid-cols-2 gap-2 pt-3 text-[11px] border-t border-[#DCE8F2]">
                   <div>
                     <span className="text-slate-400 block font-heading uppercase text-[9px] font-bold">Party Entity</span>
                     <span className="font-bold text-slate-800">{previewingDoc.partyName}</span>
@@ -1840,14 +1846,14 @@ export const FinancialReportsView: React.FC = () => {
                 </div>
 
                 {previewingDoc.notes && (
-                  <div className="bg-sky-50 p-2 rounded text-[11px] text-sky-900 border border-sky-100">
+                  <div className="bg-[#F8FAFC] p-2 rounded text-[11px] text-[#384959] border border-[#DCE8F2]">
                     <strong>Note:</strong> {previewingDoc.notes}
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-sky-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-[#DCE8F2]">
               <button
                 onClick={() => setPreviewingDoc(null)}
                 className="px-4 py-2 font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg cursor-pointer"
@@ -1863,12 +1869,12 @@ export const FinancialReportsView: React.FC = () => {
           MODAL 5: SETTLEMENT MODAL (Existing)
           ======================================================== */}
       {settlingPayment && (
-        <div className="fixed inset-0 z-50 bg-sky-950/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-sky-200 shadow-2xl w-full max-w-md p-5 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-2">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-2">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <h3 className="font-heading font-extrabold text-sm text-sky-950">
+                <h3 className="font-heading font-extrabold text-sm text-[#384959]">
                   Settle Return Load Payment
                 </h3>
               </div>
@@ -1881,18 +1887,18 @@ export const FinancialReportsView: React.FC = () => {
             </div>
 
             <form onSubmit={handleConfirmSettle} className="space-y-3">
-              <div className="p-3 bg-sky-50 rounded-lg border border-sky-100 space-y-1">
-                <span className="font-heading font-bold text-sky-950 block">
+              <div className="p-3 bg-[#F8FAFC] rounded-lg border border-[#DCE8F2] space-y-1">
+                <span className="font-heading font-bold text-[#384959] block">
                   {settlingPayment.partyName}
                 </span>
-                <p className="text-[11px] text-sky-800">
+                <p className="text-[11px] text-[#384959]">
                   Vehicle: <strong>{settlingPayment.vehicleNumber}</strong> • Original Charge:{' '}
                   <strong>₹{settlingPayment.chargeAmount.toLocaleString('en-IN')}</strong>
                 </p>
               </div>
 
               <div>
-                <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                   Final Settled Amount (₹) *
                 </label>
                 <input
@@ -1901,11 +1907,11 @@ export const FinancialReportsView: React.FC = () => {
                   min={0}
                   value={settledAmountInput}
                   onChange={(e) => setSettledAmountInput(Number(e.target.value))}
-                  className="w-full bg-white border border-sky-300 rounded-lg px-3 py-2 font-mono font-bold text-sky-950 text-sm focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 font-mono font-bold text-[#384959] text-sm focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-sky-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-[#DCE8F2]">
                 <button
                   type="button"
                   onClick={() => setSettlingPayment(null)}
@@ -1930,12 +1936,12 @@ export const FinancialReportsView: React.FC = () => {
           MODAL 6: 6-FIELD PRINT MEMO SLIP MODAL (Existing)
           ======================================================== */}
       {printModalRecord && (
-        <div className="fixed inset-0 z-50 bg-sky-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-sky-300 shadow-2xl w-full max-w-lg p-6 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-3">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-6 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
-                <Printer className="w-5 h-5 text-sky-700" />
-                <h3 className="font-heading font-extrabold text-base text-sky-950">
+                <Printer className="w-5 h-5 text-[#6A89A7]" />
+                <h3 className="font-heading font-extrabold text-base text-[#384959]">
                   LR & Payment Delivery Memo
                 </h3>
               </div>
@@ -1950,32 +1956,32 @@ export const FinancialReportsView: React.FC = () => {
             {/* Printable Memo Sheet with 6 Required Fields */}
             <div
               id="printable-party-slip"
-              className="p-5 bg-white border-2 border-sky-800/80 rounded-xl space-y-4 text-slate-800 shadow-inner"
+              className="p-5 bg-white border-2 border-[#384959] rounded-xl space-y-4 text-slate-800 shadow-inner"
             >
-              <div className="text-center border-b-2 border-sky-800/80 pb-3">
-                <h1 className="font-heading font-black text-lg text-sky-950 uppercase tracking-tight">
+              <div className="text-center border-b-2 border-[#384959] pb-3">
+                <h1 className="font-heading font-black text-lg text-[#384959] uppercase tracking-tight">
                   {companyName}
                 </h1>
                 <p className="text-[11px] text-slate-600 font-medium">
                   Maharashtra ⇄ Gujarat Fruit & Backhaul Commercial Transport
                 </p>
-                <span className="inline-block mt-1 font-mono text-[10px] font-bold bg-sky-100 text-sky-900 px-3 py-0.5 rounded-full border border-sky-300">
+                <span className="inline-block mt-1 font-mono text-[10px] font-bold bg-[#BDDDFC]/30 text-[#384959] px-3 py-0.5 rounded-full border border-[#DCE8F2]">
                   CONSIGNMENT & PAYMENT ACKNOWLEDGEMENT SLIP
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 p-3 bg-sky-50/50 rounded-lg border border-sky-100">
+              <div className="grid grid-cols-2 gap-3 p-3 bg-[#F8FAFC] rounded-lg border border-[#DCE8F2]">
                 <div className="space-y-0.5">
-                  <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block">
+                  <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                     1. Vehical No.
                   </span>
-                  <span className="font-mono text-sm font-black text-sky-950 tracking-wider">
+                  <span className="font-mono text-sm font-black text-[#384959] tracking-wider">
                     {printModalRecord.vehicleNumber}
                   </span>
                 </div>
 
                 <div className="space-y-0.5">
-                  <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block">
+                  <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                     2. Dates
                   </span>
                   <span className="font-mono text-xs font-bold text-slate-800">
@@ -1983,11 +1989,11 @@ export const FinancialReportsView: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="space-y-0.5 col-span-2 border-t border-sky-100/80 pt-2">
-                  <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block">
+                <div className="space-y-0.5 col-span-2 border-t border-[#DCE8F2] pt-2">
+                  <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                     3. Party Name
                   </span>
-                  <span className="font-heading font-extrabold text-xs text-sky-950">
+                  <span className="font-heading font-extrabold text-xs text-[#384959]">
                     {printModalRecord.partyName}
                   </span>
                   <span className="text-[10px] text-slate-500 block">
@@ -1995,8 +2001,8 @@ export const FinancialReportsView: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="space-y-0.5 border-t border-sky-100/80 pt-2">
-                  <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block">
+                <div className="space-y-0.5 border-t border-[#DCE8F2] pt-2">
+                  <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                     4. LR Submit Status
                   </span>
                   <span
@@ -2010,8 +2016,8 @@ export const FinancialReportsView: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="space-y-0.5 border-t border-sky-100/80 pt-2">
-                  <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block">
+                <div className="space-y-0.5 border-t border-[#DCE8F2] pt-2">
+                  <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                     5. Charge
                   </span>
                   <span className="font-mono text-sm font-black text-slate-900">
@@ -2019,8 +2025,8 @@ export const FinancialReportsView: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="space-y-0.5 col-span-2 border-t border-sky-100/80 pt-2">
-                  <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block">
+                <div className="space-y-0.5 col-span-2 border-t border-[#DCE8F2] pt-2">
+                  <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                     6. Payment Status
                   </span>
                   <span
@@ -2043,7 +2049,7 @@ export const FinancialReportsView: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-sky-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-[#DCE8F2]">
               <button
                 type="button"
                 onClick={() => setPrintModalRecord(null)}
@@ -2054,7 +2060,7 @@ export const FinancialReportsView: React.FC = () => {
               <button
                 type="button"
                 onClick={handleTriggerBrowserPrint}
-                className="px-4 py-2 font-bold text-white bg-sky-700 hover:bg-sky-800 rounded-lg shadow-sm shadow-sky-700/20 cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-lg shadow-sm shadow-xs cursor-pointer flex items-center gap-1.5"
               >
                 <Printer className="w-4 h-4" />
                 <span>Print Document</span>
@@ -2067,16 +2073,16 @@ export const FinancialReportsView: React.FC = () => {
           MODAL 7: CONSOLIDATED PARTY STATEMENT & PAYMENT REPORT (CUSTOM DATE RANGE & PDF / PRINT)
           ======================================================== */}
       {isPartyReportModalOpen && (
-        <div className="fixed inset-0 z-50 bg-sky-950/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-sky-300 shadow-2xl w-full max-w-4xl p-5 sm:p-6 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95 max-h-[92vh] flex flex-col">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl p-5 sm:p-6 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95 max-h-[92vh] flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-sky-100 pb-3 shrink-0">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3 shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center">
-                  <Printer className="w-5 h-5 text-sky-700" />
+                <div className="w-9 h-9 rounded-xl bg-[#BDDDFC]/30 text-[#6A89A7] flex items-center justify-center">
+                  <Printer className="w-5 h-5 text-[#6A89A7]" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-base text-sky-950">
+                  <h3 className="font-heading font-extrabold text-base text-[#384959]">
                     Party Account Statement & Settlement Report
                   </h3>
                   <p className="text-[11px] text-slate-500 font-medium">
@@ -2103,7 +2109,7 @@ export const FinancialReportsView: React.FC = () => {
                   <select
                     value={reportPartyName}
                     onChange={(e) => setReportPartyName(e.target.value)}
-                    className="w-full bg-white border border-slate-300 text-slate-900 font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-sky-500 shadow-2xs cursor-pointer"
+                    className="w-full bg-white border border-slate-300 text-slate-900 font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs cursor-pointer"
                   >
                     <option value="all">All Registered Parties ({parties.length})</option>
                     {parties.map((p) => (
@@ -2123,7 +2129,7 @@ export const FinancialReportsView: React.FC = () => {
                     type="date"
                     value={reportFromDate}
                     onChange={(e) => setReportFromDate(e.target.value)}
-                    className="w-full bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-sky-500 shadow-2xs"
+                    className="w-full bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs"
                   />
                 </div>
 
@@ -2136,7 +2142,7 @@ export const FinancialReportsView: React.FC = () => {
                     type="date"
                     value={reportToDate}
                     onChange={(e) => setReportToDate(e.target.value)}
-                    className="w-full bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-sky-500 shadow-2xs"
+                    className="w-full bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs"
                   />
                 </div>
 
@@ -2148,7 +2154,7 @@ export const FinancialReportsView: React.FC = () => {
                   <select
                     value={reportStatusFilter}
                     onChange={(e) => setReportStatusFilter(e.target.value as any)}
-                    className="w-full bg-white border border-slate-300 text-slate-900 font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-sky-500 shadow-2xs cursor-pointer"
+                    className="w-full bg-white border border-slate-300 text-slate-900 font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs cursor-pointer"
                   >
                     <option value="all">All Payment Statuses</option>
                     <option value="settled">Settled / Cleared Only</option>
@@ -2165,28 +2171,28 @@ export const FinancialReportsView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setReportQuickRange(1)}
-                    className="px-2 py-0.5 rounded-md bg-white hover:bg-sky-50 text-slate-700 font-bold border border-slate-200 text-[11px] cursor-pointer"
+                    className="px-2 py-0.5 rounded-md bg-white hover:bg-[#F8FAFC] text-slate-700 font-bold border border-slate-200 text-[11px] cursor-pointer"
                   >
                     Last 30 Days
                   </button>
                   <button
                     type="button"
                     onClick={() => setReportQuickRange(3)}
-                    className="px-2 py-0.5 rounded-md bg-sky-100 hover:bg-sky-200 text-sky-900 font-bold border border-sky-300 text-[11px] cursor-pointer"
+                    className="px-2 py-0.5 rounded-md bg-[#BDDDFC]/30 hover:bg-[#BDDDFC]/40 text-[#384959] font-bold border border-[#DCE8F2] text-[11px] cursor-pointer"
                   >
                     Last 3 Months
                   </button>
                   <button
                     type="button"
                     onClick={() => setReportQuickRange(4)}
-                    className="px-2 py-0.5 rounded-md bg-sky-700 text-white font-bold text-[11px] shadow-2xs cursor-pointer hover:bg-sky-800"
+                    className="px-2 py-0.5 rounded-md bg-[#384959] text-white font-bold text-[11px] shadow-2xs cursor-pointer hover:bg-[#2C3A47]"
                   >
                     Last 4 Months
                   </button>
                   <button
                     type="button"
                     onClick={() => setReportQuickRange(6)}
-                    className="px-2 py-0.5 rounded-md bg-white hover:bg-sky-50 text-slate-700 font-bold border border-slate-200 text-[11px] cursor-pointer"
+                    className="px-2 py-0.5 rounded-md bg-white hover:bg-[#F8FAFC] text-slate-700 font-bold border border-slate-200 text-[11px] cursor-pointer"
                   >
                     Last 6 Months
                   </button>
@@ -2196,7 +2202,7 @@ export const FinancialReportsView: React.FC = () => {
                       setReportFromDate('2026-04-01');
                       setReportToDate('2026-10-31');
                     }}
-                    className="px-2 py-0.5 rounded-md bg-white hover:bg-sky-50 text-slate-700 font-bold border border-slate-200 text-[11px] cursor-pointer"
+                    className="px-2 py-0.5 rounded-md bg-white hover:bg-[#F8FAFC] text-slate-700 font-bold border border-slate-200 text-[11px] cursor-pointer"
                   >
                     FY 26-27 YTD
                   </button>
@@ -2218,7 +2224,7 @@ export const FinancialReportsView: React.FC = () => {
                   <select
                     value={reportTypeFilter}
                     onChange={(e) => setReportTypeFilter(e.target.value as any)}
-                    className="bg-white border border-slate-300 text-slate-900 font-semibold text-xs px-2 py-0.5 rounded-md focus:outline-sky-500 shadow-2xs cursor-pointer"
+                    className="bg-white border border-slate-300 text-slate-900 font-semibold text-xs px-2 py-0.5 rounded-md focus:outline-none focus:border-[#88BDF2] shadow-2xs cursor-pointer"
                   >
                     <option value="all">All Loads (Return + Fruit)</option>
                     <option value="return_load">Return Backhauls Only</option>
@@ -2232,11 +2238,11 @@ export const FinancialReportsView: React.FC = () => {
             <div className="overflow-y-auto flex-1 p-1">
               <div
                 id="printable-party-report"
-                className="p-5 sm:p-6 bg-white border-2 border-sky-900 rounded-xl space-y-4 text-slate-800 shadow-inner"
+                className="p-5 sm:p-6 bg-white border-2 border-[#384959] rounded-xl space-y-4 text-slate-800 shadow-inner"
               >
                 {/* Official Letterhead */}
-                <div className="text-center border-b-2 border-sky-900 pb-3 space-y-1">
-                  <h1 className="font-heading font-black text-xl text-sky-950 uppercase tracking-tight">
+                <div className="text-center border-b-2 border-[#384959] pb-3 space-y-1">
+                  <h1 className="font-heading font-black text-xl text-[#384959] uppercase tracking-tight">
                     {companyName}
                   </h1>
                   <p className="text-xs text-slate-700 font-bold">
@@ -2245,18 +2251,18 @@ export const FinancialReportsView: React.FC = () => {
                   <p className="text-[10px] text-slate-500 font-mono">
                     Corridors: Pune • Nashik • Mumbai ⇄ Surat • Ahmedabad • Vadodara • Rajkot
                   </p>
-                  <div className="inline-block mt-1 font-mono text-[11px] font-extrabold bg-sky-100 text-sky-950 px-3 py-0.5 rounded-full border border-sky-300 uppercase tracking-wide">
+                  <div className="inline-block mt-1 font-mono text-[11px] font-extrabold bg-[#BDDDFC]/30 text-[#384959] px-3 py-0.5 rounded-full border border-[#DCE8F2] uppercase tracking-wide">
                     Consolidated Party Statement & Payment Clearance Report
                   </div>
                 </div>
 
                 {/* Scope & Party Profile Header */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-sky-50/70 rounded-xl border border-sky-200">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2]">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block">
+                    <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                       Party / Consignor
                     </span>
-                    <span className="font-heading font-extrabold text-sm text-sky-950 block">
+                    <span className="font-heading font-extrabold text-sm text-[#384959] block">
                       {reportPartyName === 'all' ? 'All Registered Transporter Parties (Consolidated)' : reportPartyName}
                     </span>
                     {reportPartyName !== 'all' && (() => {
@@ -2278,10 +2284,10 @@ export const FinancialReportsView: React.FC = () => {
 
                   <div className="sm:text-right space-y-1">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block">
+                      <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                         Statement Period
                       </span>
-                      <span className="font-mono font-extrabold text-xs text-sky-950">
+                      <span className="font-mono font-extrabold text-xs text-[#384959]">
                         {reportFromDate && reportToDate
                           ? `${reportFromDate} to ${reportToDate}`
                           : reportFromDate
@@ -2292,7 +2298,7 @@ export const FinancialReportsView: React.FC = () => {
                       </span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-sky-800 font-heading block">
+                      <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                         Date Generated
                       </span>
                       <span className="font-mono text-xs text-slate-700">
@@ -2328,12 +2334,12 @@ export const FinancialReportsView: React.FC = () => {
                     <span className="text-[10px] text-rose-700 font-semibold block">{partyReportStats.pendingCount + partyReportStats.overdueCount} Pending LRs</span>
                   </div>
 
-                  <div className="bg-sky-50/70 p-2.5 rounded-lg border border-sky-200">
-                    <span className="text-[10px] text-sky-800 uppercase font-bold block">Stamped LR Handover</span>
-                    <span className="text-base font-black text-sky-800 font-mono">
+                  <div className="bg-[#F8FAFC] p-2.5 rounded-lg border border-[#DCE8F2]">
+                    <span className="text-[10px] text-[#384959] uppercase font-bold block">Stamped LR Handover</span>
+                    <span className="text-base font-black text-[#384959] font-mono">
                       {partyReportStats.lrSubmissionRate}%
                     </span>
-                    <span className="text-[10px] text-sky-700 font-semibold block">{partyReportStats.lrSubmittedCount} Submitted</span>
+                    <span className="text-[10px] text-[#6A89A7] font-semibold block">{partyReportStats.lrSubmittedCount} Submitted</span>
                   </div>
                 </div>
 
@@ -2360,7 +2366,7 @@ export const FinancialReportsView: React.FC = () => {
                             <td className="py-1.5 px-2.5 font-mono text-slate-700 whitespace-nowrap">
                               {p.tripDate || p.dueDate}
                             </td>
-                            <td className="py-1.5 px-2 font-mono font-bold text-sky-950 whitespace-nowrap">
+                            <td className="py-1.5 px-2 font-mono font-bold text-[#384959] whitespace-nowrap">
                               {p.lrNumber}
                             </td>
                             <td className="py-1.5 px-2 font-mono font-semibold text-slate-800 whitespace-nowrap">
@@ -2415,7 +2421,7 @@ export const FinancialReportsView: React.FC = () => {
                     </tbody>
                     {partyReportRecords.length > 0 && (
                       <tfoot>
-                        <tr className="bg-sky-100/70 border-t-2 border-sky-300 font-bold text-slate-900 text-xs">
+                        <tr className="bg-[#BDDDFC]/20 border-t-2 border-[#DCE8F2] font-bold text-slate-900 text-xs">
                           <td colSpan={5} className="py-2 px-2.5 text-right font-heading uppercase">
                             Grand Totals ({partyReportRecords.length} Consignments):
                           </td>
@@ -2450,7 +2456,7 @@ export const FinancialReportsView: React.FC = () => {
             </div>
 
             {/* Modal Footer Actions */}
-            <div className="flex items-center justify-between gap-2 pt-3 border-t border-sky-100 shrink-0 flex-wrap">
+            <div className="flex items-center justify-between gap-2 pt-3 border-t border-[#DCE8F2] shrink-0 flex-wrap">
               <button
                 type="button"
                 onClick={handleDownloadPartyReportCSV}
@@ -2472,7 +2478,7 @@ export const FinancialReportsView: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleTriggerBrowserPrint}
-                  className="px-4 py-2 font-bold text-white bg-sky-700 hover:bg-sky-800 rounded-lg shadow-sm shadow-sky-700/20 cursor-pointer flex items-center gap-1.5 text-xs"
+                  className="px-4 py-2 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-lg shadow-sm shadow-xs cursor-pointer flex items-center gap-1.5 text-xs"
                   title="Print or Save as PDF in print preview"
                 >
                   <Printer className="w-4 h-4" />
@@ -2486,12 +2492,12 @@ export const FinancialReportsView: React.FC = () => {
 
       {/* Partial Payment Recording Modal (Master Prompt Section 9) */}
       {partialPayModalRecord && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-sky-100 space-y-4 text-xs">
-            <div className="flex items-center justify-between pb-2 border-b border-sky-100">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#DCE8F2] space-y-4 text-xs">
+            <div className="flex items-center justify-between pb-2 border-b border-[#DCE8F2]">
               <div className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-sky-600" />
-                <h3 className="font-heading font-bold text-base text-sky-950">
+                <CreditCard className="w-5 h-5 text-[#6A89A7]" />
+                <h3 className="font-heading font-bold text-base text-[#384959]">
                   Record Freight Installment Payment
                 </h3>
               </div>
@@ -2503,10 +2509,10 @@ export const FinancialReportsView: React.FC = () => {
               </button>
             </div>
 
-            <div className="p-3 bg-sky-50 rounded-xl border border-sky-100 space-y-1">
+            <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2] space-y-1">
               <div className="flex justify-between">
                 <span className="text-slate-600">Party:</span>
-                <strong className="text-sky-950">{partialPayModalRecord.partyName}</strong>
+                <strong className="text-[#384959]">{partialPayModalRecord.partyName}</strong>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">LR Reference:</span>
@@ -2520,7 +2526,7 @@ export const FinancialReportsView: React.FC = () => {
                 <span className="text-slate-600">Previously Paid:</span>
                 <strong className="font-mono text-emerald-700">₹{(partialPayModalRecord.amountPaid || 0).toLocaleString('en-IN')}</strong>
               </div>
-              <div className="flex justify-between pt-1 border-t border-sky-200">
+              <div className="flex justify-between pt-1 border-t border-[#DCE8F2]">
                 <span className="text-slate-800 font-bold">Outstanding Balance:</span>
                 <strong className="font-mono text-rose-700 text-sm">₹{partialPayModalRecord.amountDue.toLocaleString('en-IN')}</strong>
               </div>
@@ -2538,7 +2544,7 @@ export const FinancialReportsView: React.FC = () => {
                   max={partialPayModalRecord.amountDue}
                   value={partialPayAmount}
                   onChange={(e) => setPartialPayAmount(Number(e.target.value))}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-sm font-bold text-sky-950"
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-sm font-bold text-[#384959]"
                 />
               </div>
 
@@ -2629,7 +2635,7 @@ export const FinancialReportsView: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-lg shadow-xs transition-all cursor-pointer"
+                  className="px-4 py-2 bg-[#384959] hover:bg-[#384959] text-white font-bold rounded-lg shadow-xs transition-all cursor-pointer"
                 >
                   Save Payment & Update Due
                 </button>

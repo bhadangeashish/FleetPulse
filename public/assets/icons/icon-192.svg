@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <linearGradient id="stormyGrad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#384959"/>
+      <stop offset="100%" stop-color="#2C3A47"/>
+    </linearGradient>
+    <linearGradient id="skyGrad192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#88BDF2"/>
+      <stop offset="100%" stop-color="#6A89A7"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="48" fill="url(#stormyGrad192)"/>
+  <path d="M45 68 H105 V120 H45 Z" fill="#FFFFFF" opacity="0.95"/>
+  <path d="M105 82 H128 L142 101 V120 H105 Z" fill="url(#skyGrad192)"/>
+  <path d="M109 86 H125 L137 101 H109 Z" fill="#384959"/>
+  <circle cx="64" cy="124" r="13" fill="#1E272E"/>
+  <circle cx="64" cy="124" r="6" fill="#BDDDFC"/>
+  <circle cx="124" cy="124" r="13" fill="#1E272E"/>
+  <circle cx="124" cy="124" r="6" fill="#BDDDFC"/>
+  <rect x="30" y="82" width="10" height="4" rx="2" fill="#88BDF2"/>
+  <rect x="22" y="94" width="18" height="4" rx="2" fill="#BDDDFC"/>
+</svg>
+

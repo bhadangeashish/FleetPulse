@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { TMSProvider, useTMS } from './context/TMSContext';
+import { LoginView } from './components/auth/LoginView';
 import { Header } from './components/Header';
 import { ModuleTabs } from './components/ModuleTabs';
 import { AdminDashboardView } from './components/AdminDashboardView';
@@ -12,9 +14,40 @@ import { TenantRBACView } from './components/TenantRBACView';
 import { DriverPWAView } from './components/DriverPWAView';
 import { ReturnLoadAnalyticsView } from './components/ReturnLoadAnalyticsView';
 import { AuditLogView } from './components/AuditLogView';
+import { InitialLoadingScreen } from './components/common/InitialLoadingScreen';
 
 const AppContent: React.FC = () => {
-  const { activeTab, companyName } = useTMS();
+  const { activeTab, isAuthenticated, role } = useTMS();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Brief initial telemetry and corridor sync splash
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // When not authenticated, render the high-fidelity login page
+  if (!isAuthenticated) {
+    return (
+      <>
+        <AnimatePresence>
+          {isLoading && <InitialLoadingScreen key="initial-loader" />}
+        </AnimatePresence>
+        <LoginView />
+      </>
+    );
+  }
+
+  // When authenticated as Driver, launch the dedicated Driver Mobile PWA view directly
+  if (role === 'driver') {
+    return (
+      <div className="h-screen w-screen overflow-y-auto bg-morning-canvas flex justify-center">
+        <DriverPWAView />
+      </div>
+    );
+  }
 
   const renderActiveView = () => {
     switch (activeTab) {
@@ -44,35 +77,39 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50/70 via-sky-50/40 to-slate-50 flex flex-col font-body text-slate-800">
-      {/* Top Application Sky Blue Header */}
-      <Header />
+    <>
+      <AnimatePresence>
+        {isLoading && <InitialLoadingScreen key="initial-loader" />}
+      </AnimatePresence>
 
-      {/* 2-Column Responsive Body: Left Sidebar Headings + Right Main Content Canvas */}
-      <div className="flex-1 flex flex-col lg:flex-row min-w-0">
-        {/* Left Side Navigation (All Headings shifted to Left) */}
+      <div className="h-screen w-screen overflow-hidden flex flex-col lg:flex-row bg-[#F0F4F8] font-body text-slate-800">
+        {/* Full-Height Left Stormy Navy Sidebar */}
         <ModuleTabs />
 
-        {/* Main Content Area */}
-        <main className="flex-1 p-4 md:p-6 min-w-0 overflow-y-auto">
-          <div className="max-w-7xl mx-auto">
-            {renderActiveView()}
-          </div>
-        </main>
-      </div>
+        {/* Main Content Area Canvas */}
+        <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-morning-canvas">
+          {/* Top Header inside Canvas */}
+          <Header />
 
-      {/* Simple Professional Light Blue Footer */}
-      <footer className="bg-white/80 backdrop-blur-xs border-t border-sky-100 py-3.5 px-4 text-center text-xs text-sky-800/80">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="font-heading font-medium">
-            <strong className="text-sky-900 font-extrabold">{companyName}</strong> • Daily Fruit & Return Goods Management System
-          </span>
-          <span className="font-mono text-[11px] text-sky-700 font-semibold bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200">
-            Transport & Logistics Operations
-          </span>
+          {/* Scrollable Main Content View with Smooth Page Transition */}
+          <main className="flex-1 overflow-y-auto px-4 py-3 md:px-6 md:py-4">
+            <div className="max-w-[1440px] mx-auto pb-8">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  {renderActiveView()}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </main>
         </div>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 };
 

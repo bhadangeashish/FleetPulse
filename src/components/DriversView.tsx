@@ -150,24 +150,24 @@ export const DriversView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-sky-100/90 via-sky-50 to-white p-5 border border-sky-200 rounded-xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white p-5 border border-[#DCE8F2] rounded-2xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 morning-card">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="font-heading text-lg font-extrabold text-sky-950">
+            <h2 className="font-heading text-lg font-extrabold text-[#384959]">
               Driver Roster & Statutory KYC Compliance
             </h2>
-            <span className="bg-sky-200/80 text-sky-900 border border-sky-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+            <span className="bg-[#BDDDFC]/50 text-[#384959] border border-[#BDDDFC] text-xs font-bold px-2.5 py-0.5 rounded-full font-heading">
               Licence • Aadhaar • PAN Soft Copies • WhatsApp Link
             </span>
           </div>
-          <p className="text-xs text-sky-800/80 mt-1 font-medium">
+          <p className="text-xs text-[#6A89A7] mt-1 font-medium">
             Store driver KYC soft copies, verify documents, assign fleet trucks, and dispatch personal portal links directly to drivers via WhatsApp.
           </p>
         </div>
 
         <button
           onClick={() => setIsAddDriverOpen(true)}
-          className="px-4 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 flex items-center gap-2 transition-all self-start md:self-auto cursor-pointer font-heading"
+          className="px-4 py-2.5 text-xs font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-xl shadow-xs flex items-center gap-2 transition-all self-start md:self-auto cursor-pointer font-heading shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Driver & Upload KYC</span>
@@ -183,20 +183,20 @@ export const DriversView: React.FC = () => {
           return (
             <div
               key={driver.id}
-              className="bg-white border border-sky-100 rounded-xl p-5 shadow-xs space-y-4 hover:border-sky-300 transition-all flex flex-col justify-between"
+              className="bg-white border border-[#DCE8F2] rounded-2xl p-5 shadow-xs space-y-4 hover:border-[#88BDF2] transition-all flex flex-col justify-between"
             >
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-600 to-sky-800 text-white font-heading font-black text-sm flex items-center justify-center shadow-xs">
+                    <div className="w-10 h-10 rounded-xl bg-[#384959] text-white font-heading font-black text-sm flex items-center justify-center shadow-xs">
                       {driver.fullName[0]}
                     </div>
                     <div>
-                      <h3 className="font-heading font-extrabold text-sm text-sky-950">
+                      <h3 className="font-heading font-extrabold text-sm text-[#384959]">
                         {driver.fullName}
                       </h3>
-                      <div className="flex items-center gap-1.5 font-mono text-xs text-slate-500">
-                        <Phone className="w-3 h-3 text-sky-500" />
+                      <div className="flex items-center gap-1.5 font-mono text-xs text-[#6A89A7]">
+                        <Phone className="w-3 h-3 text-[#6A89A7]" />
                         <span>{driver.mobile}</span>
                       </div>
                     </div>
@@ -204,12 +204,12 @@ export const DriversView: React.FC = () => {
 
                   <div className="flex flex-col items-end gap-1">
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border uppercase ${
                         driver.status === 'on_trip'
                           ? 'bg-amber-50 text-amber-800 border-amber-300'
                           : driver.status === 'active'
-                          ? 'bg-sky-100 text-sky-800 border-sky-300'
-                          : 'bg-slate-100 text-slate-700 border-slate-300'
+                          ? 'bg-[#BDDDFC]/50 text-[#384959] border-[#BDDDFC]'
+                          : 'bg-[#F0F4F8] text-[#384959] border-[#DCE8F2]'
                       }`}
                     >
                       {driver.status.replace('_', ' ')}
@@ -217,7 +217,7 @@ export const DriversView: React.FC = () => {
 
                     {/* Verification Status Badge (Section 5) */}
                     <span
-                      className={`text-[9px] font-bold px-2 py-0.2 rounded-full uppercase border font-mono ${
+                      className={`text-[9px] font-bold px-2 py-0.2 rounded-lg uppercase border font-mono ${
                         isVerified
                           ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                           : isRejected
@@ -231,23 +231,23 @@ export const DriversView: React.FC = () => {
                 </div>
 
                 {/* Truck Assigned */}
-                <div className="p-2.5 bg-sky-50/50 rounded-lg border border-sky-100 text-xs flex items-center justify-between">
-                  <span className="text-sky-800 font-medium font-heading">Assigned Rig:</span>
-                  <span className="font-mono font-bold text-sky-950">
+                <div className="p-2.5 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2] text-xs flex items-center justify-between">
+                  <span className="text-[#6A89A7] font-medium font-heading">Assigned Rig:</span>
+                  <span className="font-mono font-bold text-[#384959]">
                     {driver.assignedVehicleNumber || 'Standby Driver'}
                   </span>
                 </div>
 
                 {/* Statutory Soft Copies Checklist (PRD Requirement) */}
-                <div className="space-y-2 pt-1 border-t border-sky-100 text-xs">
+                <div className="space-y-2 pt-1 border-t border-[#DCE8F2] text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-sky-800 uppercase block font-heading">
+                    <span className="text-[10px] font-bold text-[#6A89A7] uppercase block font-heading">
                       Statutory KYC Soft Copies:
                     </span>
                     {role === 'admin' && (
                       <button
                         onClick={() => setSelectedDriverForReview(driver)}
-                        className="text-[10px] text-sky-700 hover:text-sky-900 font-bold hover:underline cursor-pointer"
+                        className="text-[10px] text-[#384959] hover:text-[#6A89A7] font-bold hover:underline cursor-pointer"
                       >
                         Verify / Review
                       </button>
@@ -255,12 +255,12 @@ export const DriversView: React.FC = () => {
                   </div>
 
                   {/* 1. Driving Licence */}
-                  <div className="flex items-center justify-between bg-sky-50/30 p-2.5 rounded-lg border border-sky-100">
+                  <div className="flex items-center justify-between bg-[#F8FAFC] p-2.5 rounded-xl border border-[#DCE8F2]">
                     <div>
-                      <span className="font-heading font-bold text-sky-950 block text-[11px]">
+                      <span className="font-heading font-bold text-[#384959] block text-[11px]">
                         1. Driving Licence
                       </span>
-                      <span className="text-[10px] font-mono text-slate-500">
+                      <span className="text-[10px] font-mono text-[#6A89A7]">
                         {driver.licenseNumber} (Exp: {driver.licenseExpiry})
                       </span>
                     </div>
@@ -271,15 +271,15 @@ export const DriversView: React.FC = () => {
                             `Viewing Driving Licence soft copy: ${driver.licenseSoftCopy || 'Attached'}`
                           )
                         }
-                        className="px-2 py-1 bg-white border border-sky-200 rounded text-[10px] font-bold text-sky-700 hover:bg-sky-50 flex items-center gap-1 cursor-pointer"
+                        className="px-2 py-1 bg-white border border-[#DCE8F2] rounded-lg text-[10px] font-bold text-[#384959] hover:bg-[#F0F4F8] flex items-center gap-1 cursor-pointer transition-colors"
                       >
-                        <Eye className="w-3 h-3 text-sky-500" />
+                        <Eye className="w-3 h-3 text-[#6A89A7]" />
                         <span>View</span>
                       </button>
                       {driver.dlVerificationStatus === 'rejected' && (
                         <button
                           onClick={() => setReplaceDocDriver({ driver, docType: 'dl' })}
-                          className="px-1.5 py-1 bg-rose-100 text-rose-800 rounded text-[9px] font-bold cursor-pointer"
+                          className="px-1.5 py-1 bg-rose-100 text-rose-800 rounded-lg text-[9px] font-bold cursor-pointer"
                           title="Replace rejected DL"
                         >
                           Replace
@@ -289,12 +289,12 @@ export const DriversView: React.FC = () => {
                   </div>
 
                   {/* 2. Aadhaar */}
-                  <div className="flex items-center justify-between bg-sky-50/30 p-2.5 rounded-lg border border-sky-100">
+                  <div className="flex items-center justify-between bg-[#F8FAFC] p-2.5 rounded-xl border border-[#DCE8F2]">
                     <div>
-                      <span className="font-heading font-bold text-sky-950 block text-[11px]">
+                      <span className="font-heading font-bold text-[#384959] block text-[11px]">
                         2. Aadhaar Card
                       </span>
-                      <span className="text-[10px] font-mono text-slate-500">
+                      <span className="text-[10px] font-mono text-[#6A89A7]">
                         {driver.aadhaarNumber}
                       </span>
                     </div>
@@ -305,15 +305,15 @@ export const DriversView: React.FC = () => {
                             `Viewing Aadhaar Card soft copy: ${driver.aadhaarSoftCopy || 'Attached'}`
                           )
                         }
-                        className="px-2 py-1 bg-white border border-sky-200 rounded text-[10px] font-bold text-sky-700 hover:bg-sky-50 flex items-center gap-1 cursor-pointer"
+                        className="px-2 py-1 bg-white border border-[#DCE8F2] rounded-lg text-[10px] font-bold text-[#384959] hover:bg-[#F0F4F8] flex items-center gap-1 cursor-pointer transition-colors"
                       >
-                        <Eye className="w-3 h-3 text-sky-500" />
+                        <Eye className="w-3 h-3 text-[#6A89A7]" />
                         <span>View</span>
                       </button>
                       {driver.aadhaarVerificationStatus === 'rejected' && (
                         <button
                           onClick={() => setReplaceDocDriver({ driver, docType: 'aadhaar' })}
-                          className="px-1.5 py-1 bg-rose-100 text-rose-800 rounded text-[9px] font-bold cursor-pointer"
+                          className="px-1.5 py-1 bg-rose-100 text-rose-800 rounded-lg text-[9px] font-bold cursor-pointer"
                           title="Replace rejected Aadhaar"
                         >
                           Replace
@@ -323,12 +323,12 @@ export const DriversView: React.FC = () => {
                   </div>
 
                   {/* 3. PAN */}
-                  <div className="flex items-center justify-between bg-sky-50/30 p-2.5 rounded-lg border border-sky-100">
+                  <div className="flex items-center justify-between bg-[#F8FAFC] p-2.5 rounded-xl border border-[#DCE8F2]">
                     <div>
-                      <span className="font-heading font-bold text-sky-950 block text-[11px]">
+                      <span className="font-heading font-bold text-[#384959] block text-[11px]">
                         3. PAN Card
                       </span>
-                      <span className="text-[10px] font-mono text-slate-500">
+                      <span className="text-[10px] font-mono text-[#6A89A7]">
                         {driver.panNumber}
                       </span>
                     </div>
@@ -337,15 +337,15 @@ export const DriversView: React.FC = () => {
                         onClick={() =>
                           alert(`Viewing PAN Card soft copy: ${driver.panSoftCopy || 'Attached'}`)
                         }
-                        className="px-2 py-1 bg-white border border-sky-200 rounded text-[10px] font-bold text-sky-700 hover:bg-sky-50 flex items-center gap-1 cursor-pointer"
+                        className="px-2 py-1 bg-white border border-[#DCE8F2] rounded-lg text-[10px] font-bold text-[#384959] hover:bg-[#F0F4F8] flex items-center gap-1 cursor-pointer transition-colors"
                       >
-                        <Eye className="w-3 h-3 text-sky-500" />
+                        <Eye className="w-3 h-3 text-[#6A89A7]" />
                         <span>View</span>
                       </button>
                       {driver.panVerificationStatus === 'rejected' && (
                         <button
                           onClick={() => setReplaceDocDriver({ driver, docType: 'pan' })}
-                          className="px-1.5 py-1 bg-rose-100 text-rose-800 rounded text-[9px] font-bold cursor-pointer"
+                          className="px-1.5 py-1 bg-rose-100 text-rose-800 rounded-lg text-[9px] font-bold cursor-pointer"
                           title="Replace rejected PAN"
                         >
                           Replace
@@ -356,18 +356,18 @@ export const DriversView: React.FC = () => {
                 </div>
 
                 {driver.rejectionReason && (
-                  <div className="p-2 bg-rose-50 border border-rose-200 rounded text-rose-800 text-[10px]">
+                  <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-[10px]">
                     <strong>KYC Rejection Note:</strong> {driver.rejectionReason}
                   </div>
                 )}
               </div>
 
               {/* WhatsApp Access Link Action & Status Toggle */}
-              <div className="pt-3 border-t border-sky-100 flex items-center gap-2">
+              <div className="pt-3 border-t border-[#DCE8F2] flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => toggleDriverStatus(driver.id)}
-                  className={`px-3 py-2 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                  className={`px-3 py-2 rounded-xl text-xs font-bold border transition-colors cursor-pointer font-heading ${
                     driver.status === 'active' || driver.status === 'on_trip'
                       ? 'bg-rose-50 text-rose-700 border-rose-300 hover:bg-rose-100'
                       : 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
@@ -378,7 +378,7 @@ export const DriversView: React.FC = () => {
 
                 <button
                   onClick={() => sendWhatsAppLink(driver)}
-                  className="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg shadow-sm shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all cursor-pointer font-heading"
+                  className="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer font-heading"
                 >
                   <MessageSquare className="w-4 h-4" />
                   <span>Send WhatsApp</span>
@@ -391,16 +391,16 @@ export const DriversView: React.FC = () => {
 
       {/* Add Driver Modal with Enter Key Navigation */}
       {isAddDriverOpen && (
-        <div className="fixed inset-0 z-50 bg-sky-950/40 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs my-6">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-2">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs my-6">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-sky-600" />
-                <h3 className="font-heading font-extrabold text-sm text-sky-950">
+                <Users className="w-5 h-5 text-[#6A89A7]" />
+                <h3 className="font-heading font-extrabold text-sm text-[#384959]">
                   Add Driver & Upload KYC Soft Copies
                 </h3>
               </div>
-              <button onClick={() => setIsAddDriverOpen(false)} className="text-slate-400 hover:text-slate-700 p-1">
+              <button onClick={() => setIsAddDriverOpen(false)} className="text-slate-400 hover:text-[#384959] p-1 cursor-pointer">
                 ✕
               </button>
             </div>
@@ -412,7 +412,7 @@ export const DriversView: React.FC = () => {
             >
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Driver Full Name *
                   </label>
                   <input
@@ -421,11 +421,11 @@ export const DriversView: React.FC = () => {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Ramesh Tawade"
-                    className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 font-bold text-slate-900 text-xs focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 font-bold text-[#384959] text-xs focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Mobile Number (WhatsApp) *
                   </label>
                   <input
@@ -434,13 +434,13 @@ export const DriversView: React.FC = () => {
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}
                     placeholder="+91 98220 44192"
-                    className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 font-mono font-bold text-xs focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 font-mono font-bold text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                   Residential Address
                 </label>
                 <input
@@ -448,13 +448,13 @@ export const DriversView: React.FC = () => {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="e.g. Pune Market Yard Staff Quarters, Maharashtra"
-                  className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
               {/* 1. Driving Licence */}
-              <div className="p-3 bg-sky-50/50 border border-sky-100 rounded-xl space-y-2">
-                <span className="font-heading font-bold text-sky-950 text-[11px] block">
+              <div className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-2">
+                <span className="font-heading font-bold text-[#384959] text-[11px] block">
                   1. Driving Licence Details & Soft Copy Upload
                 </span>
                 <div className="grid grid-cols-2 gap-2">
@@ -464,19 +464,19 @@ export const DriversView: React.FC = () => {
                     value={licenseNumber}
                     onChange={(e) => setLicenseNumber(e.target.value)}
                     placeholder="DL Number (e.g. MH-12-2015-009)"
-                    className="w-full bg-white border border-sky-200 rounded px-2.5 py-1 text-xs font-mono"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1 text-xs font-mono text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   />
                   <input
                     type="date"
                     required
                     value={licenseExpiry}
                     onChange={(e) => setLicenseExpiry(e.target.value)}
-                    className="w-full bg-white border border-sky-200 rounded px-2 py-1 text-xs font-mono"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2 py-1 text-xs font-mono text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
                 <div className="flex items-center gap-2 pt-1">
-                  <label className="px-2.5 py-1 bg-white border border-sky-200 text-sky-800 rounded font-bold text-[10px] cursor-pointer flex items-center gap-1 shadow-2xs">
-                    <Upload className="w-3 h-3 text-sky-600" />
+                  <label className="px-2.5 py-1 bg-white border border-[#DCE8F2] text-[#384959] rounded-lg font-bold text-[10px] cursor-pointer flex items-center gap-1 shadow-2xs hover:bg-[#F0F4F8] transition-colors">
+                    <Upload className="w-3 h-3 text-[#6A89A7]" />
                     <span>Upload DL File</span>
                     <input
                       type="file"
@@ -490,8 +490,8 @@ export const DriversView: React.FC = () => {
               </div>
 
               {/* 2. Aadhaar */}
-              <div className="p-3 bg-sky-50/50 border border-sky-100 rounded-xl space-y-2">
-                <span className="font-heading font-bold text-sky-950 text-[11px] block">
+              <div className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-2">
+                <span className="font-heading font-bold text-[#384959] text-[11px] block">
                   2. Aadhaar Card Details & Soft Copy Upload
                 </span>
                 <input
@@ -500,11 +500,11 @@ export const DriversView: React.FC = () => {
                   value={aadhaarNumber}
                   onChange={(e) => setAadhaarNumber(e.target.value)}
                   placeholder="Aadhaar 12-Digit Number"
-                  className="w-full bg-white border border-sky-200 rounded px-2.5 py-1 text-xs font-mono"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1 text-xs font-mono text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                 />
                 <div className="flex items-center gap-2 pt-1">
-                  <label className="px-2.5 py-1 bg-white border border-sky-200 text-sky-800 rounded font-bold text-[10px] cursor-pointer flex items-center gap-1 shadow-2xs">
-                    <Upload className="w-3 h-3 text-sky-600" />
+                  <label className="px-2.5 py-1 bg-white border border-[#DCE8F2] text-[#384959] rounded-lg font-bold text-[10px] cursor-pointer flex items-center gap-1 shadow-2xs hover:bg-[#F0F4F8] transition-colors">
+                    <Upload className="w-3 h-3 text-[#6A89A7]" />
                     <span>Upload Aadhaar File</span>
                     <input
                       type="file"
@@ -518,8 +518,8 @@ export const DriversView: React.FC = () => {
               </div>
 
               {/* 3. PAN */}
-              <div className="p-3 bg-sky-50/50 border border-sky-100 rounded-xl space-y-2">
-                <span className="font-heading font-bold text-sky-950 text-[11px] block">
+              <div className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-2">
+                <span className="font-heading font-bold text-[#384959] text-[11px] block">
                   3. PAN Card Details & Soft Copy Upload
                 </span>
                 <input
@@ -528,11 +528,11 @@ export const DriversView: React.FC = () => {
                   value={panNumber}
                   onChange={(e) => setPanNumber(e.target.value)}
                   placeholder="PAN Card Number (e.g. ABCDE1234F)"
-                  className="w-full bg-white border border-sky-200 rounded px-2.5 py-1 text-xs font-mono uppercase"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1 text-xs font-mono uppercase text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                 />
                 <div className="flex items-center gap-2 pt-1">
-                  <label className="px-2.5 py-1 bg-white border border-sky-200 text-sky-800 rounded font-bold text-[10px] cursor-pointer flex items-center gap-1 shadow-2xs">
-                    <Upload className="w-3 h-3 text-sky-600" />
+                  <label className="px-2.5 py-1 bg-white border border-[#DCE8F2] text-[#384959] rounded-lg font-bold text-[10px] cursor-pointer flex items-center gap-1 shadow-2xs hover:bg-[#F0F4F8] transition-colors">
+                    <Upload className="w-3 h-3 text-[#6A89A7]" />
                     <span>Upload PAN File</span>
                     <input
                       type="file"
@@ -547,13 +547,13 @@ export const DriversView: React.FC = () => {
 
               {/* Assigned Vehicle */}
               <div>
-                <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                   Assign Fleet Truck
                 </label>
                 <select
                   value={assignedVehicleId}
                   onChange={(e) => setAssignedVehicleId(e.target.value)}
-                  className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-800 focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-2 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                 >
                   {vehicles.map((v) => (
                     <option key={v.id} value={v.id}>
@@ -563,17 +563,17 @@ export const DriversView: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-sky-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-[#DCE8F2]">
                 <button
                   type="button"
                   onClick={() => setIsAddDriverOpen(false)}
-                  className="px-4 py-2 font-bold text-sky-800 bg-sky-50 rounded-lg hover:bg-sky-100 cursor-pointer"
+                  className="px-4 py-2 font-bold text-[#384959] bg-[#F0F4F8] hover:bg-[#DCE8F2] rounded-xl cursor-pointer font-heading transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 cursor-pointer font-heading"
+                  className="px-5 py-2 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-xl shadow-xs cursor-pointer font-heading transition-all"
                 >
                   Save & Trigger WhatsApp Link
                 </button>
@@ -585,52 +585,52 @@ export const DriversView: React.FC = () => {
 
       {/* Review KYC Modal for Admin */}
       {selectedDriverForReview && (
-        <div className="fixed inset-0 z-60 bg-sky-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs animate-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-2">
+        <div className="fixed inset-0 z-60 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs animate-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-sky-600" />
-                <h4 className="font-heading font-extrabold text-sm text-sky-950">
+                <ShieldCheck className="w-5 h-5 text-[#6A89A7]" />
+                <h4 className="font-heading font-extrabold text-sm text-[#384959]">
                   Review Driver KYC: {selectedDriverForReview.fullName}
                 </h4>
               </div>
-              <button onClick={() => setSelectedDriverForReview(null)} className="text-slate-400 hover:text-slate-700">
+              <button onClick={() => setSelectedDriverForReview(null)} className="text-slate-400 hover:text-[#384959] cursor-pointer">
                 ✕
               </button>
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 bg-sky-50 rounded-xl border border-sky-200 space-y-2">
-                <span className="text-[10px] font-bold uppercase text-sky-900 block font-heading">
+              <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2] space-y-2">
+                <span className="text-[10px] font-bold uppercase text-[#384959] block font-heading">
                   Driver KYC Documents
                 </span>
                 <div className="space-y-1.5 text-xs">
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-sky-100">
-                    <span>1. Driving Licence: {selectedDriverForReview.licenseNumber}</span>
+                  <div className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-[#DCE8F2]">
+                    <span className="text-[#384959]">1. Driving Licence: {selectedDriverForReview.licenseNumber}</span>
                     <button
                       type="button"
                       onClick={() => alert(`Opening soft copy: ${selectedDriverForReview.licenseSoftCopy}`)}
-                      className="text-sky-600 font-bold hover:underline"
+                      className="text-[#6A89A7] font-bold hover:text-[#384959] cursor-pointer"
                     >
                       View Soft Copy
                     </button>
                   </div>
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-sky-100">
-                    <span>2. Aadhaar Card: {selectedDriverForReview.aadhaarNumber}</span>
+                  <div className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-[#DCE8F2]">
+                    <span className="text-[#384959]">2. Aadhaar Card: {selectedDriverForReview.aadhaarNumber}</span>
                     <button
                       type="button"
                       onClick={() => alert(`Opening soft copy: ${selectedDriverForReview.aadhaarSoftCopy}`)}
-                      className="text-sky-600 font-bold hover:underline"
+                      className="text-[#6A89A7] font-bold hover:text-[#384959] cursor-pointer"
                     >
                       View Soft Copy
                     </button>
                   </div>
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-sky-100">
-                    <span>3. PAN Card: {selectedDriverForReview.panNumber}</span>
+                  <div className="flex items-center justify-between bg-white p-2.5 rounded-lg border border-[#DCE8F2]">
+                    <span className="text-[#384959]">3. PAN Card: {selectedDriverForReview.panNumber}</span>
                     <button
                       type="button"
                       onClick={() => alert(`Opening soft copy: ${selectedDriverForReview.panSoftCopy}`)}
-                      className="text-sky-600 font-bold hover:underline"
+                      className="text-[#6A89A7] font-bold hover:text-[#384959] cursor-pointer"
                     >
                       View Soft Copy
                     </button>
@@ -639,7 +639,7 @@ export const DriversView: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold uppercase text-sky-900 mb-1 font-heading">
+                <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                   Rejection Reason (If rejecting any document)
                 </label>
                 <input
@@ -647,16 +647,16 @@ export const DriversView: React.FC = () => {
                   value={reviewRejectionReason}
                   onChange={(e) => setReviewRejectionReason(e.target.value)}
                   placeholder="e.g. DL photo is expired or illegible"
-                  className="w-full bg-white border border-sky-200 rounded-lg px-3 py-2 text-xs focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-sky-100">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#DCE8F2]">
               <button
                 type="button"
                 onClick={() => handleVerifyDriver(selectedDriverForReview.id, 'rejected')}
-                className="px-3.5 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-lg font-bold text-xs cursor-pointer flex items-center gap-1.5"
+                className="px-3.5 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 rounded-xl font-bold text-xs cursor-pointer flex items-center gap-1.5 transition-colors font-heading"
               >
                 <XCircle className="w-3.5 h-3.5" />
                 <span>Reject KYC</span>
@@ -664,7 +664,7 @@ export const DriversView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleVerifyDriver(selectedDriverForReview.id, 'verified')}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs cursor-pointer flex items-center gap-1.5 shadow-2xs font-heading"
+                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs cursor-pointer flex items-center gap-1.5 shadow-xs font-heading transition-all"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Verify & Approve Driver</span>
@@ -676,19 +676,19 @@ export const DriversView: React.FC = () => {
 
       {/* Driver Document Replacement Modal */}
       {replaceDocDriver && (
-        <div className="fixed inset-0 z-60 bg-sky-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-60 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
           <form
             onSubmit={handleReplaceDocument}
-            className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-md p-5 space-y-4 text-xs animate-in zoom-in-95"
+            className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs animate-in zoom-in-95"
           >
-            <div className="flex items-center justify-between border-b border-sky-100 pb-2">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
-                <RefreshCw className="w-4 h-4 text-sky-600" />
-                <h4 className="font-heading font-extrabold text-sm text-sky-950">
+                <RefreshCw className="w-4 h-4 text-[#6A89A7]" />
+                <h4 className="font-heading font-extrabold text-sm text-[#384959]">
                   Replace Rejected {replaceDocDriver.docType.toUpperCase()} Document
                 </h4>
               </div>
-              <button type="button" onClick={() => setReplaceDocDriver(null)} className="text-slate-400 hover:text-slate-700">
+              <button type="button" onClick={() => setReplaceDocDriver(null)} className="text-slate-400 hover:text-[#384959] cursor-pointer">
                 ✕
               </button>
             </div>
@@ -696,11 +696,11 @@ export const DriversView: React.FC = () => {
             <div className="space-y-3">
               <p className="text-slate-600 text-xs">
                 Upload a fresh, clear copy of the {replaceDocDriver.docType.toUpperCase()} for driver{' '}
-                <strong>{replaceDocDriver.driver.fullName}</strong>.
+                <strong className="text-[#384959]">{replaceDocDriver.driver.fullName}</strong>.
               </p>
 
               <div>
-                <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+                <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                   Choose New Document File
                 </label>
                 <input
@@ -711,22 +711,22 @@ export const DriversView: React.FC = () => {
                     const file = e.target.files?.[0];
                     if (file) setReplacedFileName(file.name);
                   }}
-                  className="w-full bg-sky-50 border border-sky-200 rounded p-1.5 text-xs"
+                  className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl p-2 text-xs text-[#384959]"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-sky-100">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#DCE8F2]">
               <button
                 type="button"
                 onClick={() => setReplaceDocDriver(null)}
-                className="px-3.5 py-1.5 text-slate-600 bg-slate-100 rounded-lg cursor-pointer"
+                className="px-4 py-2 text-[#384959] bg-[#F0F4F8] hover:bg-[#DCE8F2] rounded-xl cursor-pointer font-heading transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-lg cursor-pointer shadow-xs font-heading"
+                className="px-4 py-2 bg-[#384959] hover:bg-[#2C3A47] text-white font-bold rounded-xl cursor-pointer shadow-xs font-heading transition-all"
               >
                 Upload & Resubmit
               </button>

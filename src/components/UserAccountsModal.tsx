@@ -152,39 +152,39 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-sky-950/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-4xl overflow-hidden text-xs text-slate-800 animate-in fade-in duration-150 my-6 flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl overflow-hidden text-xs text-slate-800 animate-in fade-in duration-150 my-6 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="px-5 py-4 bg-gradient-to-r from-sky-800 via-sky-700 to-sky-600 text-white flex items-center justify-between shrink-0">
+        <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shrink-0">
-              <Users className="w-5 h-5 text-sky-100" />
+              <Users className="w-5 h-5 text-[#BDDDFC]" />
             </div>
             <div>
               <h3 className="font-heading font-extrabold text-sm tracking-tight">
                 User Registration & Document Verification Hub
               </h3>
-              <p className="text-[11px] text-sky-100/90 font-medium mt-0.5">
+              <p className="text-[11px] text-[#BDDDFC] font-medium mt-0.5">
                 Onboard operators and verify identity soft copies (Master Prompt Section 4)
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-sky-100 hover:text-white p-1.5 rounded-lg hover:bg-white/10 cursor-pointer"
+            className="text-[#BDDDFC] hover:text-white p-1.5 rounded-lg hover:bg-white/10 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-2 px-5 py-2.5 bg-sky-50 border-b border-sky-200 text-xs shrink-0">
+        <div className="flex items-center gap-2 px-5 py-2.5 bg-[#F8FAFC] border-b border-[#DCE8F2] text-xs shrink-0">
           <button
             onClick={() => setActiveTab('roster')}
             className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'roster'
-                ? 'bg-sky-600 text-white shadow-2xs'
-                : 'text-sky-800 hover:bg-sky-100'
+                ? 'bg-[#384959] text-white shadow-2xs'
+                : 'text-[#384959] hover:bg-[#BDDDFC]/30'
             }`}
           >
             <ShieldCheck className="w-3.5 h-3.5" />
@@ -194,8 +194,8 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
             onClick={() => setActiveTab('register')}
             className={`px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'register'
-                ? 'bg-sky-600 text-white shadow-2xs'
-                : 'text-sky-800 hover:bg-sky-100'
+                ? 'bg-[#384959] text-white shadow-2xs'
+                : 'text-[#384959] hover:bg-[#BDDDFC]/30'
             }`}
           >
             <Plus className="w-3.5 h-3.5" />
@@ -219,20 +219,20 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                 {userAccounts.map((user) => (
                   <div
                     key={user.id}
-                    className="p-4 bg-white rounded-xl border border-sky-200 shadow-2xs space-y-3 hover:border-sky-300 transition-all flex flex-col justify-between"
+                    className="p-4 bg-white rounded-xl border border-[#DCE8F2] shadow-2xs space-y-3 hover:border-[#DCE8F2] transition-all flex flex-col justify-between"
                   >
                     <div className="space-y-2">
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-heading font-extrabold text-sm text-sky-950">
+                            <span className="font-heading font-extrabold text-sm text-[#384959]">
                               {user.fullName}
                             </span>
                             <span
                               className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase border font-mono ${
                                 user.role === 'admin'
                                   ? 'bg-purple-100 text-purple-800 border-purple-200'
-                                  : 'bg-sky-100 text-sky-800 border-sky-200'
+                                  : 'bg-[#BDDDFC]/30 text-[#384959] border-[#DCE8F2]'
                               }`}
                             >
                               {user.role}
@@ -240,12 +240,12 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                           </div>
                           <div className="text-[11px] text-slate-500 flex items-center gap-3 mt-1">
                             <span className="flex items-center gap-1">
-                              <Phone className="w-3 h-3 text-sky-500" />
+                              <Phone className="w-3 h-3 text-[#6A89A7]" />
                               {user.mobile}
                             </span>
                             {user.email && (
                               <span className="flex items-center gap-1">
-                                <Mail className="w-3 h-3 text-sky-500" />
+                                <Mail className="w-3 h-3 text-[#6A89A7]" />
                                 {user.email}
                               </span>
                             )}
@@ -269,8 +269,8 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                       </div>
 
                       {/* Document Details */}
-                      <div className="p-2.5 bg-sky-50/50 rounded-lg border border-sky-100 space-y-1.5">
-                        <span className="text-[10px] font-bold uppercase text-sky-900 block font-heading">
+                      <div className="p-2.5 bg-[#F8FAFC] rounded-lg border border-[#DCE8F2] space-y-1.5">
+                        <span className="text-[10px] font-bold uppercase text-[#384959] block font-heading">
                           Submitted Identity Documents:
                         </span>
                         {user.documents.length === 0 ? (
@@ -279,10 +279,10 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                           user.documents.map((doc) => (
                             <div
                               key={doc.id}
-                              className="flex items-center justify-between bg-white p-2 rounded border border-sky-100 text-[11px]"
+                              className="flex items-center justify-between bg-white p-2 rounded border border-[#DCE8F2] text-[11px]"
                             >
                               <div className="flex items-center gap-2">
-                                <FileText className="w-3.5 h-3.5 text-sky-600" />
+                                <FileText className="w-3.5 h-3.5 text-[#6A89A7]" />
                                 <div>
                                   <span className="font-bold text-slate-800">{doc.name}</span>
                                   {doc.documentNumber && (
@@ -317,13 +317,13 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
 
                     {/* Admin Action Button */}
                     {role === 'admin' && (
-                      <div className="pt-2 border-t border-sky-100 flex items-center justify-end">
+                      <div className="pt-2 border-t border-[#DCE8F2] flex items-center justify-end">
                         <button
                           onClick={() => {
                             setSelectedUserForReview(user);
                             setRejectionReason(user.rejectionReason || '');
                           }}
-                          className="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-bold text-xs cursor-pointer flex items-center gap-1.5 shadow-2xs font-heading"
+                          className="px-3 py-1.5 bg-[#384959] hover:bg-[#2C3A47] text-white rounded-lg font-bold text-xs cursor-pointer flex items-center gap-1.5 shadow-2xs font-heading"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>Review & Verify Documents</span>
@@ -339,18 +339,18 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
             <form
               onSubmit={handleRegisterUser}
               onKeyDown={(e) => handleFormKeyDown(e)}
-              className="space-y-4 max-w-2xl mx-auto bg-slate-50/70 p-5 rounded-2xl border border-sky-200 shadow-2xs"
+              className="space-y-4 max-w-2xl mx-auto bg-slate-50/70 p-5 rounded-2xl border border-[#DCE8F2] shadow-2xs"
             >
-              <div className="flex items-center gap-2 pb-2 border-b border-sky-200">
-                <Users className="w-4 h-4 text-sky-600" />
-                <h4 className="font-heading font-extrabold text-xs text-sky-950 uppercase tracking-wider">
+              <div className="flex items-center gap-2 pb-2 border-b border-[#DCE8F2]">
+                <Users className="w-4 h-4 text-[#6A89A7]" />
+                <h4 className="font-heading font-extrabold text-xs text-[#384959] uppercase tracking-wider">
                   New User Information & Identity Soft Copy
                 </h4>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                     Full Name *
                   </label>
                   <input
@@ -359,12 +359,12 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Anand Shinde"
-                    className="w-full bg-white border border-sky-200 rounded-lg px-3 py-2 text-xs font-bold text-slate-900 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                     Mobile Number *
                   </label>
                   <input
@@ -373,14 +373,14 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}
                     placeholder="+91 98220 99122"
-                    className="w-full bg-white border border-sky-200 rounded-lg px-3 py-2 text-xs font-mono font-bold text-slate-900 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                     Email Address
                   </label>
                   <input
@@ -388,12 +388,12 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="anand@fleetpulse.com"
-                    className="w-full bg-white border border-sky-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                     Account Password
                   </label>
                   <input
@@ -401,13 +401,13 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Set temporary password"
-                    className="w-full bg-white border border-sky-200 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold uppercase text-sky-900 mb-1 font-heading">
+                <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                   Residential / Office Address
                 </label>
                 <input
@@ -415,24 +415,24 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="e.g. Pune Market Yard Staff Quarters, Maharashtra"
-                  className="w-full bg-white border border-sky-200 rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
               {/* Document Soft Copy Upload Section */}
-              <div className="p-3.5 bg-white rounded-xl border border-sky-200 space-y-3">
-                <span className="font-heading font-bold text-xs text-sky-950 block">
+              <div className="p-3.5 bg-white rounded-xl border border-[#DCE8F2] space-y-3">
+                <span className="font-heading font-bold text-xs text-[#384959] block">
                   Identity Document Soft Copy Upload
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+                    <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                       Document Type
                     </label>
                     <select
                       value={docType}
                       onChange={(e) => setDocType(e.target.value as any)}
-                      className="w-full bg-sky-50 border border-sky-200 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-sky-500"
+                      className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
                     >
                       <option value="Aadhaar">Aadhaar Card</option>
                       <option value="PAN">PAN Card</option>
@@ -443,7 +443,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+                    <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                       Document Number
                     </label>
                     <input
@@ -451,18 +451,18 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                       value={docNumber}
                       onChange={(e) => setDocNumber(e.target.value)}
                       placeholder="e.g. XXXX-XXXX-9912 or PAN"
-                      className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-900 focus:outline-sky-500"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-900 focus:outline-none focus:border-[#88BDF2]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-sky-800 mb-1 font-heading">
+                  <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                     Soft Copy Document (PDF, PNG, JPEG)
                   </label>
                   <div className="flex items-center gap-3">
-                    <label className="px-3 py-1.5 bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-800 rounded-lg font-bold text-xs cursor-pointer flex items-center gap-1.5 shadow-2xs font-heading">
-                      <Upload className="w-3.5 h-3.5 text-sky-600" />
+                    <label className="px-3 py-1.5 bg-[#F8FAFC] hover:bg-[#BDDDFC]/30 border border-[#DCE8F2] text-[#384959] rounded-lg font-bold text-xs cursor-pointer flex items-center gap-1.5 shadow-2xs font-heading">
+                      <Upload className="w-3.5 h-3.5 text-[#6A89A7]" />
                       <span>Choose Soft Copy File</span>
                       <input
                         type="file"
@@ -479,8 +479,8 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
               </div>
 
               {/* Operational Permissions */}
-              <div className="p-3.5 bg-white rounded-xl border border-sky-200 space-y-2">
-                <span className="font-heading font-bold text-xs text-sky-950 block">
+              <div className="p-3.5 bg-white rounded-xl border border-[#DCE8F2] space-y-2">
+                <span className="font-heading font-bold text-xs text-[#384959] block">
                   Admin-Assigned Permissions
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
@@ -489,7 +489,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                       type="checkbox"
                       checked={canApproveTrips}
                       onChange={(e) => setCanApproveTrips(e.target.checked)}
-                      className="rounded text-sky-600"
+                      className="rounded text-[#6A89A7]"
                     />
                     <span>Can Approve / Reject Daily Trips</span>
                   </label>
@@ -499,7 +499,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                       type="checkbox"
                       checked={canSettlePayments}
                       onChange={(e) => setCanSettlePayments(e.target.checked)}
-                      className="rounded text-sky-600"
+                      className="rounded text-[#6A89A7]"
                     />
                     <span>Can Settle Return Load Payments</span>
                   </label>
@@ -509,7 +509,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                       type="checkbox"
                       checked={canManageDrivers}
                       onChange={(e) => setCanManageDrivers(e.target.checked)}
-                      className="rounded text-sky-600"
+                      className="rounded text-[#6A89A7]"
                     />
                     <span>Can Manage Drivers & WhatsApp</span>
                   </label>
@@ -519,14 +519,14 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                       type="checkbox"
                       checked={canViewFinancials}
                       onChange={(e) => setCanViewFinancials(e.target.checked)}
-                      className="rounded text-sky-600"
+                      className="rounded text-[#6A89A7]"
                     />
                     <span>Can View Financial Balances</span>
                   </label>
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-sky-200">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#DCE8F2]">
                 <button
                   type="button"
                   onClick={() => setActiveTab('roster')}
@@ -536,7 +536,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/25 flex items-center gap-1.5 cursor-pointer font-heading"
+                  className="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-[#384959] to-[#2C3A47] hover:from-[#2C3A47] hover:to-[#384959] rounded-lg shadow-sm shadow-xs flex items-center gap-1.5 cursor-pointer font-heading"
                 >
                   <Check className="w-3.5 h-3.5" />
                   <span>Register User Account</span>
@@ -548,12 +548,12 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
 
         {/* Review Modal for Admin */}
         {selectedUserForReview && (
-          <div className="fixed inset-0 z-60 bg-sky-950/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl border border-sky-200 shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs animate-in zoom-in-95">
-              <div className="flex items-center justify-between border-b border-sky-100 pb-2">
+          <div className="fixed inset-0 z-60 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs animate-in zoom-in-95">
+              <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-2">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-sky-600" />
-                  <h4 className="font-heading font-extrabold text-sm text-sky-950">
+                  <ShieldCheck className="w-5 h-5 text-[#6A89A7]" />
+                  <h4 className="font-heading font-extrabold text-sm text-[#384959]">
                     Review User KYC: {selectedUserForReview.fullName}
                   </h4>
                 </div>
@@ -563,17 +563,17 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
               </div>
 
               <div className="space-y-3">
-                <div className="p-3 bg-sky-50 rounded-xl border border-sky-200 space-y-1">
-                  <span className="text-[10px] font-bold uppercase text-sky-900 block font-heading">
+                <div className="p-3 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2] space-y-1">
+                  <span className="text-[10px] font-bold uppercase text-[#384959] block font-heading">
                     Submitted Soft Copies
                   </span>
                   {selectedUserForReview.documents.map((d) => (
-                    <div key={d.id} className="flex items-center justify-between text-xs bg-white p-2 rounded border border-sky-100">
+                    <div key={d.id} className="flex items-center justify-between text-xs bg-white p-2 rounded border border-[#DCE8F2]">
                       <span>{d.name} ({d.type})</span>
                       <button
                         type="button"
                         onClick={() => alert(`Opening soft copy: ${d.fileName || d.fileUrl || 'Document File'}`)}
-                        className="text-sky-600 hover:underline font-bold text-[11px]"
+                        className="text-[#6A89A7] hover:underline font-bold text-[11px]"
                       >
                         Preview Soft Copy
                       </button>
@@ -582,7 +582,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase text-sky-900 mb-1 font-heading">
+                  <label className="block text-[10px] font-bold uppercase text-[#384959] mb-1 font-heading">
                     Rejection / Additional Document Note (If Rejecting)
                   </label>
                   <input
@@ -590,12 +590,12 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     value={rejectionReason}
                     onChange={(e) => setRejectionReason(e.target.value)}
                     placeholder="e.g. Document image is blurred. Please upload clear front/back scan."
-                    className="w-full bg-white border border-sky-200 rounded-lg px-3 py-2 text-xs focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-end gap-2 pt-3 border-t border-sky-100">
+              <div className="flex flex-wrap items-center justify-end gap-2 pt-3 border-t border-[#DCE8F2]">
                 <button
                   type="button"
                   onClick={() => handleStatusChange(selectedUserForReview.id, 'rejected')}

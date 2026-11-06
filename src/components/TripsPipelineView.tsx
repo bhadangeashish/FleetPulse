@@ -29,6 +29,8 @@ import { useTMS } from '../context/TMSContext';
 import { Trip, TripDestination, DeliveryItem, ReturnLoadDeliveryLocation } from '../types/tms';
 import { readFileAsDataURL } from '../utils/fileUploadHelper';
 import { handleFormKeyDown } from '../utils/keyboardNavigation';
+import { LottieAnimation } from './common/LottieAnimation';
+import { EmptyState } from './common/EmptyState';
 
 export const TripsPipelineView: React.FC = () => {
   const {
@@ -634,26 +636,26 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Top Banner & Action */}
-      <div className="bg-gradient-to-r from-sky-100/90 via-sky-50 to-white p-5 border border-sky-200 rounded-xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="morning-card p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-[#E2EDF8]">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="font-heading text-lg font-extrabold text-sky-950">
+            <h2 className="font-heading text-lg font-black text-[#1E293B]">
               Maharashtra to Gujarat Daily Routing & Dispatches
             </h2>
-            <span className="bg-sky-200/80 text-sky-900 border border-sky-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+            <span className="bg-[#BDDDFC]/50 text-[#384959] border border-[#BDDDFC] text-xs font-bold px-2.5 py-0.5 rounded-full">
               Fruit Outbound + Gujarat Return Load
             </span>
           </div>
-          <p className="text-xs text-sky-800/80 mt-1 font-medium">
+          <p className="text-xs text-slate-500 mt-1 font-medium">
             Deliver fruits from Maharashtra to 3–4 Gujarat places (Immediate / 1–3 months payment), then load return goods with stamped LR and settlement tracking. Delivery places and fruit items can be edited anytime after creation.
           </p>
         </div>
 
         <button
           onClick={() => setIsAddTripModalOpen(true)}
-          className="px-4 py-2.5 text-xs font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/25 flex items-center gap-2 transition-all self-start md:self-auto cursor-pointer"
+          className="px-4 py-2.5 text-xs font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-xl shadow-xs flex items-center gap-2 transition-all self-start md:self-auto cursor-pointer font-heading shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>New Daily Trip (Fruit Delivery)</span>
@@ -662,6 +664,15 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
       {/* Trips List */}
       <div className="space-y-4">
+        {trips.length === 0 && (
+          <EmptyState
+            title="No Interstate Daily Trips Dispatched Yet"
+            description="Create your first Maharashtra to Gujarat daily fruit delivery dispatch to begin tracking multi-stop deliveries, payments, and backhaul return loads."
+            actionLabel="New Daily Trip (Fruit Delivery)"
+            onAction={() => setIsAddTripModalOpen(true)}
+          />
+        )}
+
         {trips.map((trip) => {
           const isPending = trip.status === 'pending_approval';
           const isDelivered = trip.status === 'delivered';
@@ -669,28 +680,28 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
           return (
             <div
               key={trip.id}
-              className={`bg-white border rounded-xl shadow-xs overflow-hidden transition-all ${
+              className={`bg-white border rounded-2xl shadow-xs overflow-hidden transition-all morning-card ${
                 isPending
                   ? 'border-amber-400 ring-2 ring-amber-100'
-                  : 'border-sky-200/80 hover:border-sky-300'
+                  : 'border-[#DCE8F2] hover:border-[#88BDF2]'
               }`}
             >
               {/* Trip Header Bar */}
-              <div className="p-4 bg-sky-50/70 border-b border-sky-100 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              <div className="p-4 bg-white border-b border-[#DCE8F2] flex flex-col lg:flex-row lg:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-600 to-sky-800 text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                  <div className="w-10 h-10 rounded-xl bg-[#6A89A7] text-white font-mono font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
                     {trip.vehicleStateCode}
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono font-extrabold text-sky-700 text-sm">
+                      <span className="font-mono font-extrabold text-[#384959] text-sm bg-[#F0F4F8] px-2 py-0.5 rounded border border-[#DCE8F2]">
                         {trip.id}
                       </span>
-                      <span className="font-mono font-bold text-slate-900 text-sm bg-white px-2 py-0.5 rounded border border-sky-200">
+                      <span className="font-mono font-bold text-slate-900 text-sm bg-white px-2 py-0.5 rounded border border-slate-200">
                         {trip.vehicleNumber}
                       </span>
                       <span className="text-xs text-slate-600">
-                        (Driver: <strong className="text-sky-950">{trip.driverName}</strong>)
+                        (Driver: <strong className="text-slate-900 font-bold">{trip.driverName}</strong>)
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
@@ -710,20 +721,30 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                     </span>
                   )}
                   {trip.status === 'approved' && (
-                    <span className="bg-sky-100 text-sky-900 border border-sky-300 font-bold text-xs px-2.5 py-1 rounded-md flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-sky-700" />
+                    <span className="bg-[#BDDDFC]/50 text-[#384959] border border-[#BDDDFC] font-bold text-xs px-2.5 py-1 rounded-md flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#384959]" />
                       <span>Approved (Active Trip)</span>
                     </span>
                   )}
                   {trip.status === 'in_transit' && (
-                    <span className="bg-cyan-100 text-cyan-900 border border-cyan-300 font-bold text-xs px-2.5 py-1 rounded-md flex items-center gap-1">
-                      <Truck className="w-3.5 h-3.5 text-cyan-700" />
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-xs px-2.5 py-1 rounded-md flex items-center gap-1.5 font-heading">
+                      <LottieAnimation
+                        animationPath="/assets/animations/truck-in-transit.json"
+                        className="w-6 h-4"
+                        fallbackIcon={<Truck className="w-3.5 h-3.5" />}
+                        ariaLabel="In Transit"
+                      />
                       <span>In Transit (MH → GJ)</span>
                     </span>
                   )}
                   {isDelivered && (
-                    <span className="bg-slate-100 text-slate-800 border border-slate-300 font-bold text-xs px-2.5 py-1 rounded-md flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5 text-slate-700" />
+                    <span className="bg-slate-100 text-slate-800 border border-slate-300 font-bold text-xs px-2.5 py-1 rounded-md flex items-center gap-1.5 font-heading">
+                      <LottieAnimation
+                        animationPath="/assets/animations/success-check.json"
+                        className="w-4 h-4"
+                        fallbackIcon={<Check className="w-3.5 h-3.5 text-slate-700" />}
+                        ariaLabel="Completed"
+                      />
                       <span>Completed</span>
                     </span>
                   )}
@@ -779,26 +800,26 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
               {/* Trip Body: Fruit Deliveries (3 to 4 Places) */}
               <div className="p-4 space-y-4">
                 <div>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-sky-100 gap-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-[#DCE8F2] gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-bold text-sky-800 uppercase tracking-wider flex items-center gap-1.5 font-heading">
+                      <span className="text-[11px] font-bold text-[#384959] uppercase tracking-wider flex items-center gap-1.5 font-heading">
                         <MapPin className="w-3.5 h-3.5 text-rose-500" />
                         <span>Outbound Fruit Delivery Places in Gujarat ({trip.destinations.length} Stops)</span>
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2.5 flex-wrap">
-                      <span className="font-mono text-xs font-bold text-sky-800 bg-sky-50 px-2.5 py-1 rounded-md border border-sky-200">
+                      <span className="font-mono text-xs font-bold text-[#384959] bg-[#BDDDFC]/30 px-2.5 py-1 rounded-lg border border-[#BDDDFC]">
                         Total Fruit Value: ₹{trip.totalFruitValue.toLocaleString('en-IN')}
                       </span>
 
                       {/* EDIT OPTION FOR OUTBOUND FRUIT DELIVERY PLACES (User Requirement) */}
                       <button
                         onClick={() => handleOpenEditDestinations(trip)}
-                        className="px-2.5 py-1 text-xs font-bold text-sky-800 bg-sky-100 hover:bg-sky-200 border border-sky-300 rounded-md flex items-center gap-1.5 transition-all cursor-pointer font-heading shadow-2xs"
+                        className="px-3 py-1.5 text-xs font-bold text-[#384959] bg-[#BDDDFC]/40 hover:bg-[#BDDDFC]/80 border border-[#BDDDFC] rounded-xl flex items-center gap-1.5 transition-all cursor-pointer font-heading shadow-xs"
                         title="Edit delivery places, fruit items, quantities, costs, and payment terms"
                       >
-                        <Edit3 className="w-3.5 h-3.5 text-sky-600" />
+                        <Edit3 className="w-3.5 h-3.5 text-[#384959]" />
                         <span>Edit Delivery Places</span>
                       </button>
                     </div>
@@ -808,21 +829,21 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                     {trip.destinations.map((dest, destIdx) => (
                       <div
                         key={dest.id}
-                        className="p-3 bg-sky-50/40 border border-sky-100 rounded-lg text-xs space-y-2 hover:border-sky-200 transition-colors relative group"
+                        className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl text-xs space-y-2 hover:border-[#88BDF2] transition-colors relative group"
                       >
                         <div className="flex items-start justify-between gap-1">
                           <div>
-                            <span className="font-heading font-bold text-sky-950 block">
+                            <span className="font-heading font-bold text-[#384959] block">
                               {destIdx + 1}. {dest.placeName}
                             </span>
-                            <span className="text-slate-500 font-medium">{dest.city}, {dest.state}</span>
+                            <span className="text-[#6A89A7] font-medium">{dest.city}, {dest.state}</span>
                           </div>
                           <div className="flex items-center gap-1">
                             <span
-                              className={`text-[10px] font-bold px-1.5 py-0.5 rounded border uppercase ${
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-lg border uppercase ${
                                 dest.paymentTerm === 'immediate'
-                                  ? 'bg-sky-100 text-sky-800 border-sky-300'
-                                  : 'bg-blue-50 text-blue-700 border-blue-300'
+                                  ? 'bg-[#BDDDFC]/50 text-[#384959] border-[#BDDDFC]'
+                                  : 'bg-[#F0F4F8] text-[#384959] border-[#DCE8F2]'
                               }`}
                             >
                               {dest.paymentTerm === 'immediate' ? 'Immediate Pay' : `${dest.paymentTerm.replace('_', ' ')} Due`}
@@ -830,7 +851,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             {/* Quick edit button on destination card */}
                             <button
                               onClick={() => handleOpenEditDestinations(trip)}
-                              className="p-1 hover:bg-sky-100 text-sky-600 rounded transition-colors"
+                              className="p-1 hover:bg-[#BDDDFC]/40 text-[#6A89A7] hover:text-[#384959] rounded-lg transition-colors cursor-pointer"
                               title="Edit this place"
                             >
                               <Pencil className="w-3 h-3" />
@@ -839,24 +860,24 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                         </div>
 
                         {/* Items Manifest */}
-                        <div className="bg-white p-2.5 rounded-lg border border-sky-100 space-y-1">
-                          <span className="text-[10px] font-bold text-sky-700 uppercase block font-heading">Items List:</span>
+                        <div className="bg-white p-2.5 rounded-xl border border-[#DCE8F2] space-y-1">
+                          <span className="text-[10px] font-bold text-[#6A89A7] uppercase block font-heading">Items List:</span>
                           {dest.items.map((item) => (
                             <div
                               key={item.id}
                               className="flex items-center justify-between text-[11px] font-mono text-slate-700 py-0.5 border-b border-slate-50 last:border-b-0"
                             >
-                              <span className="font-sans font-medium text-slate-900 truncate max-w-[130px]">
+                              <span className="font-sans font-medium text-[#384959] truncate max-w-[130px]">
                                 {item.itemName}
                               </span>
                               <span>
-                                {item.quantity} × ₹{item.costPerItem} = <strong className="text-sky-950">₹{item.totalAmount}</strong>
+                                {item.quantity} × ₹{item.costPerItem} = <strong className="text-[#384959]">₹{item.totalAmount}</strong>
                               </span>
                             </div>
                           ))}
-                          <div className="pt-1.5 border-t border-sky-100 flex items-center justify-between text-xs font-bold text-slate-900">
+                          <div className="pt-1.5 border-t border-[#DCE8F2] flex items-center justify-between text-xs font-bold text-[#384959]">
                             <span className="font-heading">Place Total:</span>
-                            <span className="font-mono text-sky-700 font-extrabold">
+                            <span className="font-mono text-[#384959] font-extrabold">
                               ₹{dest.destinationTotalAmount.toLocaleString('en-IN')}
                             </span>
                           </div>
@@ -864,7 +885,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
                         {/* Reminder Note */}
                         {dest.quickReminderDate && (
-                          <div className="flex items-center gap-1.5 text-[11px] text-amber-800 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200">
+                          <div className="flex items-center gap-1.5 text-[11px] text-amber-800 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
                             <Bell className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                             <span>Payment Reminder: {dest.quickReminderDate}</span>
                           </div>
@@ -875,17 +896,17 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                 </div>
 
                 {/* Return Load Section (PRD: Take goods from party in Gujarat after fruit delivery) */}
-                <div className="pt-2 border-t border-sky-100">
+                <div className="pt-2 border-t border-[#DCE8F2]">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] font-bold text-sky-800 uppercase tracking-wider flex items-center gap-1.5 font-heading">
-                      <Repeat className="w-3.5 h-3.5 text-sky-600" />
+                    <span className="text-[11px] font-bold text-[#384959] uppercase tracking-wider flex items-center gap-1.5 font-heading">
+                      <Repeat className="w-3.5 h-3.5 text-[#6A89A7]" />
                       <span>Gujarat Return Load (Backhaul to Maharashtra)</span>
                     </span>
 
                     {!trip.returnLoad && (
                       <button
                         onClick={() => handleOpenReturnModal(trip)}
-                        className="px-2.5 py-1 text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-md flex items-center gap-1 transition-colors cursor-pointer"
+                        className="px-3 py-1.5 text-xs font-bold text-[#384959] bg-[#BDDDFC]/40 hover:bg-[#BDDDFC]/80 border border-[#BDDDFC] rounded-xl flex items-center gap-1 transition-colors cursor-pointer font-heading"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span>Add Return Load from Gujarat</span>
@@ -894,27 +915,27 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                   </div>
 
                   {trip.returnLoad ? (
-                    <div className="p-3.5 bg-sky-50/70 border border-sky-200 rounded-xl text-xs space-y-3">
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-2 border-b border-sky-200/80">
+                    <div className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl text-xs space-y-3">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-2 border-b border-[#DCE8F2]">
                         <div>
-                          <span className="font-heading font-bold text-sky-950 text-sm">
+                          <span className="font-heading font-bold text-[#384959] text-sm">
                             {trip.returnLoad.loadingPartyName}
                           </span>
-                          <span className="text-sky-700 ml-2 font-mono text-xs">
+                          <span className="text-[#6A89A7] ml-2 font-mono text-xs">
                             ({trip.returnLoad.loadingCity} [GJ] → {trip.returnLoad.deliveryCity})
                           </span>
                           <div className="text-[11px] text-slate-600 mt-0.5">
-                            Goods: <strong>{trip.returnLoad.goodsDescription}</strong> ({trip.returnLoad.weightKg.toLocaleString()} KG)
+                            Goods: <strong className="text-[#384959]">{trip.returnLoad.goodsDescription}</strong> ({trip.returnLoad.weightKg.toLocaleString()} KG)
                           </div>
                         </div>
 
                         {/* Rent of Load, Edit & Settlement Tag */}
                         <div className="flex items-center gap-2">
                           <div className="text-right">
-                            <span className="text-[10px] text-sky-700 font-bold uppercase block font-heading">
+                            <span className="text-[10px] text-[#6A89A7] font-bold uppercase block font-heading">
                               Rent Charged for Load
                             </span>
-                            <span className="font-mono font-extrabold text-slate-900 text-sm">
+                            <span className="font-mono font-extrabold text-[#384959] text-sm">
                               ₹{trip.returnLoad.loadRentCharge.toLocaleString('en-IN')}
                             </span>
                           </div>
@@ -922,15 +943,15 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                           {/* Edit Return Load Button (Master Prompt Section 2.B) */}
                           <button
                             onClick={() => handleOpenReturnModal(trip)}
-                            className="px-2.5 py-1.5 bg-white border border-sky-300 hover:bg-sky-50 text-sky-800 font-bold text-xs rounded-lg shadow-2xs transition-all cursor-pointer flex items-center gap-1 font-heading"
+                            className="px-3 py-1.5 bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] text-[#384959] font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1 font-heading"
                             title="Edit consignor, delivered locations, LR & payment terms"
                           >
-                            <Pencil className="w-3.5 h-3.5 text-sky-600" />
+                            <Pencil className="w-3.5 h-3.5 text-[#6A89A7]" />
                             <span>Edit</span>
                           </button>
 
                           {trip.returnLoad.isSettled ? (
-                            <div className="bg-emerald-100 text-emerald-900 border border-emerald-300 px-3 py-1.5 rounded-lg text-right shadow-2xs">
+                            <div className="bg-emerald-100 text-emerald-900 border border-emerald-300 px-3 py-1.5 rounded-xl text-right shadow-2xs">
                               <span className="font-heading font-black text-xs block text-emerald-800 uppercase tracking-wide">
                                 (Settled)
                               </span>
@@ -941,7 +962,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                           ) : (
                             <button
                               onClick={() => handleOpenSettleModal(trip)}
-                              className="px-3 py-1.5 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 text-white font-bold text-xs rounded-lg shadow-xs transition-all cursor-pointer"
+                              className="px-3.5 py-1.5 bg-[#6A89A7] hover:bg-[#597793] text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer font-heading"
                             >
                               Settle Payment
                             </button>
@@ -951,13 +972,13 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
                       {/* Multi-Drop Delivery Locations Breakdown (Master Prompt Section 9 - Clean & Compact Display) */}
                       {trip.returnLoad.deliveryLocations && trip.returnLoad.deliveryLocations.length > 0 && (
-                        <div className="p-3 bg-white/90 rounded-xl border border-sky-200/90 shadow-2xs space-y-2">
+                        <div className="p-3 bg-white rounded-xl border border-[#DCE8F2] shadow-2xs space-y-2">
                           <div className="flex items-center justify-between flex-wrap gap-1">
-                            <span className="text-[10px] font-extrabold text-sky-900 uppercase font-heading flex items-center gap-1.5">
-                              <MapPin className="w-3.5 h-3.5 text-sky-600" />
+                            <span className="text-[10px] font-extrabold text-[#384959] uppercase font-heading flex items-center gap-1.5">
+                              <MapPin className="w-3.5 h-3.5 text-[#6A89A7]" />
                               <span>Delivered on {trip.returnLoad.deliveryLocations.length} Locations:</span>
                             </span>
-                            <span className="text-[10px] font-mono text-sky-800 font-semibold bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
+                            <span className="text-[10px] font-mono text-[#384959] font-semibold bg-[#F0F4F8] px-2 py-0.5 rounded-lg border border-[#DCE8F2]">
                               Total Weight: {trip.returnLoad.weightKg.toLocaleString()} KG
                             </span>
                           </div>
@@ -966,14 +987,14 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             {trip.returnLoad.deliveryLocations.map((loc, locIdx) => (
                               <span
                                 key={loc.id || locIdx}
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-sky-50 border border-sky-200 text-xs font-medium text-slate-800 shadow-2xs"
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F8FAFC] border border-[#DCE8F2] text-xs font-medium text-[#384959] shadow-2xs"
                               >
-                                <span className="w-4 h-4 rounded-full bg-sky-700 text-white font-mono text-[9px] flex items-center justify-center font-bold">
+                                <span className="w-4 h-4 rounded-full bg-[#6A89A7] text-white font-mono text-[9px] flex items-center justify-center font-bold">
                                   {loc.dropOrder || locIdx + 1}
                                 </span>
-                                <span className="font-heading font-bold text-sky-950">{loc.city}</span>
+                                <span className="font-heading font-bold text-[#384959]">{loc.city}</span>
                                 {loc.placeName && (
-                                  <span className="text-slate-500 font-normal">({loc.placeName})</span>
+                                  <span className="text-[#6A89A7] font-normal">({loc.placeName})</span>
                                 )}
                               </span>
                             ))}
@@ -984,10 +1005,10 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       {/* LR & Stamped Status Controls */}
                       <div className="flex flex-wrap items-center justify-between gap-3 text-xs pt-1">
                         <div className="flex items-center gap-3">
-                          <span className="font-mono font-bold text-sky-900">
+                          <span className="font-mono font-bold text-[#384959]">
                             LR #: {trip.returnLoad.lrNumber}
                           </span>
-                          <span className="text-sky-300">•</span>
+                          <span className="text-[#DCE8F2]">•</span>
 
                           {/* Driver Got Stamped LR? (Master Prompt Section 8: Allow stamped LR photo/document uploads) */}
                           <div className="flex items-center gap-1.5 font-semibold text-slate-700">
@@ -1003,15 +1024,15 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                                         w.document.write(`<img src="${trip.returnLoad.stampedLrPhotoUrl}" style="max-width:100%" alt="Stamped LR" />`);
                                       }
                                     }}
-                                    className="text-[10px] underline text-sky-700 hover:text-sky-900 cursor-pointer ml-1"
+                                    className="text-[10px] underline text-[#6A89A7] hover:text-[#384959] cursor-pointer ml-1"
                                   >
                                     View Scan
                                   </button>
                                 )}
                               </div>
                             ) : (
-                              <label className="px-2 py-0.5 bg-white hover:bg-sky-50 border border-sky-300 text-sky-800 rounded text-[11px] font-bold flex items-center gap-1 cursor-pointer shadow-2xs">
-                                <Upload className="w-3 h-3 text-sky-600" />
+                              <label className="px-2.5 py-1 bg-white hover:bg-[#F0F4F8] border border-[#DCE8F2] text-[#384959] rounded-lg text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-2xs">
+                                <Upload className="w-3 h-3 text-[#6A89A7]" />
                                 <span>Upload Stamped LR</span>
                                 <input
                                   type="file"
@@ -1033,16 +1054,16 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             )}
                           </div>
 
-                          <span className="text-sky-300">•</span>
+                          <span className="text-[#DCE8F2]">•</span>
 
                           {/* Option: LR Submitted or Not to Party */}
                           <div className="flex items-center gap-2">
-                            <span className="font-heading font-bold text-sky-950">LR Submitted to Party:</span>
+                            <span className="font-heading font-bold text-[#384959]">LR Submitted to Party:</span>
                             <button
                               onClick={() => toggleLRSubmitted(trip.returnLoad!.id)}
-                              className={`px-2.5 py-1 rounded-md text-xs font-bold border transition-all cursor-pointer ${
+                              className={`px-2.5 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                                 trip.returnLoad.lrSubmittedToParty
-                                  ? 'bg-sky-600 text-white border-sky-600 shadow-2xs'
+                                  ? 'bg-[#384959] text-white border-[#384959] shadow-2xs'
                                   : 'bg-rose-50 text-rose-700 border-rose-300 hover:bg-rose-100'
                               }`}
                             >
@@ -1052,14 +1073,14 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                         </div>
 
                         {trip.returnLoad.reminderDate && (
-                          <div className="text-[11px] text-sky-800 font-mono bg-white px-2 py-0.5 rounded border border-sky-200">
+                          <div className="text-[11px] text-[#384959] font-mono bg-white px-2 py-0.5 rounded-lg border border-[#DCE8F2]">
                             Payment Reminder: <strong>{trip.returnLoad.reminderDate}</strong>
                           </div>
                         )}
                       </div>
                     </div>
                   ) : (
-                    <div className="p-3 bg-sky-50/30 border border-dashed border-sky-200 rounded-lg text-center text-xs text-slate-500">
+                    <div className="p-3 bg-[#F8FAFC] border border-dashed border-[#DCE8F2] rounded-xl text-center text-xs text-[#6A89A7]">
                       No return load assigned yet. Rig will return empty unless matched with Gujarat party goods.
                     </div>
                   )}
@@ -1072,21 +1093,21 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
       {/* Modal 1: New Daily Fruit Delivery Trip */}
       {isAddTripModalOpen && (
-        <div className="fixed inset-0 z-50 bg-sky-950/40 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl border border-sky-200 shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden text-xs">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden text-xs">
             {/* Header */}
-            <div className="px-5 py-4 bg-gradient-to-r from-sky-700 via-sky-600 to-sky-500 text-white flex items-center justify-between">
+            <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between border-b border-[#2C3A47]">
               <div>
-                <h3 className="font-heading font-bold text-sm">
+                <h3 className="font-heading font-bold text-sm tracking-tight text-white">
                   Create Daily Fruit Delivery Run (Maharashtra → Gujarat)
                 </h3>
-                <p className="text-[11px] text-sky-100">
+                <p className="text-[11px] text-[#BDDDFC] mt-0.5">
                   Select Vehicle, Driver, Out Date, and 3 to 4 Gujarat Destination Places with Auto-Calculating Items
                 </p>
               </div>
               <button
                 onClick={() => setIsAddTripModalOpen(false)}
-                className="text-sky-100 hover:text-white p-1 rounded-md hover:bg-white/10"
+                className="text-[#BDDDFC] hover:text-white p-1 rounded-lg hover:bg-white/10 cursor-pointer transition-colors"
               >
                 ✕
               </button>
@@ -1095,15 +1116,15 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
             {/* Form */}
             <form onSubmit={handleCreateTrip} onKeyDown={(e) => handleFormKeyDown(e)} className="flex-1 overflow-y-auto p-5 space-y-5">
               {/* Top Row: Vehicle, Driver, Out Date */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-sky-50/50 border border-sky-100 rounded-xl">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl">
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Vehicle Number
                   </label>
                   <select
                     value={selectedVehicleId}
                     onChange={(e) => setSelectedVehicleId(e.target.value)}
-                    className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 font-mono font-bold text-slate-900 focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 font-mono font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2] focus:ring-2 focus:ring-[#88BDF2]/20"
                   >
                     {vehicles.map((v) => (
                       <option key={v.id} value={v.id}>
@@ -1114,13 +1135,13 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Driver Name
                   </label>
                   <select
                     value={selectedDriverId}
                     onChange={(e) => setSelectedDriverId(e.target.value)}
-                    className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 text-slate-900 font-semibold focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 text-[#384959] font-semibold focus:outline-none focus:border-[#88BDF2] focus:ring-2 focus:ring-[#88BDF2]/20"
                   >
                     {drivers.map((d) => (
                       <option key={d.id} value={d.id}>
@@ -1131,7 +1152,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                 </div>
 
                 <div>
-                  <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                  <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                     Date Out to Deliver Fruits
                   </label>
                   <input
@@ -1139,7 +1160,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                     required
                     value={outDate}
                     onChange={(e) => setOutDate(e.target.value)}
-                    className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 font-mono text-slate-900 font-bold focus:outline-sky-500"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 font-mono text-[#384959] font-bold focus:outline-none focus:border-[#88BDF2] focus:ring-2 focus:ring-[#88BDF2]/20"
                   />
                 </div>
               </div>
@@ -1159,10 +1180,10 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                 const isOver = remCap < 0;
 
                 return (
-                  <div className="p-3 bg-gradient-to-r from-sky-50 to-white rounded-xl border border-sky-200 text-xs font-mono space-y-1.5">
+                  <div className="p-3.5 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2] text-xs font-mono space-y-1.5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="text-slate-600">Max Capacity: <strong className="text-sky-950 font-bold">{maxCap.toLocaleString('en-IN')} KG</strong></span>
-                      <span className="text-slate-600">Estimated Manifest Load: <strong className={isOver ? 'text-rose-600 font-bold' : 'text-sky-800 font-bold'}>{estWeight.toLocaleString('en-IN')} KG</strong></span>
+                      <span className="text-slate-600">Max Capacity: <strong className="text-[#384959] font-bold">{maxCap.toLocaleString('en-IN')} KG</strong></span>
+                      <span className="text-slate-600">Estimated Manifest Load: <strong className={isOver ? 'text-rose-600 font-bold' : 'text-[#384959] font-bold'}>{estWeight.toLocaleString('en-IN')} KG</strong></span>
                       <span className="text-slate-600">Remaining Capacity: <strong className={isOver ? 'text-rose-600 font-bold' : 'text-emerald-700 font-bold'}>{remCap.toLocaleString('en-IN')} KG</strong></span>
                     </div>
 
@@ -1194,35 +1215,34 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
               )}
 
               <div>
-                <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                   Starting Origin Terminal in Maharashtra
                 </label>
                 <input
                   type="text"
                   value={startingLocation}
                   onChange={(e) => setStartingLocation(e.target.value)}
-                  className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 font-medium text-slate-900 focus:outline-sky-500"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 font-medium text-[#384959] focus:outline-none focus:border-[#88BDF2] focus:ring-2 focus:ring-[#88BDF2]/20"
                   placeholder="e.g. Pune APMC Market, Nashik Farm Depot, Solapur Yard"
                 />
               </div>
 
               {/* Destinations Section (3 to 4 Places, Outbound Fruit Delivery Places in Gujarat) */}
-              {/* Destinations Section */}
               <div className="space-y-3">
-                <div className="p-3 bg-sky-50/70 border border-sky-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-heading font-extrabold text-sky-950 text-xs">
+                      <span className="font-heading font-extrabold text-[#384959] text-xs">
                         Delivered Locations:
                       </span>
-                      <span className="bg-white px-2 py-0.5 rounded-full border border-sky-200 font-mono font-bold text-sky-800 text-xs">
+                      <span className="bg-white px-2.5 py-0.5 rounded-full border border-[#DCE8F2] font-mono font-bold text-[#384959] text-xs">
                         {destinations.length}
                       </span>
                     </div>
-                    <div className="text-[11px] text-sky-800 flex items-center gap-1 mt-1 flex-wrap">
-                      <Navigation className="w-3 h-3 text-sky-600" />
-                      <span className="font-semibold">Route Flow:</span>
-                      <span className="font-mono font-bold text-sky-950">
+                    <div className="text-[11px] text-[#6A89A7] flex items-center gap-1 mt-1 flex-wrap">
+                      <Navigation className="w-3 h-3 text-[#6A89A7]" />
+                      <span className="font-semibold text-[#384959]">Route Flow:</span>
+                      <span className="font-mono font-bold text-[#384959]">
                         {startingLocation.split(' ')[0]} → {destinations.map((d) => d.city || 'Place').join(' → ')}
                       </span>
                     </div>
@@ -1232,7 +1252,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                     <button
                       type="button"
                       onClick={() => handleAddDestination()}
-                      className="px-3.5 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 flex items-center gap-1.5 cursor-pointer font-heading self-start sm:self-auto"
+                      className="px-3.5 py-1.5 text-xs font-bold text-[#384959] bg-[#BDDDFC]/50 hover:bg-[#BDDDFC]/80 border border-[#BDDDFC] rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer font-heading self-start sm:self-auto transition-all"
                       title="Add one more delivered location"
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -1244,14 +1264,14 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                 {destinations.map((dest, destIdx) => (
                   <div
                     key={dest.id}
-                    className="p-3.5 bg-sky-50/40 border border-sky-200 rounded-xl space-y-3"
+                    className="p-4 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-3"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-sky-600 text-white font-mono text-[10px] flex items-center justify-center font-bold">
+                        <span className="w-5 h-5 rounded-full bg-[#6A89A7] text-white font-mono text-[10px] flex items-center justify-center font-bold">
                           {destIdx + 1}
                         </span>
-                        <span className="font-heading font-extrabold text-sky-950 text-xs">
+                        <span className="font-heading font-extrabold text-[#384959] text-xs">
                           Location {destIdx + 1}: {dest.city || 'Gujarat City'}
                         </span>
                         {destIdx === destinations.length - 1 && (
@@ -1266,7 +1286,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             type="button"
                             onClick={() => handleMoveDestination(destIdx, 'up')}
                             disabled={destIdx === 0}
-                            className="p-1 rounded bg-white border border-sky-200 hover:bg-sky-100 disabled:opacity-30 disabled:hover:bg-white text-sky-700 cursor-pointer disabled:cursor-not-allowed"
+                            className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 disabled:hover:bg-white text-[#384959] cursor-pointer disabled:cursor-not-allowed"
                             title="Move earlier in delivery route sequence"
                           >
                             <ChevronUp className="w-3 h-3" />
@@ -1275,7 +1295,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             type="button"
                             onClick={() => handleMoveDestination(destIdx, 'down')}
                             disabled={destIdx === destinations.length - 1}
-                            className="p-1 rounded bg-white border border-sky-200 hover:bg-sky-100 disabled:opacity-30 disabled:hover:bg-white text-sky-700 cursor-pointer disabled:cursor-not-allowed"
+                            className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 disabled:hover:bg-white text-[#384959] cursor-pointer disabled:cursor-not-allowed"
                             title="Move later in delivery route sequence"
                           >
                             <ChevronDown className="w-3 h-3" />
@@ -1285,7 +1305,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1.5">
-                          <label className="text-[10px] uppercase font-bold text-sky-800">
+                          <label className="text-[10px] uppercase font-bold text-[#384959]">
                             Payment Term:
                           </label>
                           <select
@@ -1295,7 +1315,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                               updated[destIdx].paymentTerm = e.target.value as any;
                               setDestinations(updated);
                             }}
-                            className="bg-white border border-sky-200 rounded px-2 py-0.5 text-xs font-semibold text-slate-800"
+                            className="bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1 text-xs font-semibold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                           >
                             <option value="immediate">Immediate Payment</option>
                             <option value="1_month">1 Month (30 Days)</option>
@@ -1317,7 +1337,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                                 updated[destIdx].quickReminderDate = e.target.value;
                                 setDestinations(updated);
                               }}
-                              className="bg-white border border-amber-300 rounded px-1.5 py-0.5 text-xs font-mono"
+                              className="bg-white border border-amber-300 rounded-lg px-2 py-0.5 text-xs font-mono"
                             />
                           </div>
                         )}
@@ -1326,7 +1346,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                       <div>
-                        <label className="block text-[10px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                           Market / Place Name
                         </label>
                         <input
@@ -1337,12 +1357,12 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             updated[destIdx].placeName = e.target.value;
                             setDestinations(updated);
                           }}
-                          className="w-full bg-white border border-sky-200 rounded px-2 py-1 text-xs"
+                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                           placeholder="e.g. Surat Ring Road Fruit Mandi"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                           City
                         </label>
                         <input
@@ -1353,12 +1373,12 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             updated[destIdx].city = e.target.value;
                             setDestinations(updated);
                           }}
-                          className="w-full bg-white border border-sky-200 rounded px-2 py-1 text-xs font-bold"
+                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                           placeholder="e.g. Surat, Vapi, Vadodara, Ahmedabad"
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                           Destination State (Set State)
                         </label>
                         <select
@@ -1368,7 +1388,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             updated[destIdx].state = e.target.value;
                             setDestinations(updated);
                           }}
-                          className="w-full bg-white border border-sky-300 rounded px-2 py-1 text-xs font-bold text-sky-950 focus:outline-sky-500"
+                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                         >
                           <option value="">-- Select Destination State --</option>
                           <option value="Gujarat">Gujarat</option>
@@ -1386,13 +1406,13 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                     {/* Items List (Auto Calculation: Quantity * Cost = Total) */}
                     <div className="pt-2">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-[10px] font-bold text-sky-800 uppercase font-heading">
+                        <span className="text-[10px] font-bold text-[#384959] uppercase font-heading">
                           Fruit Items (Auto-Calculated)
                         </span>
                         <button
                           type="button"
                           onClick={() => handleAddItem(destIdx)}
-                          className="text-sky-700 font-bold hover:underline flex items-center gap-0.5 text-[11px] cursor-pointer"
+                          className="text-[#6A89A7] font-bold hover:text-[#384959] flex items-center gap-0.5 text-[11px] cursor-pointer"
                         >
                           <Plus className="w-3 h-3" />
                           <span>Add Item</span>
@@ -1403,7 +1423,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                         {dest.items.map((item, itemIdx) => (
                           <div
                             key={item.id}
-                            className="grid grid-cols-12 gap-2 bg-white p-2 rounded-lg border border-sky-100 items-center"
+                            className="grid grid-cols-12 gap-2 bg-white p-2.5 rounded-xl border border-[#DCE8F2] items-center"
                           >
                             <div className="col-span-5">
                               <input
@@ -1413,7 +1433,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                                   handleItemChange(destIdx, itemIdx, 'itemName', e.target.value)
                                 }
                                 placeholder="Item Name (e.g. Alphonso Mango Box)"
-                                className="w-full bg-transparent border-none text-xs text-slate-900 font-medium p-0 focus:ring-0"
+                                className="w-full bg-transparent border-none text-xs text-[#384959] font-medium p-0 focus:ring-0"
                               />
                             </div>
                             <div className="col-span-2">
@@ -1430,7 +1450,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                                   )
                                 }
                                 placeholder="Qty"
-                                className="w-full bg-sky-50/50 border border-sky-200 rounded px-2 py-1 text-xs font-mono font-bold text-slate-900 text-center"
+                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2 py-1 text-xs font-mono font-bold text-[#384959] text-center focus:outline-none focus:border-[#88BDF2]"
                               />
                             </div>
                             <div className="col-span-2">
@@ -1447,10 +1467,10 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                                   )
                                 }
                                 placeholder="Cost"
-                                className="w-full bg-sky-50/50 border border-sky-200 rounded px-2 py-1 text-xs font-mono font-bold text-slate-900 text-center"
+                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2 py-1 text-xs font-mono font-bold text-[#384959] text-center focus:outline-none focus:border-[#88BDF2]"
                               />
                             </div>
-                            <div className="col-span-2 text-right font-mono font-bold text-sky-800">
+                            <div className="col-span-2 text-right font-mono font-bold text-[#384959]">
                               ₹{item.totalAmount}
                             </div>
                             <div className="col-span-1 text-center">
@@ -1468,8 +1488,8 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                         ))}
                       </div>
 
-                      <div className="text-right text-xs font-bold text-slate-800 mt-1">
-                        Subtotal: <span className="font-mono text-sky-700 font-extrabold">₹{dest.destinationTotalAmount.toLocaleString('en-IN')}</span>
+                      <div className="text-right text-xs font-bold text-[#384959] mt-1">
+                        Subtotal: <span className="font-mono text-[#384959] font-extrabold">₹{dest.destinationTotalAmount.toLocaleString('en-IN')}</span>
                       </div>
                     </div>
                   </div>
@@ -1477,17 +1497,17 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
               </div>
 
               {/* Submit Buttons */}
-              <div className="pt-3 border-t border-sky-100 flex items-center justify-end gap-2">
+              <div className="pt-3 border-t border-[#DCE8F2] flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsAddTripModalOpen(false)}
-                  className="px-4 py-2 font-bold text-sky-800 bg-sky-50 hover:bg-sky-100 rounded-lg cursor-pointer"
+                  className="px-4 py-2 font-bold text-[#384959] bg-[#F0F4F8] hover:bg-[#DCE8F2] rounded-xl cursor-pointer font-heading transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer font-heading transition-all"
                 >
                   <Truck className="w-4 h-4" />
                   <span>Dispatch Trip to Gujarat</span>
@@ -1500,27 +1520,27 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
       {/* Modal 4: EDIT OUTBOUND FRUIT DELIVERY PLACES IN GUJARAT (User Requirement) */}
       {editingTripForDestinations && (
-        <div className="fixed inset-0 z-50 bg-sky-950/45 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl border border-sky-200 shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden text-xs animate-in fade-in duration-100">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden text-xs animate-in fade-in duration-100">
             {/* Modal Header */}
-            <div className="px-5 py-4 bg-gradient-to-r from-sky-800 via-sky-700 to-sky-600 text-white flex items-center justify-between">
+            <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between border-b border-[#2C3A47]">
               <div>
                 <div className="flex items-center gap-2">
-                  <Edit3 className="w-4 h-4 text-sky-200" />
-                  <h3 className="font-heading font-extrabold text-sm tracking-tight">
+                  <Edit3 className="w-4 h-4 text-[#BDDDFC]" />
+                  <h3 className="font-heading font-extrabold text-sm tracking-tight text-white">
                     Edit Outbound Fruit Delivery Places & Items ({editingTripForDestinations.id})
                   </h3>
-                  <span className="bg-sky-400/30 text-white text-[10px] font-mono px-2 py-0.5 rounded-full border border-sky-300/40 font-bold">
+                  <span className="bg-[#BDDDFC]/20 text-[#BDDDFC] text-[10px] font-mono px-2 py-0.5 rounded-full border border-[#BDDDFC]/30 font-bold">
                     {editingTripForDestinations.vehicleNumber}
                   </span>
                 </div>
-                <p className="text-[11px] text-sky-100 mt-0.5">
+                <p className="text-[11px] text-[#BDDDFC] mt-0.5">
                   Driver: <strong>{editingTripForDestinations.driverName}</strong> • Origin: {editingTripForDestinations.startingLocation} • Out Date: {editingTripForDestinations.outDate}
                 </p>
               </div>
               <button
                 onClick={() => setEditingTripForDestinations(null)}
-                className="text-sky-100 hover:text-white p-1 rounded-md hover:bg-white/10"
+                className="text-[#BDDDFC] hover:text-white p-1 rounded-lg hover:bg-white/10 cursor-pointer transition-colors"
               >
                 ✕
               </button>
@@ -1529,20 +1549,20 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
             {/* Modal Form */}
             <form onSubmit={handleSaveEditedDestinations} onKeyDown={(e) => handleFormKeyDown(e)} className="flex-1 overflow-y-auto p-5 space-y-4">
               {/* Top Summary Bar */}
-              <div className="p-3.5 bg-sky-50/70 border border-sky-200 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-heading font-extrabold text-sky-950 text-xs">
+                    <span className="font-heading font-extrabold text-[#384959] text-xs">
                       Delivered Locations:
                     </span>
-                    <span className="bg-white px-2.5 py-0.5 rounded-full border border-sky-200 font-mono font-bold text-sky-800 text-xs">
+                    <span className="bg-white px-2.5 py-0.5 rounded-full border border-[#DCE8F2] font-mono font-bold text-[#384959] text-xs">
                       {editDestinations.length}
                     </span>
                   </div>
-                  <div className="text-[11px] text-sky-800 flex items-center gap-1 mt-1 flex-wrap">
-                    <Navigation className="w-3 h-3 text-sky-600" />
-                    <span className="font-semibold">Corridor Sequence:</span>
-                    <span className="font-mono font-bold text-sky-950">
+                  <div className="text-[11px] text-[#6A89A7] flex items-center gap-1 mt-1 flex-wrap">
+                    <Navigation className="w-3 h-3 text-[#6A89A7]" />
+                    <span className="font-semibold text-[#384959]">Corridor Sequence:</span>
+                    <span className="font-mono font-bold text-[#384959]">
                       {editingTripForDestinations.startingLocation.split(' ')[0]} → {editDestinations.map((d) => d.city || 'Place').join(' → ')}
                     </span>
                   </div>
@@ -1550,10 +1570,10 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="text-right">
-                    <span className="text-[10px] uppercase font-bold text-sky-800 block font-heading">
+                    <span className="text-[10px] uppercase font-bold text-[#6A89A7] block font-heading">
                       Recalculated Fruit Value:
                     </span>
-                    <span className="font-mono text-sm font-black text-sky-900">
+                    <span className="font-mono text-sm font-black text-[#384959]">
                       ₹{currentEditTotalFruitValue.toLocaleString('en-IN')}
                     </span>
                   </div>
@@ -1562,7 +1582,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                     <button
                       type="button"
                       onClick={() => handleEditAddDestinationPlace()}
-                      className="px-3.5 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 flex items-center gap-1.5 cursor-pointer font-heading"
+                      className="px-3.5 py-1.5 text-xs font-bold text-[#384959] bg-[#BDDDFC]/50 hover:bg-[#BDDDFC]/80 border border-[#BDDDFC] rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer font-heading transition-all"
                       title="Add one more delivered location"
                     >
                       <Plus className="w-3.5 h-3.5" />
@@ -1577,15 +1597,15 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                 {editDestinations.map((dest, destIdx) => (
                   <div
                     key={dest.id}
-                    className="p-4 bg-sky-50/40 border border-sky-200 rounded-xl space-y-3 shadow-2xs"
+                    className="p-4 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-3 shadow-xs"
                   >
                     {/* Destination Title & Header Row */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-sky-100">
+                    <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#DCE8F2]">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="w-6 h-6 rounded-full bg-sky-600 text-white font-mono text-xs font-bold flex items-center justify-center">
+                        <span className="w-6 h-6 rounded-full bg-[#6A89A7] text-white font-mono text-xs font-bold flex items-center justify-center">
                           {destIdx + 1}
                         </span>
-                        <span className="font-heading font-extrabold text-sky-950 text-sm">
+                        <span className="font-heading font-extrabold text-[#384959] text-sm">
                           Location {destIdx + 1}: {dest.city || 'Gujarat City'}
                         </span>
                         {destIdx === editDestinations.length - 1 && (
@@ -1600,7 +1620,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             type="button"
                             onClick={() => handleEditMoveDestination(destIdx, 'up')}
                             disabled={destIdx === 0}
-                            className="p-1 rounded bg-white border border-sky-200 hover:bg-sky-100 disabled:opacity-30 disabled:hover:bg-white text-sky-700 cursor-pointer disabled:cursor-not-allowed"
+                            className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 disabled:hover:bg-white text-[#384959] cursor-pointer disabled:cursor-not-allowed"
                             title="Move earlier in delivery route sequence"
                           >
                             <ChevronUp className="w-3.5 h-3.5" />
@@ -1609,7 +1629,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             type="button"
                             onClick={() => handleEditMoveDestination(destIdx, 'down')}
                             disabled={destIdx === editDestinations.length - 1}
-                            className="p-1 rounded bg-white border border-sky-200 hover:bg-sky-100 disabled:opacity-30 disabled:hover:bg-white text-sky-700 cursor-pointer disabled:cursor-not-allowed"
+                            className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 disabled:hover:bg-white text-[#384959] cursor-pointer disabled:cursor-not-allowed"
                             title="Move later in delivery route sequence"
                           >
                             <ChevronDown className="w-3.5 h-3.5" />
@@ -1624,7 +1644,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                           onChange={(e) =>
                             handleEditDestFieldChange(destIdx, 'deliveryStatus', e.target.value)
                           }
-                          className="bg-white border border-sky-200 rounded-lg px-2 py-1 text-xs font-bold text-slate-800"
+                          className="bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                         >
                           <option value="pending">⏳ Pending Delivery</option>
                           <option value="delivered">✓ Delivered</option>
@@ -1647,7 +1667,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                     {/* Place Name, City, State, Contact Details */}
                     <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
                       <div className="sm:col-span-1">
-                        <label className="block text-[10px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                           Market / Place Name
                         </label>
                         <input
@@ -1657,13 +1677,13 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                           onChange={(e) =>
                             handleEditDestFieldChange(destIdx, 'placeName', e.target.value)
                           }
-                          className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-semibold focus:outline-sky-500"
+                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs text-[#384959] font-semibold focus:outline-none focus:border-[#88BDF2]"
                           placeholder="e.g. Ring Road Fruit Mandi"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                           City
                         </label>
                         <input
@@ -1673,13 +1693,13 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                           onChange={(e) =>
                             handleEditDestFieldChange(destIdx, 'city', e.target.value)
                           }
-                          className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-bold focus:outline-sky-500"
+                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs text-[#384959] font-bold focus:outline-none focus:border-[#88BDF2]"
                           placeholder="e.g. Surat, Vapi, Vadodara"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                           Destination State (Set State)
                         </label>
                         <select
@@ -1687,7 +1707,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                           onChange={(e) =>
                             handleEditDestFieldChange(destIdx, 'state', e.target.value)
                           }
-                          className="w-full bg-white border border-sky-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-bold focus:outline-sky-500"
+                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs text-[#384959] font-bold focus:outline-none focus:border-[#88BDF2]"
                         >
                           <option value="">-- Select State --</option>
                           <option value="Gujarat">Gujarat</option>
@@ -1702,7 +1722,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                           Contact Person
                         </label>
                         <input
@@ -1711,16 +1731,16 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                           onChange={(e) =>
                             handleEditDestFieldChange(destIdx, 'contactPerson', e.target.value)
                           }
-                          className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-sky-500"
+                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                           placeholder="e.g. Kantilal Shah"
                         />
                       </div>
                     </div>
 
                     {/* Payment Terms & Quick Reminder */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-2.5 bg-white rounded-lg border border-sky-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-2.5 bg-white rounded-xl border border-[#DCE8F2]">
                       <div>
-                        <label className="block text-[10px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                           Payment Term (How & When Party Pays for Fruit)
                         </label>
                         <select
@@ -1728,7 +1748,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                           onChange={(e) =>
                             handleEditDestFieldChange(destIdx, 'paymentTerm', e.target.value)
                           }
-                          className="w-full bg-sky-50/50 border border-sky-200 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:outline-sky-500"
+                          className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                         >
                           <option value="immediate">Immediate Payment (On Unloading)</option>
                           <option value="1_month">Gives Payment in 1 Month (30 Days)</option>
@@ -1738,7 +1758,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                           Quick Reminder Date
                         </label>
                         <input
@@ -1747,7 +1767,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                           onChange={(e) =>
                             handleEditDestFieldChange(destIdx, 'quickReminderDate', e.target.value)
                           }
-                          className="w-full bg-sky-50/50 border border-sky-200 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-900 focus:outline-sky-500"
+                          className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-mono text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                         />
                       </div>
                     </div>
@@ -1755,13 +1775,13 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                     {/* Fruit Items List with Live Calculation: Quantity * Cost = Subtotal */}
                     <div className="space-y-2 pt-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-sky-800 uppercase font-heading">
+                        <span className="text-[10px] font-bold text-[#384959] uppercase font-heading">
                           Fruit Items for this Place (Auto Calculated: Quantity × Cost)
                         </span>
                         <button
                           type="button"
                           onClick={() => handleEditAddItem(destIdx)}
-                          className="text-sky-700 font-bold hover:underline flex items-center gap-1 text-xs cursor-pointer font-heading"
+                          className="text-[#6A89A7] font-bold hover:text-[#384959] flex items-center gap-1 text-xs cursor-pointer font-heading"
                         >
                           <Plus className="w-3.5 h-3.5" />
                           <span>Add Fruit Item</span>
@@ -1772,7 +1792,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                         {dest.items.map((item, itemIdx) => (
                           <div
                             key={item.id}
-                            className="grid grid-cols-12 gap-2 bg-white p-2.5 rounded-lg border border-sky-100 items-center"
+                            className="grid grid-cols-12 gap-2 bg-white p-2.5 rounded-xl border border-[#DCE8F2] items-center"
                           >
                             <div className="col-span-5">
                               <label className="block text-[9px] uppercase font-bold text-slate-400 mb-0.5">
@@ -1786,7 +1806,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                                   handleEditItemChange(destIdx, itemIdx, 'itemName', e.target.value)
                                 }
                                 placeholder="e.g. Alphonso Mango (24kg Box)"
-                                className="w-full bg-sky-50/30 border border-sky-200 rounded px-2 py-1 text-xs font-medium text-slate-900"
+                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2 py-1 text-xs font-medium text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                               />
                             </div>
 
@@ -1808,7 +1828,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                                   )
                                 }
                                 placeholder="30"
-                                className="w-full bg-sky-50/50 border border-sky-200 rounded px-1.5 py-1 text-xs font-mono font-bold text-slate-900 text-center"
+                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-1.5 py-1 text-xs font-mono font-bold text-[#384959] text-center focus:outline-none focus:border-[#88BDF2]"
                               />
                             </div>
 
@@ -1830,7 +1850,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                                   )
                                 }
                                 placeholder="30"
-                                className="w-full bg-sky-50/50 border border-sky-200 rounded px-1.5 py-1 text-xs font-mono font-bold text-slate-900 text-center"
+                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-1.5 py-1 text-xs font-mono font-bold text-[#384959] text-center focus:outline-none focus:border-[#88BDF2]"
                               />
                             </div>
 
@@ -1838,7 +1858,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                               <label className="block text-[9px] uppercase font-bold text-slate-400 mb-0.5">
                                 Total (₹)
                               </label>
-                              <div className="font-mono font-bold text-sky-800 text-xs py-1">
+                              <div className="font-mono font-bold text-[#384959] text-xs py-1">
                                 ₹{item.totalAmount}
                               </div>
                             </div>
@@ -1859,8 +1879,8 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                         ))}
                       </div>
 
-                      <div className="text-right text-xs font-bold text-slate-800 pt-1">
-                        Place Subtotal: <span className="font-mono text-sky-700 font-extrabold text-sm">₹{dest.destinationTotalAmount.toLocaleString('en-IN')}</span>
+                      <div className="text-right text-xs font-bold text-[#384959] pt-1">
+                        Place Subtotal: <span className="font-mono text-[#384959] font-extrabold text-sm">₹{dest.destinationTotalAmount.toLocaleString('en-IN')}</span>
                       </div>
                     </div>
                   </div>
@@ -1868,22 +1888,22 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-3 border-t border-sky-100 flex items-center justify-between">
-                <div className="text-xs text-sky-800">
-                  Total Delivery Value: <strong className="font-mono text-sky-950 text-sm">₹{currentEditTotalFruitValue.toLocaleString('en-IN')}</strong> across {editDestinations.length} places
+              <div className="pt-3 border-t border-[#DCE8F2] flex items-center justify-between">
+                <div className="text-xs text-[#384959]">
+                  Total Delivery Value: <strong className="font-mono text-[#384959] text-sm">₹{currentEditTotalFruitValue.toLocaleString('en-IN')}</strong> across {editDestinations.length} places
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setEditingTripForDestinations(null)}
-                    className="px-4 py-2 font-bold text-sky-800 bg-sky-50 rounded-lg hover:bg-sky-100 cursor-pointer font-heading"
+                    className="px-4 py-2 font-bold text-[#384959] bg-[#F0F4F8] rounded-xl hover:bg-[#DCE8F2] cursor-pointer font-heading transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/25 flex items-center gap-1.5 cursor-pointer font-heading"
+                    className="px-5 py-2 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer font-heading transition-all"
                   >
                     <Save className="w-4 h-4" />
                     <span>Save Updated Places & Recalculate</span>
@@ -1897,28 +1917,28 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
       {/* Modal 2: Add Return Load with Multi-Location Delivery (User Requirement: How many location to delivered on which location) */}
       {selectedTripForReturn && (
-        <div className="fixed inset-0 z-50 bg-sky-950/45 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-xl border border-sky-200 shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden text-xs animate-in fade-in duration-100">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden text-xs animate-in fade-in duration-100">
             {/* Modal Header */}
-            <div className="px-5 py-3.5 bg-gradient-to-r from-sky-800 via-sky-700 to-sky-600 text-white flex items-center justify-between">
+            <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between border-b border-[#2C3A47]">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 bg-white/10 rounded-lg">
-                  <Repeat className="w-5 h-5 text-sky-100" />
+                <div className="p-2 bg-white/10 rounded-xl">
+                  <Repeat className="w-5 h-5 text-[#BDDDFC]" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-extrabold text-sm tracking-tight">
+                  <h3 className="font-heading font-extrabold text-sm tracking-tight text-white">
                     {selectedTripForReturn.returnLoad
                       ? `Edit Gujarat Return Load (Trip: ${selectedTripForReturn.id})`
                       : `Add Gujarat Return Load (Trip: ${selectedTripForReturn.id})`}
                   </h3>
-                  <p className="text-[11px] text-sky-100 mt-0.5">
+                  <p className="text-[11px] text-[#BDDDFC] mt-0.5">
                     Vehicle: <strong>{selectedTripForReturn.vehicleNumber}</strong> • Driver: {selectedTripForReturn.driverName}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedTripForReturn(null)}
-                className="text-sky-100 hover:text-white p-1 rounded-md hover:bg-white/10 cursor-pointer"
+                className="text-[#BDDDFC] hover:text-white p-1 rounded-lg hover:bg-white/10 cursor-pointer transition-colors"
               >
                 ✕
               </button>
@@ -1927,14 +1947,14 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
             {/* Modal Form */}
             <form onSubmit={handleSaveReturnLoad} onKeyDown={(e) => handleFormKeyDown(e)} className="flex-1 overflow-y-auto p-5 space-y-4">
               {/* Party & Gujarat Loading City */}
-              <div className="p-3.5 bg-sky-50/50 border border-sky-100 rounded-xl space-y-3">
-                <span className="text-[11px] font-extrabold uppercase text-sky-900 tracking-wider block font-heading">
+              <div className="p-4 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-3">
+                <span className="text-[11px] font-extrabold uppercase text-[#384959] tracking-wider block font-heading">
                   Gujarat Consignor & Freight Information
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                       Loading Party Name (In Gujarat)
                     </label>
                     <input
@@ -1943,18 +1963,18 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       value={returnParty}
                       onChange={(e) => setReturnParty(e.target.value)}
                       placeholder="e.g. Surat Royal Textile Mills Ltd"
-                      className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 font-bold text-slate-900 text-xs focus:outline-sky-500"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 font-bold text-[#384959] text-xs focus:outline-none focus:border-[#88BDF2] focus:ring-2 focus:ring-[#88BDF2]/20"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                       Loading City (In Gujarat)
                     </label>
                     <select
                       value={returnLoadingCity}
                       onChange={(e) => setReturnLoadingCity(e.target.value)}
-                      className="w-full bg-white border border-sky-300 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-sky-500"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                     >
                       <option value="Surat">Surat (Textiles, Chemical & Diamond Hub)</option>
                       <option value="Vapi">Vapi (Industrial GIDC & Packaging)</option>
@@ -1969,7 +1989,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                       Goods Description
                     </label>
                     <input
@@ -1978,12 +1998,12 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       value={returnGoods}
                       onChange={(e) => setReturnGoods(e.target.value)}
                       placeholder="e.g. Cotton Textile Bales, Ceramic Tiles"
-                      className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 text-xs text-slate-900 font-medium"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 text-xs text-[#384959] font-medium focus:outline-none focus:border-[#88BDF2]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                       Total Weight (KG)
                     </label>
                     <input
@@ -1993,12 +2013,12 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       value={returnTotalWeight || ''}
                       onChange={(e) => setReturnTotalWeight(Number(e.target.value))}
                       placeholder="e.g. 12000"
-                      className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 text-xs font-mono font-bold text-slate-900"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                       Total Quantity (Units / Bales)
                     </label>
                     <input
@@ -2008,26 +2028,26 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       value={returnTotalQty || ''}
                       onChange={(e) => setReturnTotalQty(Number(e.target.value))}
                       placeholder="e.g. 85"
-                      className="w-full bg-white border border-sky-200 rounded-lg px-3 py-1.5 text-xs font-mono font-bold text-slate-900"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 text-xs font-mono font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Multi-Drop Delivery Locations: How Many Locations to Deliver & Which Locations */}
-              <div className="p-4 bg-sky-50/70 border-2 border-sky-200 rounded-xl space-y-3.5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-sky-200/80">
+              <div className="p-4 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#DCE8F2]">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-sky-600" />
+                    <MapPin className="w-4 h-4 text-[#6A89A7]" />
                     <div>
-                      <span className="text-[11px] font-extrabold text-sky-950 uppercase tracking-wide block font-heading">
+                      <span className="text-[11px] font-extrabold text-[#384959] uppercase tracking-wide block font-heading">
                         How Many Locations to Deliver & Which Locations
                       </span>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[10px] font-bold text-sky-800">
+                        <span className="text-[10px] font-bold text-[#6A89A7]">
                           How Many Delivered Locations:
                         </span>
-                        <span className="bg-white px-2 py-0.5 rounded-full border border-sky-200 font-mono font-bold text-sky-800 text-xs">
+                        <span className="bg-white px-2 py-0.5 rounded-full border border-[#DCE8F2] font-mono font-bold text-[#384959] text-xs">
                           {returnDeliveryLocations.length}
                         </span>
                       </div>
@@ -2037,7 +2057,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                   <button
                     type="button"
                     onClick={handleAddReturnLocation}
-                    className="px-3.5 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 flex items-center gap-1.5 cursor-pointer font-heading self-start sm:self-auto"
+                    className="px-3.5 py-1.5 text-xs font-bold text-[#384959] bg-[#BDDDFC]/50 hover:bg-[#BDDDFC]/80 border border-[#BDDDFC] rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer font-heading self-start sm:self-auto transition-all"
                     title="Add one more delivered location"
                   >
                     <Plus className="w-3.5 h-3.5" />
@@ -2050,29 +2070,29 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                   {returnDeliveryLocations.map((loc, locIdx) => (
                     <div
                       key={loc.id || locIdx}
-                      className="p-3 bg-white rounded-xl border border-sky-200 space-y-2.5 shadow-2xs"
+                      className="p-3.5 bg-white rounded-xl border border-[#DCE8F2] space-y-2.5 shadow-xs"
                     >
                       {/* Location Header */}
-                      <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-sky-100">
+                      <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-[#DCE8F2]">
                         <div className="flex items-center gap-2">
-                          <span className="w-5 h-5 rounded-full bg-sky-700 text-white font-mono text-[10px] flex items-center justify-center font-bold">
+                          <span className="w-5 h-5 rounded-full bg-[#6A89A7] text-white font-mono text-[10px] flex items-center justify-center font-bold">
                             {locIdx + 1}
                           </span>
-                          <span className="font-heading font-extrabold text-sky-950 text-xs">
+                          <span className="font-heading font-extrabold text-[#384959] text-xs">
                             Location {locIdx + 1}: {loc.city || 'Maharashtra Destination'}
                           </span>
                           {locIdx === 0 && (
-                            <span className="text-[9px] font-bold text-sky-700 bg-sky-100 px-1.5 py-0.5 rounded">
+                            <span className="text-[9px] font-bold text-[#384959] bg-[#BDDDFC]/40 px-2 py-0.5 rounded-lg border border-[#BDDDFC]">
                               1st Unloading Point
                             </span>
                           )}
                           {locIdx === returnDeliveryLocations.length - 1 && returnDeliveryLocations.length > 1 && (
-                            <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+                            <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-lg border border-emerald-300">
                               Final Destination
                             </span>
                           )}
                           {locIdx > 0 && locIdx < returnDeliveryLocations.length - 1 && (
-                            <span className="text-[9px] font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+                            <span className="text-[9px] font-bold text-[#6A89A7] bg-[#F0F4F8] px-2 py-0.5 rounded-lg border border-[#DCE8F2]">
                               Intermediate Drop
                             </span>
                           )}
@@ -2084,7 +2104,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             type="button"
                             onClick={() => handleMoveReturnLocation(locIdx, 'up')}
                             disabled={locIdx === 0}
-                            className="p-1 rounded bg-sky-50 border border-sky-200 hover:bg-sky-100 disabled:opacity-30 text-sky-700 cursor-pointer disabled:cursor-not-allowed"
+                            className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 text-[#384959] cursor-pointer disabled:cursor-not-allowed"
                             title="Unload earlier on route"
                           >
                             <ChevronUp className="w-3 h-3" />
@@ -2093,7 +2113,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             type="button"
                             onClick={() => handleMoveReturnLocation(locIdx, 'down')}
                             disabled={locIdx === returnDeliveryLocations.length - 1}
-                            className="p-1 rounded bg-sky-50 border border-sky-200 hover:bg-sky-100 disabled:opacity-30 text-sky-700 cursor-pointer disabled:cursor-not-allowed"
+                            className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 text-[#384959] cursor-pointer disabled:cursor-not-allowed"
                             title="Unload later on route"
                           >
                             <ChevronDown className="w-3 h-3" />
@@ -2116,7 +2136,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       {/* Location Details Inputs */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                         <div>
-                          <label className="block text-[9px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                          <label className="block text-[9px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                             Which Location / Delivery City
                           </label>
                           <input
@@ -2125,12 +2145,12 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             value={loc.city}
                             onChange={(e) => handleReturnLocationChange(locIdx, 'city', e.target.value)}
                             placeholder="e.g. Bhiwandi, Pune, Mumbai, Nashik"
-                            className="w-full bg-sky-50/40 border border-sky-200 rounded px-2 py-1 text-xs font-bold text-slate-900"
+                            className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[9px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                          <label className="block text-[9px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                             Godown / Unloading Place Name
                           </label>
                           <input
@@ -2139,12 +2159,12 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                             value={loc.placeName}
                             onChange={(e) => handleReturnLocationChange(locIdx, 'placeName', e.target.value)}
                             placeholder="e.g. Central Godown, Market Yard Depot"
-                            className="w-full bg-white border border-sky-200 rounded px-2 py-1 text-xs font-medium text-slate-900"
+                            className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs font-medium text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[9px] font-bold text-sky-800 uppercase mb-0.5 font-heading">
+                          <label className="block text-[9px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
                             Consignee Contact Person & Mobile
                           </label>
                           <div className="grid grid-cols-2 gap-1.5">
@@ -2153,14 +2173,14 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                               value={loc.consigneeName || ''}
                               onChange={(e) => handleReturnLocationChange(locIdx, 'consigneeName', e.target.value)}
                               placeholder="Contact person"
-                              className="w-full bg-white border border-sky-200 rounded px-2 py-1 text-xs text-slate-900"
+                              className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2 py-1.5 text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                             />
                             <input
                               type="text"
                               value={loc.mobile || ''}
                               onChange={(e) => handleReturnLocationChange(locIdx, 'mobile', e.target.value)}
                               placeholder="+91 Mobile"
-                              className="w-full bg-white border border-sky-200 rounded px-2 py-1 text-xs font-mono text-slate-900"
+                              className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2 py-1.5 text-xs font-mono text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                             />
                           </div>
                         </div>
@@ -2170,16 +2190,16 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                 </div>
 
                 {/* Live Route Summary */}
-                <div className="p-2.5 bg-sky-100/70 border border-sky-200 rounded-lg flex items-center justify-between flex-wrap gap-2 text-xs">
+                <div className="p-3 bg-[#F0F4F8] border border-[#DCE8F2] rounded-xl flex items-center justify-between flex-wrap gap-2 text-xs">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <Navigation className="w-3.5 h-3.5 text-sky-700 shrink-0" />
-                    <span className="font-heading font-bold text-sky-950">Calculated Delivery Route:</span>
-                    <span className="font-mono font-black text-sky-900">
+                    <Navigation className="w-3.5 h-3.5 text-[#6A89A7] shrink-0" />
+                    <span className="font-heading font-bold text-[#384959]">Calculated Delivery Route:</span>
+                    <span className="font-mono font-black text-[#384959]">
                       {returnLoadingCity} (GJ) → {returnDeliveryLocations.map((l) => l.city || 'Location').join(' → ')} ({returnDeliveryLocations.length} Delivered Locations)
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3 font-mono font-bold text-sky-900 text-[11px]">
+                  <div className="flex items-center gap-3 font-mono font-bold text-[#384959] text-[11px]">
                     <span>
                       Total Qty: <strong>{returnTotalQty}</strong>
                     </span>
@@ -2192,14 +2212,14 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
               </div>
 
               {/* Set Rent of Load & LR Details */}
-              <div className="p-3.5 bg-sky-50/70 border border-sky-200 rounded-xl space-y-3">
-                <span className="text-[11px] font-extrabold uppercase text-sky-900 tracking-wider block font-heading">
+              <div className="p-4 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-3">
+                <span className="text-[11px] font-extrabold uppercase text-[#384959] tracking-wider block font-heading">
                   Freight Charge, LR & Payment Terms
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                       Rent of Load (Charge in ₹)
                     </label>
                     <input
@@ -2208,16 +2228,16 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       min="0"
                       value={loadRentCharge}
                       onChange={(e) => setLoadRentCharge(Number(e.target.value))}
-                      className="w-full bg-white border border-sky-300 rounded-lg px-3 py-1.5 font-mono font-black text-sm text-sky-950 focus:outline-sky-500"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 font-mono font-black text-sm text-[#384959] focus:outline-none focus:border-[#88BDF2] focus:ring-2 focus:ring-[#88BDF2]/20"
                       placeholder="10500"
                     />
-                    <span className="text-[9px] text-sky-700 block mt-0.5">
+                    <span className="text-[9px] text-[#6A89A7] block mt-0.5">
                       Example: ₹10,500. Settle later to tag as <strong>(Settled)</strong>.
                     </span>
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                       LR Number
                     </label>
                     <input
@@ -2225,41 +2245,41 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       required
                       value={returnLRNumber}
                       onChange={(e) => setReturnLRNumber(e.target.value)}
-                      className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 font-mono font-bold text-xs"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 font-mono font-bold text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] uppercase font-bold text-sky-800 mb-1 font-heading">
+                    <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                       Payment Reminder Date
                     </label>
                     <input
                       type="date"
                       value={returnReminderDate}
                       onChange={(e) => setReturnReminderDate(e.target.value)}
-                      className="w-full bg-white border border-sky-200 rounded-lg px-2.5 py-1.5 font-mono text-xs"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-xl px-3 py-2 font-mono text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-between pt-2 border-t border-sky-100">
-                <span className="text-xs text-sky-800">
-                  Delivering across <strong>{returnDeliveryLocations.length} location(s)</strong> with verified LR tracking
+              <div className="flex items-center justify-between pt-2 border-t border-[#DCE8F2]">
+                <span className="text-xs text-[#6A89A7]">
+                  Delivering across <strong className="text-[#384959]">{returnDeliveryLocations.length} location(s)</strong> with verified LR tracking
                 </span>
 
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setSelectedTripForReturn(null)}
-                    className="px-4 py-2 font-bold text-sky-800 bg-sky-50 rounded-lg hover:bg-sky-100 cursor-pointer font-heading"
+                    className="px-4 py-2 font-bold text-[#384959] bg-[#F0F4F8] rounded-xl hover:bg-[#DCE8F2] cursor-pointer font-heading transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 font-bold text-white bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-700 hover:to-sky-600 rounded-lg shadow-sm shadow-sky-600/20 cursor-pointer font-heading flex items-center gap-1.5"
+                    className="px-5 py-2 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-xl shadow-xs cursor-pointer font-heading flex items-center gap-1.5 transition-all"
                   >
                     <Save className="w-4 h-4" />
                     <span>
@@ -2275,18 +2295,18 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
       {/* Modal 3: Settle Return Load Payment with (Settled) Tag */}
       {settlingTrip && settlingTrip.returnLoad && (
-        <div className="fixed inset-0 z-50 bg-sky-950/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-sky-200 shadow-2xl w-full max-w-md p-5 space-y-4 text-xs">
-            <div className="flex items-center justify-between border-b border-sky-100 pb-2">
-              <h3 className="font-heading font-bold text-sm text-sky-950">
+        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs">
+            <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
+              <h3 className="font-heading font-bold text-sm text-[#384959]">
                 Settle Payment for {settlingTrip.returnLoad.loadingPartyName}
               </h3>
-              <button onClick={() => setSettlingTrip(null)} className="text-slate-400 hover:text-slate-700">✕</button>
+              <button onClick={() => setSettlingTrip(null)} className="text-slate-400 hover:text-[#384959] cursor-pointer">✕</button>
             </div>
 
-            <div className="p-3 bg-sky-50/60 border border-sky-200 rounded-xl space-y-1">
-              <span className="text-[10px] text-sky-700 font-bold uppercase block font-heading">Original Charge:</span>
-              <div className="font-mono text-lg font-black text-slate-900">
+            <div className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-1">
+              <span className="text-[10px] text-[#6A89A7] font-bold uppercase block font-heading">Original Charge:</span>
+              <div className="font-mono text-lg font-black text-[#384959]">
                 ₹{settlingTrip.returnLoad.loadRentCharge.toLocaleString('en-IN')}
               </div>
               <span className="text-[11px] text-slate-600 block">
@@ -2296,7 +2316,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
             <form onSubmit={handleConfirmSettlement} className="space-y-3">
               <div>
-                <label className="block text-[10px] uppercase font-bold text-sky-900 mb-1 font-heading">
+                <label className="block text-[10px] uppercase font-bold text-[#384959] mb-1 font-heading">
                   Settled Amount (In ₹)
                 </label>
                 <input
@@ -2304,25 +2324,25 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                   required
                   value={settledAmountInput}
                   onChange={(e) => setSettledAmountInput(Number(e.target.value))}
-                  className="w-full bg-white border border-emerald-400 rounded-lg px-3 py-2 font-mono font-bold text-base text-emerald-800 focus:outline-emerald-500"
+                  className="w-full bg-white border border-emerald-400 rounded-xl px-3 py-2 font-mono font-bold text-base text-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-400/20"
                 />
               </div>
 
-              <div className="p-2.5 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded-lg text-[11px]">
+              <div className="p-2.5 bg-emerald-50 text-emerald-900 border border-emerald-200 rounded-xl text-[11px]">
                 Upon saving, this load will display: <strong>Charge is ₹{settlingTrip.returnLoad.loadRentCharge.toLocaleString('en-IN')} and Settled in ₹{settledAmountInput.toLocaleString('en-IN')}</strong> with the tag <strong className="text-emerald-700 font-black">(Settled)</strong>.
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-sky-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-[#DCE8F2]">
                 <button
                   type="button"
                   onClick={() => setSettlingTrip(null)}
-                  className="px-4 py-2 font-bold text-sky-800 bg-sky-50 rounded-lg hover:bg-sky-100 cursor-pointer"
+                  className="px-4 py-2 font-bold text-[#384959] bg-[#F0F4F8] hover:bg-[#DCE8F2] rounded-xl cursor-pointer font-heading transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-lg shadow-sm cursor-pointer"
+                  className="px-5 py-2 font-bold text-white bg-emerald-700 hover:bg-emerald-800 rounded-xl shadow-xs cursor-pointer font-heading transition-all"
                 >
                   Confirm & Tag as (Settled)
                 </button>
