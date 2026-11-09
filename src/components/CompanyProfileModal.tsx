@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useTMS } from '../context/TMSContext';
 import { handleFormKeyDown } from '../utils/keyboardNavigation';
+import { ModalPortal } from './common/ModalPortal';
 
 interface CompanyProfileModalProps {
   isOpen: boolean;
@@ -128,10 +129,10 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-2xl overflow-hidden text-xs text-slate-800 animate-in fade-in duration-150 my-6">
+    <ModalPortal isOpen={isOpen} onClose={onClose}>
+      <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-2xl overflow-hidden text-xs text-[#384959] flex flex-col max-h-[90vh] my-auto">
         {/* Modal Header */}
-        <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between">
+        <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shrink-0">
               <Building2 className="w-5 h-5 text-[#BDDDFC]" />
@@ -157,8 +158,9 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
         <form
           onSubmit={handleSubmit}
           onKeyDown={(e) => handleFormKeyDown(e)}
-          className="p-5 space-y-4 max-h-[80vh] overflow-y-auto"
+          className="flex-1 overflow-y-auto p-5 space-y-4 flex flex-col justify-between"
         >
+          <div className="space-y-4">
           {/* Important Security Notice (Master Prompt Section 3) */}
           <div className="p-3 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl flex items-start gap-2.5 text-[11px] text-[#384959]">
             <Shield className="w-4 h-4 text-[#6A89A7] shrink-0 mt-0.5" />
@@ -188,7 +190,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
 
           {/* Company Logo Section */}
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
-            <span className="font-heading font-bold text-slate-900 uppercase text-[10px] tracking-wider block">
+            <span className="font-heading font-bold text-[#384959] uppercase text-[10px] tracking-wider block">
               Company Logo Branding
             </span>
             <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -283,7 +285,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
                   placeholder="+91 98220 11988"
-                  className="w-full bg-white border border-[#DCE8F2] rounded-lg pl-8 pr-3 py-1.5 font-mono font-bold text-slate-900 text-xs focus:outline-none focus:border-[#88BDF2]"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg pl-8 pr-3 py-1.5 font-mono font-bold text-[#384959] text-xs focus:outline-none focus:border-[#88BDF2]"
                 />
                 <Phone className="w-3.5 h-3.5 text-[#6A89A7] absolute left-2.5 top-2.5" />
               </div>
@@ -300,7 +302,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="operations@transpulse.com"
-                  className="w-full bg-white border border-[#DCE8F2] rounded-lg pl-8 pr-3 py-1.5 font-medium text-slate-900 text-xs focus:outline-none focus:border-[#88BDF2]"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg pl-8 pr-3 py-1.5 font-medium text-[#384959] text-xs focus:outline-none focus:border-[#88BDF2]"
                 />
                 <Mail className="w-3.5 h-3.5 text-[#6A89A7] absolute left-2.5 top-2.5" />
               </div>
@@ -335,7 +337,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   placeholder="Pune / Surat"
-                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
@@ -346,7 +348,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                 <select
                   value={state}
                   onChange={(e) => setState(e.target.value)}
-                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                 >
                   <option value="Maharashtra">Maharashtra</option>
                   <option value="Gujarat">Gujarat</option>
@@ -368,7 +370,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                 value={gstin}
                 onChange={(e) => setGstin(e.target.value.toUpperCase())}
                 placeholder="27AABCU9603R1ZM"
-                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-mono font-bold uppercase text-slate-900"
+                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-mono font-bold uppercase text-[#384959]"
               />
             </div>
 
@@ -381,13 +383,14 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
                 value={panNumber}
                 onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
                 placeholder="AABCU9603R"
-                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-mono font-bold uppercase text-slate-900"
+                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-1.5 text-xs font-mono font-bold uppercase text-[#384959]"
               />
             </div>
           </div>
+          </div>
 
           {/* Action buttons */}
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#DCE8F2]">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#DCE8F2] shrink-0 bg-white">
             <button
               type="button"
               onClick={onClose}
@@ -405,7 +408,7 @@ export const CompanyProfileModal: React.FC<CompanyProfileModalProps> = ({
           </div>
         </form>
       </div>
-    </div>
+    </ModalPortal>
   );
 };
 

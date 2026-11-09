@@ -21,6 +21,7 @@ import {
 import { useTMS } from '../context/TMSContext';
 import { UserAccount, UserDocument, VerificationStatus } from '../types/tms';
 import { handleFormKeyDown } from '../utils/keyboardNavigation';
+import { ModalPortal } from './common/ModalPortal';
 
 interface UserAccountsModalProps {
   isOpen: boolean;
@@ -152,8 +153,8 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl overflow-hidden text-xs text-slate-800 animate-in fade-in duration-150 my-6 flex flex-col max-h-[90vh]">
+    <ModalPortal isOpen={isOpen} onClose={onClose}>
+      <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl overflow-hidden text-xs text-[#384959] flex flex-col max-h-[90vh] my-auto">
         {/* Header */}
         <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
@@ -231,7 +232,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                             <span
                               className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase border font-mono ${
                                 user.role === 'admin'
-                                  ? 'bg-purple-100 text-purple-800 border-purple-200'
+                                  ? 'bg-[#384959] text-white border-[#384959]'
                                   : 'bg-[#BDDDFC]/30 text-[#384959] border-[#DCE8F2]'
                               }`}
                             >
@@ -359,7 +360,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Anand Shinde"
-                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
 
@@ -373,7 +374,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}
                     placeholder="+91 98220 99122"
-                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-mono font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-mono font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
               </div>
@@ -388,7 +389,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="anand@fleetpulse.com"
-                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#88BDF2]"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
 
@@ -401,7 +402,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Set temporary password"
-                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:border-[#88BDF2]"
+                    className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-mono text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                   />
                 </div>
               </div>
@@ -415,7 +416,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="e.g. Pune Market Yard Staff Quarters, Maharashtra"
-                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#88BDF2]"
+                  className="w-full bg-white border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                 />
               </div>
 
@@ -432,7 +433,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                     <select
                       value={docType}
                       onChange={(e) => setDocType(e.target.value as any)}
-                      className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 focus:outline-none focus:border-[#88BDF2]"
+                      className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                     >
                       <option value="Aadhaar">Aadhaar Card</option>
                       <option value="PAN">PAN Card</option>
@@ -451,7 +452,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
                       value={docNumber}
                       onChange={(e) => setDocNumber(e.target.value)}
                       placeholder="e.g. XXXX-XXXX-9912 or PAN"
-                      className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-900 focus:outline-none focus:border-[#88BDF2]"
+                      className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-mono text-[#384959] focus:outline-none focus:border-[#88BDF2]"
                     />
                   </div>
                 </div>
@@ -625,7 +626,7 @@ export const UserAccountsModal: React.FC<UserAccountsModalProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </ModalPortal>
   );
 };
 

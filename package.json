@@ -5,7 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
+    "dev:backend": "node backend/dist/server.js",
     "build": "vite build",
+    "build:frontend": "vite build",
+    "build:backend": "cd backend && npm run build",
+    "start:backend": "node backend/dist/server.js",
+    "seed:backend": "cd backend && npm run seed",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"

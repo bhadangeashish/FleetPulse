@@ -355,31 +355,38 @@ export const INITIAL_TRIPS: Trip[] = [
       {
         id: 'dest-1',
         stopSequence: 1,
-        placeName: 'Vapi APMC Wholesale Fruit Yard',
+        placeName: 'Gujrat',
         city: 'Vapi',
         state: 'Gujarat',
-        contactPerson: 'Suresh Patel',
+        contactPerson: 'Pahilwan',
         mobile: '+91 98240 77192',
-        paymentTerm: 'immediate', // Gives immediate payment
-        quickReminderDate: '2026-10-23',
+        paymentTerm: '1_month',
+        quickReminderDate: '2026-11-22',
         deliveryStatus: 'delivered',
         items: [
           {
             id: 'item-1',
-            itemName: 'Ratnagiri Alphonso Mango Grade-A (24kg Box)',
+            itemName: 'Saibaba',
             quantity: 30,
-            costPerItem: 30, // 30 x 30 = 900
+            costPerItem: 30,
             totalAmount: 900,
           },
           {
             id: 'item-2',
-            itemName: 'Solapur Kesar Bhagwa Pomegranates (15kg Box)',
+            itemName: 'Annar',
             quantity: 40,
             costPerItem: 50,
             totalAmount: 2000,
           },
+          {
+            id: 'item-3',
+            itemName: 'Bilgan Yadav(Peru)',
+            quantity: 45,
+            costPerItem: 30,
+            totalAmount: 1350,
+          },
         ],
-        destinationTotalAmount: 2900,
+        destinationTotalAmount: 4250,
       },
       {
         id: 'dest-2',

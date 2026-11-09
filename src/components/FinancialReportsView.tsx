@@ -37,6 +37,7 @@ import { PartyPaymentRecord, Party, PartyDocument } from '../types/tms';
 import { ReturnLoadAnalyticsView } from './ReturnLoadAnalyticsView';
 import { readFileAsDataURL } from '../utils/fileUploadHelper';
 import { EmptyState } from './common/EmptyState';
+import { ModalPortal } from './common/ModalPortal';
 
 export const FinancialReportsView: React.FC = () => {
   const {
@@ -609,7 +610,7 @@ export const FinancialReportsView: React.FC = () => {
                             ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                             : party.partyType === 'fruit_buyer'
                             ? 'bg-amber-50 text-amber-800 border-amber-200'
-                            : 'bg-purple-50 text-purple-800 border-purple-200'
+                            : 'bg-[#BDDDFC]/40 text-[#384959] border-[#BDDDFC]'
                         }`}
                       >
                         {party.partyType === 'return_load_consignor'
@@ -883,7 +884,7 @@ export const FinancialReportsView: React.FC = () => {
                           </td>
 
                           <td className="py-3 px-4">
-                            <span className="font-heading font-bold text-slate-900 block truncate max-w-[200px]">
+                            <span className="font-heading font-bold text-[#384959] block truncate max-w-[200px]">
                               {doc.partyName}
                             </span>
                             <span className="text-[10px] text-slate-400 font-mono">
@@ -1039,7 +1040,7 @@ export const FinancialReportsView: React.FC = () => {
                         <div
                           className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${
                             payment.type === 'return_load_party'
-                              ? 'bg-purple-100 text-purple-800'
+                              ? 'bg-[#BDDDFC] text-[#384959]'
                               : 'bg-emerald-100 text-emerald-800'
                           }`}
                         >
@@ -1099,7 +1100,7 @@ export const FinancialReportsView: React.FC = () => {
                     <div className="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-xs font-medium">
                       <div>
                         <span className="text-[11px] text-slate-500 block">Total Load Charge</span>
-                        <span className="font-mono font-bold text-slate-900 text-sm">
+                        <span className="font-mono font-bold text-[#384959] text-sm">
                           ₹{payment.chargeAmount.toLocaleString('en-IN')}
                         </span>
                       </div>
@@ -1201,9 +1202,9 @@ export const FinancialReportsView: React.FC = () => {
       {/* ========================================================
           MODAL 1: ADD DOCUMENT MODAL ("add Document tab to add documents")
           ======================================================== */}
-      {isAddDocModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+      <ModalPortal isOpen={isAddDocModalOpen} onClose={() => setIsAddDocModalOpen(false)}>
+        {isAddDocModalOpen && (
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs text-slate-800 my-auto max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#BDDDFC]/30 text-[#6A89A7] flex items-center justify-center">
@@ -1426,15 +1427,15 @@ export const FinancialReportsView: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
 
       {/* ========================================================
           MODAL 2: REGISTER NEW PARTY MODAL
           ======================================================== */}
-      {isAddPartyModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-xl p-5 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+      <ModalPortal isOpen={isAddPartyModalOpen} onClose={() => setIsAddPartyModalOpen(false)}>
+        {isAddPartyModalOpen && (
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-xl p-5 space-y-4 text-xs text-slate-800 my-auto max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-[#BDDDFC]/30 text-[#6A89A7] flex items-center justify-center">
@@ -1635,15 +1636,15 @@ export const FinancialReportsView: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
 
       {/* ========================================================
           MODAL 3: PARTY DETAILS & ALL DOCUMENTS MODAL
           ======================================================== */}
-      {selectedPartyForDetail && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-2xl p-6 space-y-5 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+      <ModalPortal isOpen={Boolean(selectedPartyForDetail)} onClose={() => setSelectedPartyForDetail(null)}>
+        {selectedPartyForDetail && (
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-2xl p-6 space-y-5 text-xs text-slate-800 my-auto max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#BDDDFC]/30 text-[#6A89A7] flex items-center justify-center font-bold">
@@ -1771,15 +1772,15 @@ export const FinancialReportsView: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
 
       {/* ========================================================
           MODAL 4: DOCUMENT SOFTCOPY PREVIEW MODAL
           ======================================================== */}
-      {previewingDoc && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-6 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+      <ModalPortal isOpen={Boolean(previewingDoc)} onClose={() => setPreviewingDoc(null)} zIndex="z-[110]">
+        {previewingDoc && (
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-6 space-y-4 text-xs text-slate-800 my-auto">
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-[#6A89A7]" />
@@ -1862,15 +1863,15 @@ export const FinancialReportsView: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
 
       {/* ========================================================
           MODAL 5: SETTLEMENT MODAL (Existing)
           ======================================================== */}
-      {settlingPayment && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+      <ModalPortal isOpen={Boolean(settlingPayment)} onClose={() => setSettlingPayment(null)}>
+        {settlingPayment && (
+          <div className="bg-white rounded-xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs text-slate-800 my-auto">
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-2">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -1929,15 +1930,15 @@ export const FinancialReportsView: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
 
       {/* ========================================================
           MODAL 6: 6-FIELD PRINT MEMO SLIP MODAL (Existing)
           ======================================================== */}
-      {printModalRecord && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-6 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95">
+      <ModalPortal isOpen={Boolean(printModalRecord)} onClose={() => setPrintModalRecord(null)}>
+        {printModalRecord && (
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-6 space-y-4 text-xs text-slate-800 my-auto">
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
                 <Printer className="w-5 h-5 text-[#6A89A7]" />
@@ -2020,7 +2021,7 @@ export const FinancialReportsView: React.FC = () => {
                   <span className="text-[10px] uppercase font-bold text-[#384959] font-heading block">
                     5. Charge
                   </span>
-                  <span className="font-mono text-sm font-black text-slate-900">
+                  <span className="font-mono text-sm font-black text-[#384959]">
                     ₹{printModalRecord.chargeAmount.toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -2067,14 +2068,14 @@ export const FinancialReportsView: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
+
       {/* ========================================================
           MODAL 7: CONSOLIDATED PARTY STATEMENT & PAYMENT REPORT (CUSTOM DATE RANGE & PDF / PRINT)
           ======================================================== */}
-      {isPartyReportModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl p-5 sm:p-6 space-y-4 text-xs text-slate-800 animate-in fade-in zoom-in-95 max-h-[92vh] flex flex-col">
+      <ModalPortal isOpen={isPartyReportModalOpen} onClose={() => setIsPartyReportModalOpen(false)}>
+        <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl p-5 sm:p-6 space-y-4 text-xs text-slate-800 max-h-[92vh] flex flex-col my-auto">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3 shrink-0">
               <div className="flex items-center gap-2.5">
@@ -2109,7 +2110,7 @@ export const FinancialReportsView: React.FC = () => {
                   <select
                     value={reportPartyName}
                     onChange={(e) => setReportPartyName(e.target.value)}
-                    className="w-full bg-white border border-slate-300 text-slate-900 font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs cursor-pointer"
+                    className="w-full bg-white border border-slate-300 text-[#384959] font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs cursor-pointer"
                   >
                     <option value="all">All Registered Parties ({parties.length})</option>
                     {parties.map((p) => (
@@ -2129,7 +2130,7 @@ export const FinancialReportsView: React.FC = () => {
                     type="date"
                     value={reportFromDate}
                     onChange={(e) => setReportFromDate(e.target.value)}
-                    className="w-full bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs"
+                    className="w-full bg-white border border-slate-300 text-[#384959] font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs"
                   />
                 </div>
 
@@ -2142,7 +2143,7 @@ export const FinancialReportsView: React.FC = () => {
                     type="date"
                     value={reportToDate}
                     onChange={(e) => setReportToDate(e.target.value)}
-                    className="w-full bg-white border border-slate-300 text-slate-900 font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs"
+                    className="w-full bg-white border border-slate-300 text-[#384959] font-mono font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs"
                   />
                 </div>
 
@@ -2154,7 +2155,7 @@ export const FinancialReportsView: React.FC = () => {
                   <select
                     value={reportStatusFilter}
                     onChange={(e) => setReportStatusFilter(e.target.value as any)}
-                    className="w-full bg-white border border-slate-300 text-slate-900 font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs cursor-pointer"
+                    className="w-full bg-white border border-slate-300 text-[#384959] font-bold text-xs px-2.5 py-1.5 rounded-lg focus:outline-none focus:border-[#88BDF2] shadow-2xs cursor-pointer"
                   >
                     <option value="all">All Payment Statuses</option>
                     <option value="settled">Settled / Cleared Only</option>
@@ -2224,7 +2225,7 @@ export const FinancialReportsView: React.FC = () => {
                   <select
                     value={reportTypeFilter}
                     onChange={(e) => setReportTypeFilter(e.target.value as any)}
-                    className="bg-white border border-slate-300 text-slate-900 font-semibold text-xs px-2 py-0.5 rounded-md focus:outline-none focus:border-[#88BDF2] shadow-2xs cursor-pointer"
+                    className="bg-white border border-slate-300 text-[#384959] font-semibold text-xs px-2 py-0.5 rounded-md focus:outline-none focus:border-[#88BDF2] shadow-2xs cursor-pointer"
                   >
                     <option value="all">All Loads (Return + Fruit)</option>
                     <option value="return_load">Return Backhauls Only</option>
@@ -2312,7 +2313,7 @@ export const FinancialReportsView: React.FC = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
                   <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
                     <span className="text-[10px] text-slate-500 uppercase font-bold block">Gross Invoiced</span>
-                    <span className="text-base font-black text-slate-900 font-mono">
+                    <span className="text-base font-black text-[#384959] font-mono">
                       ₹{partyReportStats.totalBilled.toLocaleString('en-IN')}
                     </span>
                     <span className="text-[10px] text-slate-500 block">{partyReportStats.totalCount} Consignments</span>
@@ -2373,7 +2374,7 @@ export const FinancialReportsView: React.FC = () => {
                               {p.vehicleNumber}
                             </td>
                             <td className="py-1.5 px-2.5">
-                              <span className="font-bold text-slate-900 block truncate max-w-[180px]">{p.partyName}</span>
+                              <span className="font-bold text-[#384959] block truncate max-w-[180px]">{p.partyName}</span>
                               <span className="text-[10px] text-slate-500 block truncate max-w-[180px]">{p.route}</span>
                             </td>
                             <td className="py-1.5 px-2 text-center">
@@ -2387,7 +2388,7 @@ export const FinancialReportsView: React.FC = () => {
                                 {p.lrSubmittedToParty ? 'Handed Over' : 'Pending LR'}
                               </span>
                             </td>
-                            <td className="py-1.5 px-2 text-right font-mono font-bold text-slate-900">
+                            <td className="py-1.5 px-2 text-right font-mono font-bold text-[#384959]">
                               ₹{p.chargeAmount.toLocaleString('en-IN')}
                             </td>
                             <td className="py-1.5 px-2 text-right font-mono text-emerald-700">
@@ -2421,7 +2422,7 @@ export const FinancialReportsView: React.FC = () => {
                     </tbody>
                     {partyReportRecords.length > 0 && (
                       <tfoot>
-                        <tr className="bg-[#BDDDFC]/20 border-t-2 border-[#DCE8F2] font-bold text-slate-900 text-xs">
+                        <tr className="bg-[#BDDDFC]/20 border-t-2 border-[#DCE8F2] font-bold text-[#384959] text-xs">
                           <td colSpan={5} className="py-2 px-2.5 text-right font-heading uppercase">
                             Grand Totals ({partyReportRecords.length} Consignments):
                           </td>
@@ -2487,13 +2488,12 @@ export const FinancialReportsView: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-      )}
+      </ModalPortal>
 
       {/* Partial Payment Recording Modal (Master Prompt Section 9) */}
-      {partialPayModalRecord && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#DCE8F2] space-y-4 text-xs">
+      <ModalPortal isOpen={Boolean(partialPayModalRecord)} onClose={() => setPartialPayModalRecord(null)}>
+        {partialPayModalRecord && (
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#DCE8F2] space-y-4 text-xs my-auto">
             <div className="flex items-center justify-between pb-2 border-b border-[#DCE8F2]">
               <div className="flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-[#6A89A7]" />
@@ -2642,8 +2642,8 @@ export const FinancialReportsView: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
     </div>
   );
 };

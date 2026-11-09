@@ -54,9 +54,16 @@ const AppContent: React.FC = () => {
       case 'dashboard':
         return <AdminDashboardView />;
       case 'trips':
+      case 'deliveries':
         return <TripsPipelineView />;
       case 'vehicles':
-        return <VehiclesView />;
+        return <VehiclesView defaultTab="performance" />;
+      case 'fuel':
+        return <VehiclesView defaultTab="fuel_intelligence" />;
+      case 'service':
+        return <VehiclesView defaultTab="maintenance_log" />;
+      case 'documents':
+        return <VehiclesView defaultTab="roster" />;
       case 'drivers':
         return <DriversView />;
       case 'payments':

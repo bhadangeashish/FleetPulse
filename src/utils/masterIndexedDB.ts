@@ -2,7 +2,7 @@
 // Manages complete offline storage for Admin, User, and Driver portals
 
 const DB_NAME = 'fleetpulse_master_offline_db';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 export const MASTER_STORES = {
   VEHICLES: 'vehicles',
@@ -32,7 +32,7 @@ export const isIDBSupported = (): boolean => {
   }
 };
 
-// Fallback in localStorage if IndexedDB is blocked
+// Fallback in localStorage if IndexedDB is blocked in sandboxed iframe
 const FALLBACK_PREFIX = 'fleetpulse_idb_fallback_';
 
 const fallbackGet = <T>(store: string, key: string, fallback: T): T => {
@@ -149,7 +149,7 @@ export const getMasterDB = async (): Promise<IDBDatabase> => {
           db.createObjectStore(MASTER_STORES.USER_ACCOUNTS, { keyPath: 'id' });
         }
 
-        // 10. Offline Queue Store
+        // 10. Offline Queue Store (with unique idempotencyKey index)
         if (!db.objectStoreNames.contains(MASTER_STORES.OFFLINE_QUEUE)) {
           const queueStore = db.createObjectStore(MASTER_STORES.OFFLINE_QUEUE, { keyPath: 'id' });
           queueStore.createIndex('status', 'status', { unique: false });
@@ -278,3 +278,106 @@ export const idbClear = async (storeName: MasterStoreName): Promise<boolean> => 
   }
 };
 
+/**
+ * Seed initial sample offline records matching the showcase reference image:
+ * 1. Trip Record (1/1)
+ * 2. Fuel Entry (1/1)
+ * 3. Service Record (1/1)
+ * 4. Other Records (0/1)
+ */
+export const seedInitialOfflineRecordsIfEmpty = async (): Promise<number> => {
+  try {
+    const existing = await idbGetAll<any>(MASTER_STORES.OFFLINE_QUEUE);
+    if (existing && existing.length > 0) {
+      return existing.length;
+    }
+
+    const initialItems = [
+      {
+        id: 'queue-trip-01',
+        idempotencyKey: 'TRP-MH-GJ-2026-01-INITIAL',
+        userId: 'drv-1',
+        userName: 'Sukhwinder Singh',
+        role: 'driver',
+        vehicleId: 'veh-1',
+        vehicleNumber: 'MH-12-RN-4892',
+        activityType: 'SAVE_TRIP',
+        summary: 'Trip Record (1/1): Pune APMC to Surat Fruit Delivery (150 Boxes)',
+        payload: {
+          id: 'TRP-MH-GJ-2026-01',
+          vehicleNumber: 'MH-12-RN-4892',
+          startingLocation: 'Pune APMC',
+          destination: 'Surat',
+          loadType: 'Fruit / Goods',
+          boxes: 150,
+          startOdometer: 89950,
+        },
+        createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
+        deviceId: 'dev-pwa-01',
+        status: 'saved_offline',
+        retryCount: 0,
+      },
+      {
+        id: 'queue-fuel-01',
+        idempotencyKey: 'LOG-REFUEL-MH-12-RN-4892-89780-INITIAL',
+        userId: 'drv-1',
+        userName: 'Sukhwinder Singh',
+        role: 'driver',
+        vehicleId: 'veh-1',
+        vehicleNumber: 'MH-12-RN-4892',
+        activityType: 'LOG_REFUEL',
+        summary: 'Fuel Entry (1/1): 50.00 L Diesel @ BPCL Nashik (₹4,925.00, ODO 89,780 KM)',
+        payload: {
+          fuelType: 'diesel',
+          quantity: 50.0,
+          rate: 98.5,
+          totalAmount: 4925.0,
+          fuelStation: 'BPCL Nashik',
+          odometerReading: 89780,
+          fillType: 'full_tank',
+        },
+        createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+        deviceId: 'dev-pwa-01',
+        status: 'saved_offline',
+        retryCount: 0,
+      },
+      {
+        id: 'queue-serv-01',
+        idempotencyKey: 'LOG-SERVICE-MH-12-RN-4892-89780-INITIAL',
+        userId: 'drv-1',
+        userName: 'Sukhwinder Singh',
+        role: 'driver',
+        vehicleId: 'veh-1',
+        vehicleNumber: 'MH-12-RN-4892',
+        activityType: 'LOG_SERVICE',
+        summary: 'Service Record (1/1): General Servicing @ National Tyre Care (₹14,800)',
+        payload: {
+          activityType: 'General Servicing',
+          workshopName: 'National Tyre Care, Surat',
+          currentOdometer: 89780,
+          expenseAmount: 14800,
+          workDescription: 'Engine oil, oil filter, air filter, general checkup',
+        },
+        createdAt: new Date(Date.now() - 3600000 * 1).toISOString(),
+        deviceId: 'dev-pwa-01',
+        status: 'saved_offline',
+        retryCount: 0,
+      },
+    ];
+
+    for (const item of initialItems) {
+      await idbSet(MASTER_STORES.OFFLINE_QUEUE, item);
+    }
+
+    // Set initial last sync date matching reference image (05 Nov 2026, 06:20 PM)
+    await idbSet(MASTER_STORES.SYNC_META, {
+      key: 'last_synced_at',
+      value: '2026-11-05T18:20:00.000Z',
+    });
+
+    return initialItems.length;
+  } catch (err) {
+    console.warn('[MasterIDB] Failed to seed initial offline records:', err);
+    return 0;
+  }
+};

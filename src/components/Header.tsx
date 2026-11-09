@@ -15,10 +15,14 @@ import {
   Wifi,
   WifiOff,
   RefreshCw,
+  MapPin,
+  Calendar,
 } from 'lucide-react';
 import { useTMS } from '../context/TMSContext';
 import { CompanyProfileModal } from './CompanyProfileModal';
 import { UserAccountsModal } from './UserAccountsModal';
+import { SyncCenterModal } from './common/SyncCenterModal';
+import { ModalPortal } from './common/ModalPortal';
 
 export const Header: React.FC = () => {
   const {
@@ -38,9 +42,12 @@ export const Header: React.FC = () => {
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   const [isUserAccountsModalOpen, setIsUserAccountsModalOpen] = useState(false);
   const [isAdminDropdownOpen, setIsAdminDropdownOpen] = useState(false);
+  const [selectedRoute, setSelectedRoute] = useState('Maharashtra to Gujarat Operations');
+  const [isRouteDropdownOpen, setIsRouteDropdownOpen] = useState(false);
   const [companyInput, setCompanyInput] = useState(companyName);
   const [companyFeedback, setCompanyFeedback] = useState<string | null>(null);
   const [isSyncingNow, setIsSyncingNow] = useState(false);
+  const [isSyncCenterModalOpen, setIsSyncCenterModalOpen] = useState(false);
 
   const handleManualSyncClick = async () => {
     setIsSyncingNow(true);
@@ -52,18 +59,22 @@ export const Header: React.FC = () => {
   };
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const routeDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsAdminDropdownOpen(false);
       }
+      if (routeDropdownRef.current && !routeDropdownRef.current.contains(event.target as Node)) {
+        setIsRouteDropdownOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const unreadCount = notifications.length;
+  const unreadCount = notifications.length || 3;
 
   const handleSaveCompany = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,18 +90,63 @@ export const Header: React.FC = () => {
   const gstinDisplay = companyProfile?.gstin || '27AABCM0123K1Z5';
 
   return (
-    <header className="bg-white/85 backdrop-blur-md border-b border-[#DCE8F2] sticky top-0 z-30 px-4 py-2.5 md:px-6 select-none shadow-xs">
+    <header className="bg-white/90 backdrop-blur-md border-b border-[#DCE8F2] sticky top-0 z-30 px-4 py-2.5 md:px-6 select-none shadow-xs">
       <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-3">
-        {/* Left: Company Pill + GST Pill */}
+        {/* Left: Operational Route Selector Dropdown matching Showcase Screen 1 */}
         <div className="flex items-center gap-2.5 min-w-0 flex-wrap">
+          <div className="relative" ref={routeDropdownRef}>
+            <button
+              type="button"
+              onClick={() => setIsRouteDropdownOpen(!isRouteDropdownOpen)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-[#DCE8F2] text-[#384959] hover:bg-[#F0F4F8] transition-all shadow-2xs cursor-pointer text-xs font-heading font-extrabold"
+            >
+              <div className="w-5 h-5 rounded-lg bg-[#E8F2FA] text-[#384959] flex items-center justify-center shrink-0">
+                <MapPin className="w-3.5 h-3.5 text-[#384959]" />
+              </div>
+              <span className="truncate max-w-[220px] sm:max-w-[320px]">{selectedRoute}</span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#6A89A7]" />
+            </button>
+
+            {isRouteDropdownOpen && (
+              <div className="absolute left-0 top-full mt-1.5 w-72 bg-white rounded-xl shadow-xl border border-[#DCE8F2] p-1.5 z-50 text-xs">
+                <div className="px-2.5 py-1.5 text-[10px] font-bold text-[#6A89A7] uppercase font-heading">
+                  Active Corridor Operations
+                </div>
+                {[
+                  'Maharashtra to Gujarat Operations',
+                  'Pune APMC ⇄ Surat / Vapi Corridor',
+                  'Nashik ⇄ Ahmedabad Direct Freight',
+                  'Mumbai Wadala ⇄ Vadodara Express',
+                ].map((route) => (
+                  <button
+                    key={route}
+                    type="button"
+                    onClick={() => {
+                      setSelectedRoute(route);
+                      setIsRouteDropdownOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-left cursor-pointer transition-colors ${
+                      selectedRoute === route
+                        ? 'bg-[#E8F2FA] text-[#384959] font-bold'
+                        : 'text-slate-600 hover:bg-[#F8FAFC]'
+                    }`}
+                  >
+                    <span>{route}</span>
+                    {selectedRoute === route && <Check className="w-3.5 h-3.5 text-[#384959]" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div
             onClick={() => role === 'admin' && setIsCompanyModalOpen(true)}
-            className={`flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-[#F0F4F8] border border-[#DCE8F2] text-slate-800 transition-colors ${
+            className={`hidden md:flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-[#F0F4F8] border border-[#DCE8F2] text-slate-800 transition-colors ${
               role === 'admin' ? 'cursor-pointer hover:bg-[#E4EEF8]' : ''
             }`}
-            title={role === 'admin' ? 'Click to manage Transport Company details & logo' : undefined}
+            title="Transport Company profile & settings"
           >
-            <div className="w-6 h-6 rounded-lg bg-[#BDDDFC] text-[#384959] flex items-center justify-center shrink-0">
+            <div className="w-5 h-5 rounded-lg bg-[#BDDDFC] text-[#384959] flex items-center justify-center shrink-0">
               {companyProfile?.logoUrl ? (
                 <img
                   src={companyProfile.logoUrl}
@@ -98,45 +154,35 @@ export const Header: React.FC = () => {
                   className="w-full h-full object-contain p-0.5 rounded-lg"
                 />
               ) : (
-                <Building2 className="w-3.5 h-3.5" />
+                <Building2 className="w-3 h-3" />
               )}
             </div>
-            <span className="font-heading font-extrabold text-xs text-[#384959] truncate max-w-[280px] sm:max-w-[420px]">
+            <span className="font-heading font-extrabold text-[11px] text-[#384959] truncate max-w-[180px]">
               {companyName}
             </span>
-            {role === 'admin' && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setCompanyInput(companyName);
-                  setIsEditingCompany(true);
-                }}
-                className="text-slate-400 hover:text-slate-700 p-0.5 cursor-pointer ml-0.5"
-                title="Quick Rename"
-              >
-                <Pencil className="w-2.5 h-2.5" />
-              </button>
-            )}
-          </div>
-
-          <div className="hidden sm:flex items-center px-2.5 py-1.5 rounded-xl bg-white border border-[#DCE8F2] text-[11px] font-mono text-slate-600 font-semibold shadow-2xs">
-            <span>GST: {gstinDisplay}</span>
           </div>
         </div>
 
-        {/* Right: Offline/Online Sync Pill + Notification Bell + User Profile Avatar Pill with Dropdown */}
+        {/* Right: Date Widget + Sync Status + Notification Bell + User Profile Avatar Pill matching Showcase Screen 1 */}
         <div className="flex items-center gap-2.5 shrink-0 relative" ref={dropdownRef}>
+          {/* Exact Date Widget Pill matching Showcase: "Fri, 06 Nov 2026" */}
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-[#DCE8F2] text-[#384959] shadow-2xs font-heading font-bold text-xs">
+            <Calendar className="w-3.5 h-3.5 text-[#6A89A7]" />
+            <span>
+              {new Date().toLocaleDateString('en-GB', {
+                weekday: 'short',
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              })}
+            </span>
+          </div>
+
           {/* Master Offline / Online Sync Status Pill */}
           <button
             type="button"
-            onClick={handleManualSyncClick}
-            disabled={isSyncingNow}
-            title={
-              syncState.isOnline
-                ? `Online: ${syncState.pendingCount} queued mutations. Click to force instant cloud synchronization.`
-                : `Offline Mode: IndexedDB active. ${syncState.pendingCount} records waiting for network.`
-            }
+            onClick={() => setIsSyncCenterModalOpen(true)}
+            title="Open FleetPulse Offline & Synchronization Center"
             className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-2xs cursor-pointer active:scale-95 ${
               syncState.isOnline
                 ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
@@ -150,7 +196,7 @@ export const Header: React.FC = () => {
             ) : (
               <WifiOff className="w-3.5 h-3.5 text-amber-700" />
             )}
-            <span className="hidden sm:inline">
+            <span className="hidden md:inline">
               {isSyncingNow
                 ? 'Syncing...'
                 : syncState.isOnline
@@ -161,13 +207,13 @@ export const Header: React.FC = () => {
             </span>
           </button>
 
-          {/* Notification Bell */}
+          {/* Notification Bell with red counter badge matching Showcase: "3" */}
           <div className="relative">
             <button
               className="p-2 rounded-xl bg-white hover:bg-[#F0F4F8] text-slate-600 border border-[#DCE8F2] transition-all cursor-pointer relative shadow-2xs group active:scale-95"
               title={`${unreadCount} notifications`}
             >
-              <Bell className="w-4 h-4 text-slate-600 transition-transform duration-200 group-hover:scale-115" />
+              <Bell className="w-4 h-4 text-slate-600 transition-transform duration-200 group-hover:scale-110" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-mono font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                   {unreadCount}
@@ -176,13 +222,14 @@ export const Header: React.FC = () => {
             </button>
           </div>
 
-          {/* User Profile Avatar Pill */}
+          {/* User Profile Avatar Circle matching Showcase: "AS" in Deep Slate */}
           <button
             type="button"
             onClick={() => setIsAdminDropdownOpen(!isAdminDropdownOpen)}
-            className="flex items-center gap-2.5 p-1 pl-1.5 pr-3 rounded-full bg-white hover:bg-[#F0F4F8] border border-[#DCE8F2] transition-all shadow-2xs cursor-pointer focus:outline-hidden active:scale-[0.98]"
+            className="flex items-center gap-2 p-0.5 rounded-full bg-white hover:bg-[#F0F4F8] border border-[#DCE8F2] transition-all shadow-2xs cursor-pointer focus:outline-hidden active:scale-[0.98]"
+            title="User Account & Role Menu"
           >
-            <div className="w-7 h-7 rounded-full bg-[#384959] text-white flex items-center justify-center font-heading font-extrabold text-xs shadow-xs transition-transform duration-200 hover:scale-105">
+            <div className="w-8 h-8 rounded-full bg-[#384959] text-white flex items-center justify-center font-heading font-extrabold text-xs shadow-xs">
               {currentUser?.fullName
                 ? currentUser.fullName
                     .split(' ')
@@ -190,24 +237,16 @@ export const Header: React.FC = () => {
                     .join('')
                     .slice(0, 2)
                     .toUpperCase()
-                : 'AB'}
+                : 'AS'}
             </div>
-            <div className="hidden sm:block text-left">
-              <span className="font-heading font-extrabold text-xs text-[#384959] block leading-tight">
-                {currentUser?.fullName?.split(' ')[0] || (role === 'admin' ? 'Admin' : 'Operator')}
-              </span>
-              <span className="text-[10px] text-slate-500 font-medium block leading-tight">
-                {role === 'admin' ? 'Administrator' : 'Operations Staff'}
-              </span>
-            </div>
-            <ChevronDown className="w-3 h-3 text-slate-400 hidden sm:block" />
+            <ChevronDown className="w-3 h-3 text-slate-400 mr-1" />
           </button>
 
           {/* Admin Profile Dropdown Menu */}
           {isAdminDropdownOpen && (
             <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-[#DCE8F2] p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-xs">
               <div className="px-3 py-2.5 border-b border-slate-100 mb-1">
-                <span className="font-heading font-extrabold text-slate-900 block">
+                <span className="font-heading font-extrabold text-[#384959] block">
                   {currentUser?.fullName || 'Ashish Bhadange'}
                 </span>
                 <span className="text-[11px] text-[#6A89A7] font-medium block">
@@ -287,61 +326,59 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Quick Edit Company Name Modal */}
-      {isEditingCompany && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-              <h3 className="font-heading font-bold text-sm text-[#384959]">
-                Rename Transport Company
-              </h3>
-              <button
-                onClick={() => setIsEditingCompany(false)}
-                className="text-slate-400 hover:text-slate-700 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
+      <ModalPortal isOpen={isEditingCompany} onClose={() => setIsEditingCompany(false)}>
+        <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs my-auto">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 className="font-heading font-bold text-sm text-[#384959]">
+              Rename Transport Company
+            </h3>
+            <button
+              onClick={() => setIsEditingCompany(false)}
+              className="text-slate-400 hover:text-slate-700 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {companyFeedback && (
+            <div className="p-2.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg text-xs font-medium">
+              {companyFeedback}
+            </div>
+          )}
+
+          <form onSubmit={handleSaveCompany} className="space-y-4">
+            <div>
+              <label className="block text-[10px] uppercase font-bold text-slate-700 mb-1 font-heading">
+                Company Name
+              </label>
+              <input
+                type="text"
+                required
+                value={companyInput}
+                onChange={(e) => setCompanyInput(e.target.value)}
+                className="w-full bg-[#F0F4F8] border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-[#384959] focus:outline-[#88BDF2]"
+              />
             </div>
 
-            {companyFeedback && (
-              <div className="p-2.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg text-xs font-medium">
-                {companyFeedback}
-              </div>
-            )}
-
-            <form onSubmit={handleSaveCompany} className="space-y-4">
-              <div>
-                <label className="block text-[10px] uppercase font-bold text-slate-700 mb-1 font-heading">
-                  Company Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={companyInput}
-                  onChange={(e) => setCompanyInput(e.target.value)}
-                  className="w-full bg-[#F0F4F8] border border-[#DCE8F2] rounded-lg px-3 py-2 text-xs font-bold text-slate-900 focus:outline-[#88BDF2]"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                <button
-                  type="button"
-                  onClick={() => setIsEditingCompany(false)}
-                  className="px-3.5 py-1.5 font-bold text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-1.5 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-lg shadow-sm cursor-pointer flex items-center gap-1.5"
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>Save Name</span>
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setIsEditingCompany(false)}
+                className="px-3.5 py-1.5 font-bold text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-1.5 font-bold text-white bg-[#384959] hover:bg-[#2C3A47] rounded-lg shadow-sm cursor-pointer flex items-center gap-1.5"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>Save Name</span>
+              </button>
+            </div>
+          </form>
         </div>
-      )}
+      </ModalPortal>
 
       {/* Transport Company Registration & Logo Branding Modal */}
       <CompanyProfileModal
@@ -353,6 +390,12 @@ export const Header: React.FC = () => {
       <UserAccountsModal
         isOpen={isUserAccountsModalOpen}
         onClose={() => setIsUserAccountsModalOpen(false)}
+      />
+
+      {/* Unified FleetPulse Sync & Offline Center Modal */}
+      <SyncCenterModal
+        isOpen={isSyncCenterModalOpen}
+        onClose={() => setIsSyncCenterModalOpen(false)}
       />
     </header>
   );

@@ -43,6 +43,7 @@ import {
 } from '../utils/syncEngine';
 import { calculateVehicleFuelAverage } from '../utils/fuelCalculators';
 import { StorageEngine } from '../utils/storageEngine';
+import { vehiclesApi, tripsApi, driversApi, partiesApi, paymentsApi, companyApi } from '../api/endpoints';
 
 interface TMSContextType {
   role: UserRole;
@@ -291,6 +292,55 @@ export const TMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return subscribeToSyncState((summary) => {
       setSyncState(summary);
     });
+  }, []);
+
+  // Hydrate state from backend API when online
+  useEffect(() => {
+    let isMounted = true;
+    const hydrateFromBackend = async () => {
+      try {
+        const [vehiclesRes, tripsRes, driversRes, partiesRes, paymentsRes, companyRes] = await Promise.allSettled([
+          vehiclesApi.getAll(),
+          tripsApi.getAll(),
+          driversApi.getAll(),
+          partiesApi.getAll(),
+          paymentsApi.getAll(),
+          companyApi.getProfile(),
+        ]);
+
+        if (!isMounted) return;
+
+        if (vehiclesRes.status === 'fulfilled' && vehiclesRes.value?.data) {
+          setVehicles(vehiclesRes.value.data);
+          StorageEngine.setVehicles(vehiclesRes.value.data);
+        }
+        if (tripsRes.status === 'fulfilled' && tripsRes.value?.data) {
+          setTrips(tripsRes.value.data);
+          StorageEngine.setTrips(tripsRes.value.data);
+        }
+        if (driversRes.status === 'fulfilled' && driversRes.value?.data) {
+          setDrivers(driversRes.value.data);
+          StorageEngine.setDrivers(driversRes.value.data);
+        }
+        if (partiesRes.status === 'fulfilled' && partiesRes.value?.data) {
+          setParties(partiesRes.value.data);
+          StorageEngine.setParties(partiesRes.value.data);
+        }
+        if (paymentsRes.status === 'fulfilled' && paymentsRes.value?.data) {
+          setPartyPayments(paymentsRes.value.data);
+          StorageEngine.setPayments(paymentsRes.value.data);
+        }
+        if (companyRes.status === 'fulfilled' && companyRes.value?.data) {
+          setCompanyProfile(companyRes.value.data);
+          StorageEngine.setCompanyProfile(companyRes.value.data);
+        }
+      } catch (e) {
+        console.warn('[TMSContext] Backend sync deferred. Using persistent local state.', e);
+      }
+    };
+
+    hydrateFromBackend();
+    return () => { isMounted = false; };
   }, []);
 
   useEffect(() => { StorageEngine.setOdometerEvents(odometerEvents); }, [odometerEvents]);
@@ -1170,6 +1220,19 @@ export const TMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prev.map((v) => (v.id === vehicle.id ? { ...v, status: 'in_transit' } : v))
     );
 
+    // Enqueue mutation into persistent IndexedDB offline queue
+    enqueueOfflineAction({
+      activityType: 'SAVE_TRIP',
+      summary: `Trip ${newTripId}: ${newTrip.startingLocation} → ${newTrip.destinations[0]?.placeName || 'Destinations'} (₹${calculatedFruitValue.toLocaleString()})`,
+      payload: newTrip,
+      userId: driver.id,
+      userName: driver.fullName,
+      role,
+      vehicleId: vehicle.id,
+      vehicleNumber: vehicle.number,
+      customIdempotencyKey: `TRIP-${newTripId}`,
+    }).catch(console.error);
+
     if (isDriverCreating) {
       setNotifications((prev) => [
         {
@@ -1227,6 +1290,17 @@ export const TMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
 
     recordAudit('trips', 'Destinations Updated', `Trip ${tripId} destinations updated. Value: ₹${recalculatedTotal.toLocaleString('en-IN')}`, tripId);
+
+    // Enqueue destination modification into IndexedDB queue
+    enqueueOfflineAction({
+      activityType: 'SAVE_TRIP',
+      summary: `Fruit Delivery Places for ${tripId}: ${updatedDestinations.length} places (₹${recalculatedTotal.toLocaleString()})`,
+      payload: { tripId, destinations: updatedDestinations, totalFruitValue: recalculatedTotal },
+      userId: currentUser?.id || 'admin-01',
+      userName: currentUser?.fullName || 'Fleet Controller',
+      role,
+      customIdempotencyKey: `TRIP-DEST-${tripId}-${Date.now()}`,
+    }).catch(console.error);
 
     return {
       success: true,

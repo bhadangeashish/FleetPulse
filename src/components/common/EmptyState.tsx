@@ -26,7 +26,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         ariaLabel="No records found"
       />
       <div className="max-w-sm space-y-1">
-        <h4 className="font-heading font-black text-sm text-[#1E293B]">{title}</h4>
+        <h4 className="font-heading font-black text-sm text-[#384959]">{title}</h4>
         <p className="text-xs text-[#6A89A7] font-medium leading-relaxed">{description}</p>
       </div>
       {actionLabel && onAction && (

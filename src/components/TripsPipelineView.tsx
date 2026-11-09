@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CalendarDays,
   Plus,
@@ -12,6 +12,7 @@ import {
   FileCheck2,
   Bell,
   ArrowRight,
+  ArrowLeft,
   Repeat,
   Check,
   AlertCircle,
@@ -31,6 +32,7 @@ import { readFileAsDataURL } from '../utils/fileUploadHelper';
 import { handleFormKeyDown } from '../utils/keyboardNavigation';
 import { LottieAnimation } from './common/LottieAnimation';
 import { EmptyState } from './common/EmptyState';
+import { ModalPortal } from './common/ModalPortal';
 
 export const TripsPipelineView: React.FC = () => {
   const {
@@ -172,6 +174,14 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
   // Edit Outbound Fruit Delivery Places Modal State (User Requirement)
   const [editingTripForDestinations, setEditingTripForDestinations] = useState<Trip | null>(null);
   const [editDestinations, setEditDestinations] = useState<TripDestination[]>([]);
+  const [collapsedLocations, setCollapsedLocations] = useState<Record<number, boolean>>({});
+
+  // Smart Enter Prompt State for Edit Outbound Fruit Delivery Places & Items (Scenario 1 & 2)
+  const [smartEnterPrompt, setSmartEnterPrompt] = useState<{
+    isOpen: boolean;
+    destIdx: number;
+    itemIdx: number;
+  } | null>(null);
 
   // Return Load Modal State (with multi-delivery locations: "How many locations to delivered on which location")
   const [selectedTripForReturn, setSelectedTripForReturn] = useState<Trip | null>(null);
@@ -383,6 +393,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
     setEditingTripForDestinations(trip);
     // Deep clone the destinations list
     setEditDestinations(JSON.parse(JSON.stringify(trip.destinations)));
+    setSmartEnterPrompt(null);
   };
 
   const handleEditDestFieldChange = (
@@ -519,7 +530,126 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
     updateTripDestinations(editingTripForDestinations.id, editDestinations);
     setEditingTripForDestinations(null);
+    setSmartEnterPrompt(null);
   };
+
+  // --- Smart Enter Key Handlers (Scenario 1 & Scenario 2) ---
+  const handleSmartAddFruitItem = (destIdx: number) => {
+    const nextItemIdx = editDestinations[destIdx]?.items?.length ?? 0;
+    handleEditAddItem(destIdx);
+    setSmartEnterPrompt(null);
+    setTimeout(() => {
+      const el = document.getElementById(`edit-item-name-${destIdx}-${nextItemIdx}`);
+      if (el) {
+        el.focus();
+        if (el instanceof HTMLInputElement) el.select();
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 60);
+  };
+
+  const handleSmartShiftToNextDelivery = (destIdx: number) => {
+    const nextDestIdx = destIdx + 1;
+    setSmartEnterPrompt(null);
+    setTimeout(() => {
+      const el =
+        document.getElementById(`edit-dest-place-${nextDestIdx}`) ||
+        document.getElementById(`edit-dest-city-${nextDestIdx}`);
+      if (el) {
+        el.focus();
+        if (el instanceof HTMLInputElement) el.select();
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 60);
+  };
+
+  const handleSmartAddDelivery = (destIdx: number) => {
+    if (editDestinations.length >= 6) {
+      alert('Maximum 6 places allowed per daily fruit delivery run on the Maharashtra ⇄ Gujarat route.');
+      setSmartEnterPrompt(null);
+      return;
+    }
+    const nextDestIdx = destIdx + 1;
+    handleEditAddDestinationPlace(destIdx);
+    setSmartEnterPrompt(null);
+    setTimeout(() => {
+      const el = document.getElementById(`edit-dest-place-${nextDestIdx}`);
+      if (el) {
+        el.focus();
+        if (el instanceof HTMLInputElement) el.select();
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 60);
+  };
+
+  // Keyboard listener for Smart Enter Action Dialog shortcuts: 1, 2, 3, Escape
+  useEffect(() => {
+    if (!smartEnterPrompt || !smartEnterPrompt.isOpen) return;
+
+    const { destIdx, itemIdx } = smartEnterPrompt;
+    const hasNextDelivery = destIdx < editDestinations.length - 1;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        setSmartEnterPrompt(null);
+        setTimeout(() => {
+          const el = document.getElementById(`edit-item-rate-${destIdx}-${itemIdx}`);
+          if (el) el.focus();
+        }, 50);
+        return;
+      }
+
+      if (e.key === '1') {
+        e.preventDefault();
+        e.stopPropagation();
+        handleSmartAddFruitItem(destIdx);
+        return;
+      }
+
+      if (e.key === '2') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (hasNextDelivery) {
+          // Scenario 2: Option 2 is Shift to Next Delivery
+          handleSmartShiftToNextDelivery(destIdx);
+        } else {
+          // Scenario 1: Option 2 is Add Delivery
+          handleSmartAddDelivery(destIdx);
+        }
+        return;
+      }
+
+      if (e.key === '3' && hasNextDelivery) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Scenario 2: Option 3 is Add Delivery
+        handleSmartAddDelivery(destIdx);
+        return;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, [smartEnterPrompt, editDestinations]);
+
+  // Listen for open-trip-edit-destinations custom event (from Dashboard or other views)
+  useEffect(() => {
+    const handleOpenEditEvent = (e: any) => {
+      const tripId = e.detail?.tripId;
+      if (tripId) {
+        const targetTrip = trips.find((t) => t.id === tripId) || trips[0];
+        if (targetTrip) {
+          handleOpenEditDestinations(targetTrip);
+        }
+      }
+    };
+    window.addEventListener('open-trip-edit-destinations', handleOpenEditEvent);
+    return () => window.removeEventListener('open-trip-edit-destinations', handleOpenEditEvent);
+  }, [trips]);
 
   // --- Return Load Handlers (Multi-location Delivery & Edit) ---
   const handleOpenReturnModal = (trip: Trip) => {
@@ -641,7 +771,7 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
       <div className="morning-card p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 border border-[#E2EDF8]">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="font-heading text-lg font-black text-[#1E293B]">
+            <h2 className="font-heading text-lg font-black text-[#384959]">
               Maharashtra to Gujarat Daily Routing & Dispatches
             </h2>
             <span className="bg-[#BDDDFC]/50 text-[#384959] border border-[#BDDDFC] text-xs font-bold px-2.5 py-0.5 rounded-full">
@@ -697,11 +827,11 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                       <span className="font-mono font-extrabold text-[#384959] text-sm bg-[#F0F4F8] px-2 py-0.5 rounded border border-[#DCE8F2]">
                         {trip.id}
                       </span>
-                      <span className="font-mono font-bold text-slate-900 text-sm bg-white px-2 py-0.5 rounded border border-slate-200">
+                      <span className="font-mono font-bold text-[#384959] text-sm bg-white px-2 py-0.5 rounded border border-[#DCE8F2]">
                         {trip.vehicleNumber}
                       </span>
-                      <span className="text-xs text-slate-600">
-                        (Driver: <strong className="text-slate-900 font-bold">{trip.driverName}</strong>)
+                      <span className="text-xs text-[#6A89A7]">
+                        (Driver: <strong className="text-[#384959] font-bold">{trip.driverName}</strong>)
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
@@ -1092,9 +1222,8 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
       </div>
 
       {/* Modal 1: New Daily Fruit Delivery Trip */}
-      {isAddTripModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden text-xs">
+      <ModalPortal isOpen={isAddTripModalOpen} onClose={() => setIsAddTripModalOpen(false)}>
+        <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden text-xs my-auto">
             {/* Header */}
             <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between border-b border-[#2C3A47]">
               <div>
@@ -1515,32 +1644,54 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
               </div>
             </form>
           </div>
-        </div>
-      )}
+      </ModalPortal>
 
-      {/* Modal 4: EDIT OUTBOUND FRUIT DELIVERY PLACES IN GUJARAT (User Requirement) */}
-      {editingTripForDestinations && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden text-xs animate-in fade-in duration-100">
-            {/* Modal Header */}
-            <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between border-b border-[#2C3A47]">
-              <div>
-                <div className="flex items-center gap-2">
-                  <Edit3 className="w-4 h-4 text-[#BDDDFC]" />
+      {/* Modal 4: EDIT OUTBOUND FRUIT DELIVERY PLACES IN GUJARAT (EXACT SCREEN 4 RECREATION) */}
+      <ModalPortal
+        isOpen={Boolean(editingTripForDestinations)}
+        onClose={() => {
+          setEditingTripForDestinations(null);
+          setSmartEnterPrompt(null);
+        }}
+      >
+        {editingTripForDestinations && (
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden text-xs my-auto animate-in zoom-in-95 duration-150">
+            {/* Modal Header Bar (Screen 4 exact) */}
+            <div className="px-5 py-3.5 bg-[#384959] text-white flex items-center justify-between border-b border-[#2C3A47] select-none">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingTripForDestinations(null);
+                    setSmartEnterPrompt(null);
+                  }}
+                  className="p-1 rounded-lg text-[#BDDDFC] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                  title="Back"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
+                <div>
                   <h3 className="font-heading font-extrabold text-sm tracking-tight text-white">
                     Edit Outbound Fruit Delivery Places & Items ({editingTripForDestinations.id})
                   </h3>
-                  <span className="bg-[#BDDDFC]/20 text-[#BDDDFC] text-[10px] font-mono px-2 py-0.5 rounded-full border border-[#BDDDFC]/30 font-bold">
-                    {editingTripForDestinations.vehicleNumber}
-                  </span>
+                  <div className="text-[11px] text-[#BDDDFC] mt-0.5 flex items-center gap-2 flex-wrap">
+                    <span>Driver: <strong className="text-white font-semibold">{editingTripForDestinations.driverName}</strong></span>
+                    <span>• Origin: <strong className="text-white font-semibold">{editingTripForDestinations.startingLocation.includes('APMC') ? 'Pune APMC' : editingTripForDestinations.startingLocation}</strong></span>
+                    <span>• Out Date: <strong className="text-white font-semibold">{editingTripForDestinations.outDate}</strong></span>
+                    <span className="bg-[#BDDDFC]/20 text-[#BDDDFC] text-[10px] font-mono px-2 py-0.5 rounded-full border border-[#BDDDFC]/30 font-bold ml-1">
+                      {editingTripForDestinations.vehicleNumber}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-[11px] text-[#BDDDFC] mt-0.5">
-                  Driver: <strong>{editingTripForDestinations.driverName}</strong> • Origin: {editingTripForDestinations.startingLocation} • Out Date: {editingTripForDestinations.outDate}
-                </p>
               </div>
               <button
-                onClick={() => setEditingTripForDestinations(null)}
+                type="button"
+                onClick={() => {
+                  setEditingTripForDestinations(null);
+                  setSmartEnterPrompt(null);
+                }}
                 className="text-[#BDDDFC] hover:text-white p-1 rounded-lg hover:bg-white/10 cursor-pointer transition-colors"
+                title="Close"
               >
                 ✕
               </button>
@@ -1548,32 +1699,28 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
             {/* Modal Form */}
             <form onSubmit={handleSaveEditedDestinations} onKeyDown={(e) => handleFormKeyDown(e)} className="flex-1 overflow-y-auto p-5 space-y-4">
-              {/* Top Summary Bar */}
-              <div className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3">
+              {/* Top Summary Bar (Screen 4 exact) */}
+              <div className="p-3.5 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-heading font-extrabold text-[#384959] text-xs">
-                      Delivered Locations:
-                    </span>
-                    <span className="bg-white px-2.5 py-0.5 rounded-full border border-[#DCE8F2] font-mono font-bold text-[#384959] text-xs">
-                      {editDestinations.length}
+                      Delivered Locations: {editDestinations.length}
                     </span>
                   </div>
-                  <div className="text-[11px] text-[#6A89A7] flex items-center gap-1 mt-1 flex-wrap">
-                    <Navigation className="w-3 h-3 text-[#6A89A7]" />
-                    <span className="font-semibold text-[#384959]">Corridor Sequence:</span>
+                  <div className="text-[11px] text-[#6A89A7] flex items-center gap-1.5 mt-1 font-medium">
+                    <span className="text-[#384959]">📍</span>
                     <span className="font-mono font-bold text-[#384959]">
                       {editingTripForDestinations.startingLocation.split(' ')[0]} → {editDestinations.map((d) => d.city || 'Place').join(' → ')}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-3 self-end sm:self-auto">
                   <div className="text-right">
-                    <span className="text-[10px] uppercase font-bold text-[#6A89A7] block font-heading">
+                    <span className="text-[10px] uppercase font-bold text-[#6A89A7] block font-heading tracking-wider">
                       Recalculated Fruit Value:
                     </span>
-                    <span className="font-mono text-sm font-black text-[#384959]">
+                    <span className="font-mono text-base font-black text-[#384959]">
                       ₹{currentEditTotalFruitValue.toLocaleString('en-IN')}
                     </span>
                   </div>
@@ -1582,11 +1729,11 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                     <button
                       type="button"
                       onClick={() => handleEditAddDestinationPlace()}
-                      className="px-3.5 py-1.5 text-xs font-bold text-[#384959] bg-[#BDDDFC]/50 hover:bg-[#BDDDFC]/80 border border-[#BDDDFC] rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer font-heading transition-all"
+                      className="px-3.5 py-1.5 text-xs font-heading font-extrabold text-[#384959] bg-[#BDDDFC]/40 hover:bg-[#BDDDFC]/70 border border-[#88BDF2] rounded-xl shadow-xs flex items-center gap-1.5 cursor-pointer transition-all"
                       title="Add one more delivered location"
                     >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>Add Place</span>
+                      <Plus className="w-3.5 h-3.5 text-[#384959]" />
+                      <span>Add Delivery</span>
                     </button>
                   )}
                 </div>
@@ -1594,297 +1741,443 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
 
               {/* Destinations List */}
               <div className="space-y-4">
-                {editDestinations.map((dest, destIdx) => (
-                  <div
-                    key={dest.id}
-                    className="p-4 bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl space-y-3 shadow-xs"
-                  >
-                    {/* Destination Title & Header Row */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#DCE8F2]">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="w-6 h-6 rounded-full bg-[#6A89A7] text-white font-mono text-xs font-bold flex items-center justify-center">
-                          {destIdx + 1}
-                        </span>
-                        <span className="font-heading font-extrabold text-[#384959] text-sm">
-                          Location {destIdx + 1}: {dest.city || 'Gujarat City'}
-                        </span>
-                        {destIdx === editDestinations.length - 1 && (
-                          <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold px-2 py-0.2 rounded-full font-heading">
-                            Last Delivery Location
-                          </span>
-                        )}
+                {editDestinations.map((dest, destIdx) => {
+                  const isCollapsed = collapsedLocations[destIdx] ?? false;
 
-                        {/* Reordering Controls: Move Up / Move Down */}
-                        <div className="flex items-center gap-0.5 ml-1">
+                  return (
+                    <div
+                      key={dest.id}
+                      className="p-4 bg-white border border-[#DCE8F2] rounded-2xl space-y-3 shadow-xs"
+                    >
+                      {/* Destination Card Header (Screen 4: Location 1: Vapi, chevron, Delivered badge, trash) */}
+                      <div className="flex items-center justify-between gap-2 pb-2 border-b border-[#DCE8F2]">
+                        <div
+                          className="flex items-center gap-2.5 cursor-pointer select-none"
+                          onClick={() =>
+                            setCollapsedLocations((prev) => ({
+                              ...prev,
+                              [destIdx]: !prev[destIdx],
+                            }))
+                          }
+                        >
+                          <span className="w-6 h-6 rounded-full bg-[#384959] text-white font-mono text-xs font-bold flex items-center justify-center shadow-xs">
+                            {destIdx + 1}
+                          </span>
+                          <span className="font-heading font-extrabold text-[#384959] text-sm flex items-center gap-1.5">
+                            <span>Location {destIdx + 1}: {dest.city || 'Gujarat City'}</span>
+                            <ChevronDown
+                              className={`w-4 h-4 text-[#6A89A7] transition-transform duration-200 ${
+                                isCollapsed ? '-rotate-90' : 'rotate-0'
+                              }`}
+                            />
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          {/* Delivered Status Badge (Click to toggle) */}
                           <button
                             type="button"
-                            onClick={() => handleEditMoveDestination(destIdx, 'up')}
-                            disabled={destIdx === 0}
-                            className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 disabled:hover:bg-white text-[#384959] cursor-pointer disabled:cursor-not-allowed"
-                            title="Move earlier in delivery route sequence"
+                            onClick={() =>
+                              handleEditDestFieldChange(
+                                destIdx,
+                                'deliveryStatus',
+                                dest.deliveryStatus === 'delivered' ? 'pending' : 'delivered'
+                              )
+                            }
+                            className={`px-2.5 py-0.5 rounded-full text-[11px] font-heading font-bold border flex items-center gap-1 cursor-pointer transition-all ${
+                              dest.deliveryStatus === 'delivered'
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
+                                : 'bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100'
+                            }`}
+                            title="Click to toggle delivery status"
                           >
-                            <ChevronUp className="w-3.5 h-3.5" />
+                            {dest.deliveryStatus === 'delivered' ? '✓ Delivered' : '⏳ Pending'}
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => handleEditMoveDestination(destIdx, 'down')}
-                            disabled={destIdx === editDestinations.length - 1}
-                            className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 disabled:hover:bg-white text-[#384959] cursor-pointer disabled:cursor-not-allowed"
-                            title="Move later in delivery route sequence"
-                          >
-                            <ChevronDown className="w-3.5 h-3.5" />
-                          </button>
+
+                          {/* Order buttons if multiple */}
+                          {editDestinations.length > 1 && (
+                            <div className="flex items-center gap-0.5">
+                              <button
+                                type="button"
+                                onClick={() => handleEditMoveDestination(destIdx, 'up')}
+                                disabled={destIdx === 0}
+                                className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 disabled:hover:bg-white text-[#384959] cursor-pointer disabled:cursor-not-allowed"
+                                title="Move up"
+                              >
+                                <ChevronUp className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleEditMoveDestination(destIdx, 'down')}
+                                disabled={destIdx === editDestinations.length - 1}
+                                className="p-1 rounded bg-white border border-[#DCE8F2] hover:bg-[#F0F4F8] disabled:opacity-30 disabled:hover:bg-white text-[#384959] cursor-pointer disabled:cursor-not-allowed"
+                                title="Move down"
+                              >
+                                <ChevronDown className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Trash button */}
+                          {editDestinations.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleEditRemoveDestinationPlace(destIdx)}
+                              className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 border border-rose-200 rounded-lg transition-colors cursor-pointer"
+                              title="Remove location"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        {/* Status Toggle */}
-                        <select
-                          value={dest.deliveryStatus}
-                          onChange={(e) =>
-                            handleEditDestFieldChange(destIdx, 'deliveryStatus', e.target.value)
-                          }
-                          className="bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1 text-xs font-bold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
-                        >
-                          <option value="pending">⏳ Pending Delivery</option>
-                          <option value="delivered">✓ Delivered</option>
-                        </select>
+                      {/* Card Content if expanded */}
+                      {!isCollapsed && (
+                        <div className="space-y-3 pt-1">
+                          {/* 4 Fields Grid: Market/Place Name, City, State, Contact Person */}
+                          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                            <div>
+                              <label className="block text-[10px] font-bold text-[#384959] uppercase mb-1 font-heading">
+                                Market / Place Name
+                              </label>
+                              <input
+                                id={`edit-dest-place-${destIdx}`}
+                                type="text"
+                                required
+                                value={dest.placeName}
+                                onChange={(e) =>
+                                  handleEditDestFieldChange(destIdx, 'placeName', e.target.value)
+                                }
+                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl px-3 py-1.5 text-xs text-[#384959] font-semibold focus:outline-none focus:border-[#88BDF2] focus:bg-white transition-all shadow-2xs"
+                                placeholder="e.g. Gujrat"
+                              />
+                            </div>
 
-                        {/* Remove Place Button */}
-                        {editDestinations.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => handleEditRemoveDestinationPlace(destIdx)}
-                            className="p-1.5 text-rose-600 hover:bg-rose-50 border border-rose-200 rounded-lg transition-colors cursor-pointer"
-                            title="Remove this destination place"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
+                            <div>
+                              <label className="block text-[10px] font-bold text-[#384959] uppercase mb-1 font-heading">
+                                City
+                              </label>
+                              <input
+                                id={`edit-dest-city-${destIdx}`}
+                                type="text"
+                                required
+                                value={dest.city}
+                                onChange={(e) =>
+                                  handleEditDestFieldChange(destIdx, 'city', e.target.value)
+                                }
+                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl px-3 py-1.5 text-xs text-[#384959] font-bold focus:outline-none focus:border-[#88BDF2] focus:bg-white transition-all shadow-2xs"
+                                placeholder="e.g. Vapi"
+                              />
+                            </div>
 
-                    {/* Place Name, City, State, Contact Details */}
-                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-                      <div className="sm:col-span-1">
-                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
-                          Market / Place Name
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={dest.placeName}
-                          onChange={(e) =>
-                            handleEditDestFieldChange(destIdx, 'placeName', e.target.value)
-                          }
-                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs text-[#384959] font-semibold focus:outline-none focus:border-[#88BDF2]"
-                          placeholder="e.g. Ring Road Fruit Mandi"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
-                          City
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={dest.city}
-                          onChange={(e) =>
-                            handleEditDestFieldChange(destIdx, 'city', e.target.value)
-                          }
-                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs text-[#384959] font-bold focus:outline-none focus:border-[#88BDF2]"
-                          placeholder="e.g. Surat, Vapi, Vadodara"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
-                          Destination State (Set State)
-                        </label>
-                        <select
-                          value={dest.state || ''}
-                          onChange={(e) =>
-                            handleEditDestFieldChange(destIdx, 'state', e.target.value)
-                          }
-                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs text-[#384959] font-bold focus:outline-none focus:border-[#88BDF2]"
-                        >
-                          <option value="">-- Select State --</option>
-                          <option value="Gujarat">Gujarat</option>
-                          <option value="Maharashtra">Maharashtra</option>
-                          <option value="Rajasthan">Rajasthan</option>
-                          <option value="Madhya Pradesh">Madhya Pradesh</option>
-                          <option value="Goa">Goa</option>
-                          <option value="Karnataka">Karnataka</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Other">Other State</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
-                          Contact Person
-                        </label>
-                        <input
-                          type="text"
-                          value={dest.contactPerson}
-                          onChange={(e) =>
-                            handleEditDestFieldChange(destIdx, 'contactPerson', e.target.value)
-                          }
-                          className="w-full bg-white border border-[#DCE8F2] rounded-xl px-2.5 py-1.5 text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2]"
-                          placeholder="e.g. Kantilal Shah"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Payment Terms & Quick Reminder */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-2.5 bg-white rounded-xl border border-[#DCE8F2]">
-                      <div>
-                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
-                          Payment Term (How & When Party Pays for Fruit)
-                        </label>
-                        <select
-                          value={dest.paymentTerm}
-                          onChange={(e) =>
-                            handleEditDestFieldChange(destIdx, 'paymentTerm', e.target.value)
-                          }
-                          className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
-                        >
-                          <option value="immediate">Immediate Payment (On Unloading)</option>
-                          <option value="1_month">Gives Payment in 1 Month (30 Days)</option>
-                          <option value="2_months">Gives Payment in 2 Months (60 Days)</option>
-                          <option value="3_months">Gives Payment in 3 Months (90 Days)</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block text-[10px] font-bold text-[#384959] uppercase mb-0.5 font-heading">
-                          Quick Reminder Date
-                        </label>
-                        <input
-                          type="date"
-                          value={dest.quickReminderDate || ''}
-                          onChange={(e) =>
-                            handleEditDestFieldChange(destIdx, 'quickReminderDate', e.target.value)
-                          }
-                          className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-mono text-[#384959] focus:outline-none focus:border-[#88BDF2]"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Fruit Items List with Live Calculation: Quantity * Cost = Subtotal */}
-                    <div className="space-y-2 pt-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-[#384959] uppercase font-heading">
-                          Fruit Items for this Place (Auto Calculated: Quantity × Cost)
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleEditAddItem(destIdx)}
-                          className="text-[#6A89A7] font-bold hover:text-[#384959] flex items-center gap-1 text-xs cursor-pointer font-heading"
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                          <span>Add Fruit Item</span>
-                        </button>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        {dest.items.map((item, itemIdx) => (
-                          <div
-                            key={item.id}
-                            className="grid grid-cols-12 gap-2 bg-white p-2.5 rounded-xl border border-[#DCE8F2] items-center"
-                          >
-                            <div className="col-span-5">
-                              <label className="block text-[9px] uppercase font-bold text-slate-400 mb-0.5">
-                                Fruit Item Name
+                            <div>
+                              <label className="block text-[10px] font-bold text-[#384959] uppercase mb-1 font-heading">
+                                State
                               </label>
                               <input
                                 type="text"
-                                required
-                                value={item.itemName}
+                                value={dest.state || 'Gujarat'}
                                 onChange={(e) =>
-                                  handleEditItemChange(destIdx, itemIdx, 'itemName', e.target.value)
+                                  handleEditDestFieldChange(destIdx, 'state', e.target.value)
                                 }
-                                placeholder="e.g. Alphonso Mango (24kg Box)"
-                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-2 py-1 text-xs font-medium text-[#384959] focus:outline-none focus:border-[#88BDF2]"
+                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl px-3 py-1.5 text-xs text-[#384959] font-bold focus:outline-none focus:border-[#88BDF2] focus:bg-white transition-all shadow-2xs"
+                                placeholder="e.g. Gujarat"
                               />
                             </div>
 
-                            <div className="col-span-2">
-                              <label className="block text-[9px] uppercase font-bold text-slate-400 mb-0.5 text-center">
-                                Quantity
+                            <div>
+                              <label className="block text-[10px] font-bold text-[#384959] uppercase mb-1 font-heading">
+                                Contact Person
                               </label>
                               <input
-                                type="number"
-                                min="1"
-                                required
-                                value={item.quantity}
+                                type="text"
+                                value={dest.contactPerson}
                                 onChange={(e) =>
-                                  handleEditItemChange(
-                                    destIdx,
-                                    itemIdx,
-                                    'quantity',
-                                    Number(e.target.value)
-                                  )
+                                  handleEditDestFieldChange(destIdx, 'contactPerson', e.target.value)
                                 }
-                                placeholder="30"
-                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-1.5 py-1 text-xs font-mono font-bold text-[#384959] text-center focus:outline-none focus:border-[#88BDF2]"
+                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-xl px-3 py-1.5 text-xs text-[#384959] focus:outline-none focus:border-[#88BDF2] focus:bg-white transition-all shadow-2xs"
+                                placeholder="e.g. Pahilwan"
                               />
-                            </div>
-
-                            <div className="col-span-2">
-                              <label className="block text-[9px] uppercase font-bold text-slate-400 mb-0.5 text-center">
-                                Cost / Item (₹)
-                              </label>
-                              <input
-                                type="number"
-                                min="1"
-                                required
-                                value={item.costPerItem}
-                                onChange={(e) =>
-                                  handleEditItemChange(
-                                    destIdx,
-                                    itemIdx,
-                                    'costPerItem',
-                                    Number(e.target.value)
-                                  )
-                                }
-                                placeholder="30"
-                                className="w-full bg-[#F8FAFC] border border-[#DCE8F2] rounded-lg px-1.5 py-1 text-xs font-mono font-bold text-[#384959] text-center focus:outline-none focus:border-[#88BDF2]"
-                              />
-                            </div>
-
-                            <div className="col-span-2 text-right">
-                              <label className="block text-[9px] uppercase font-bold text-slate-400 mb-0.5">
-                                Total (₹)
-                              </label>
-                              <div className="font-mono font-bold text-[#384959] text-xs py-1">
-                                ₹{item.totalAmount}
-                              </div>
-                            </div>
-
-                            <div className="col-span-1 text-center pt-3">
-                              {dest.items.length > 1 && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleEditRemoveItem(destIdx, itemIdx)}
-                                  className="text-slate-300 hover:text-rose-600 p-1 cursor-pointer"
-                                  title="Delete item"
-                                >
-                                  ✕
-                                </button>
-                              )}
                             </div>
                           </div>
-                        ))}
-                      </div>
 
-                      <div className="text-right text-xs font-bold text-[#384959] pt-1">
-                        Place Subtotal: <span className="font-mono text-[#384959] font-extrabold text-sm">₹{dest.destinationTotalAmount.toLocaleString('en-IN')}</span>
-                      </div>
+                          {/* Payment Terms & Reminder Date */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-[#F8FAFC] rounded-xl border border-[#DCE8F2]">
+                            <div>
+                              <label className="block text-[10px] font-bold text-[#384959] uppercase mb-1 font-heading">
+                                Payment Terms
+                              </label>
+                              <select
+                                value={dest.paymentTerm}
+                                onChange={(e) =>
+                                  handleEditDestFieldChange(destIdx, 'paymentTerm', e.target.value)
+                                }
+                                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#384959] focus:outline-none focus:border-[#88BDF2]"
+                              >
+                                <option value="1_month">1 Month (30 Days)</option>
+                                <option value="2_months">2 Months (60 Days)</option>
+                                <option value="3_months">3 Months (90 Days)</option>
+                                <option value="immediate">Immediate</option>
+                              </select>
+                            </div>
+
+                            <div>
+                              <label className="block text-[10px] font-bold text-[#384959] uppercase mb-1 font-heading">
+                                Reminder Date
+                              </label>
+                              <input
+                                type="date"
+                                value={dest.quickReminderDate || ''}
+                                onChange={(e) =>
+                                  handleEditDestFieldChange(destIdx, 'quickReminderDate', e.target.value)
+                                }
+                                className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-mono text-[#384959] focus:outline-none focus:border-[#88BDF2]"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Fruit Items for this Place */}
+                          <div className="space-y-2 pt-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-heading font-extrabold text-[#384959]">
+                                Fruit Items for this Place
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleEditAddItem(destIdx)}
+                                className="text-[#384959] font-heading font-extrabold hover:text-[#6A89A7] flex items-center gap-1 text-xs cursor-pointer transition-colors"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>Add Fruit Item</span>
+                              </button>
+                            </div>
+
+                            {/* Table Headers */}
+                            <div className="grid grid-cols-12 gap-2 px-3 py-1 text-[10px] font-heading font-extrabold text-[#6A89A7] uppercase tracking-wider">
+                              <div className="col-span-5">Fruit Item Name</div>
+                              <div className="col-span-2 text-center">Quantity</div>
+                              <div className="col-span-2 text-center">Cost / Item (₹)</div>
+                              <div className="col-span-2 text-right">Total (₹)</div>
+                              <div className="col-span-1 text-center">Action</div>
+                            </div>
+
+                            {/* Table Rows */}
+                            <div className="space-y-2">
+                              {dest.items.map((item, itemIdx) => {
+                                const isLastItem = itemIdx === dest.items.length - 1;
+                                const isSmartActive =
+                                  smartEnterPrompt &&
+                                  smartEnterPrompt.isOpen &&
+                                  smartEnterPrompt.destIdx === destIdx &&
+                                  smartEnterPrompt.itemIdx === itemIdx;
+
+                                return (
+                                  <div
+                                    key={item.id}
+                                    className="grid grid-cols-12 gap-2 bg-[#F8FAFC] p-2.5 rounded-xl border border-[#DCE8F2] items-center shadow-2xs hover:border-[#88BDF2]/60 transition-all"
+                                  >
+                                    <div className="col-span-5">
+                                      <input
+                                        id={`edit-item-name-${destIdx}-${itemIdx}`}
+                                        type="text"
+                                        required
+                                        value={item.itemName}
+                                        onChange={(e) =>
+                                          handleEditItemChange(destIdx, itemIdx, 'itemName', e.target.value)
+                                        }
+                                        placeholder="e.g. Saibaba"
+                                        className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#384959] focus:outline-none focus:border-[#88BDF2]"
+                                      />
+                                    </div>
+
+                                    <div className="col-span-2">
+                                      <input
+                                        id={`edit-item-quantity-${destIdx}-${itemIdx}`}
+                                        type="number"
+                                        min="1"
+                                        required
+                                        value={item.quantity}
+                                        onChange={(e) =>
+                                          handleEditItemChange(
+                                            destIdx,
+                                            itemIdx,
+                                            'quantity',
+                                            Number(e.target.value)
+                                          )
+                                        }
+                                        placeholder="30"
+                                        className="w-full bg-white border border-[#DCE8F2] rounded-lg px-2 py-1.5 text-xs font-mono font-bold text-[#384959] text-center focus:outline-none focus:border-[#88BDF2]"
+                                      />
+                                    </div>
+
+                                    <div className="col-span-2 relative">
+                                      <input
+                                        id={`edit-item-rate-${destIdx}-${itemIdx}`}
+                                        type="number"
+                                        min="1"
+                                        required
+                                        value={item.costPerItem}
+                                        onChange={(e) =>
+                                          handleEditItemChange(
+                                            destIdx,
+                                            itemIdx,
+                                            'costPerItem',
+                                            Number(e.target.value)
+                                          )
+                                        }
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter') {
+                                            // Smart Enter dynamic trigger on the last fruit item of this place
+                                            if (isLastItem) {
+                                              e.preventDefault();
+                                              e.stopPropagation();
+                                              setSmartEnterPrompt({
+                                                isOpen: true,
+                                                destIdx,
+                                                itemIdx,
+                                              });
+                                            }
+                                          }
+                                        }}
+                                        placeholder="30"
+                                        className={`w-full bg-white rounded-lg px-2 py-1.5 text-xs font-mono font-bold text-[#384959] text-center focus:outline-none transition-all ${
+                                          isSmartActive
+                                            ? 'border-2 border-[#88BDF2] ring-2 ring-[#88BDF2]/30'
+                                            : 'border border-[#DCE8F2] focus:border-[#88BDF2]'
+                                        }`}
+                                      />
+
+                                      {/* Floating Smart Enter Popover (Exact Match to Screen 4) */}
+                                      {isSmartActive && (
+                                        <>
+                                          {/* Transparent backdrop for click-outside dismissal */}
+                                          <div
+                                            className="fixed inset-0 z-40 bg-transparent"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              setSmartEnterPrompt(null);
+                                              const el = document.getElementById(`edit-item-rate-${destIdx}-${itemIdx}`);
+                                              if (el) el.focus();
+                                            }}
+                                          />
+
+                                          {/* Floating Card anchored below Rate input */}
+                                          <div
+                                            className="absolute right-0 top-full mt-2 z-50 w-72 bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl p-2.5 space-y-1.5 text-left animate-in fade-in zoom-in-95 select-none"
+                                            onClick={(e) => e.stopPropagation()}
+                                          >
+                                            {/* Option 1: Add Another Fruit Item (Always shown) */}
+                                            <button
+                                              type="button"
+                                              onClick={() => handleSmartAddFruitItem(destIdx)}
+                                              className="w-full flex items-center justify-between p-2 rounded-xl border border-[#DCE8F2] bg-[#F8FAFC] hover:bg-[#BDDDFC]/25 hover:border-[#88BDF2] transition-all text-left cursor-pointer group"
+                                            >
+                                              <div className="flex items-center gap-2.5">
+                                                <div className="w-7 h-7 rounded-lg bg-[#BDDDFC]/60 text-[#384959] flex items-center justify-center shrink-0 group-hover:bg-[#88BDF2] transition-colors">
+                                                  <Plus className="w-4 h-4 text-[#384959]" />
+                                                </div>
+                                                <div>
+                                                  <div className="text-xs font-heading font-extrabold text-[#384959]">
+                                                    Add Another Fruit Item
+                                                  </div>
+                                                  <div className="text-[10px] text-[#6A89A7]">
+                                                    Add a new item in this delivery
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <span className="w-5 h-5 rounded bg-white border border-[#DCE8F2] text-[10px] font-mono font-bold text-[#6A89A7] flex items-center justify-center">
+                                                1
+                                              </span>
+                                            </button>
+
+                                            {/* Option 2 (Scenario 2 ONLY): Shift to Next Delivery */}
+                                            {destIdx < editDestinations.length - 1 && (
+                                              <button
+                                                type="button"
+                                                onClick={() => handleSmartShiftToNextDelivery(destIdx)}
+                                                className="w-full flex items-center justify-between p-2 rounded-xl border border-[#88BDF2] bg-[#BDDDFC]/20 hover:bg-[#BDDDFC]/40 transition-all text-left cursor-pointer group"
+                                              >
+                                                <div className="flex items-center gap-2.5">
+                                                  <div className="w-7 h-7 rounded-lg bg-[#88BDF2] text-white flex items-center justify-center shrink-0">
+                                                    <ArrowRight className="w-4 h-4 text-white" />
+                                                  </div>
+                                                  <div>
+                                                    <div className="text-xs font-heading font-extrabold text-[#384959]">
+                                                      Shift to Next Delivery
+                                                    </div>
+                                                    <div className="text-[10px] text-[#6A89A7]">
+                                                      Jump to Location {destIdx + 2} ({editDestinations[destIdx + 1]?.city || 'Next'})
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <span className="w-5 h-5 rounded bg-white border border-[#88BDF2] text-[10px] font-mono font-bold text-[#384959] flex items-center justify-center">
+                                                  2
+                                                </span>
+                                              </button>
+                                            )}
+
+                                            {/* Option 2 (Scenario 1) or Option 3 (Scenario 2): Add Delivery */}
+                                            <button
+                                              type="button"
+                                              onClick={() => handleSmartAddDelivery(destIdx)}
+                                              className="w-full flex items-center justify-between p-2 rounded-xl border border-[#DCE8F2] bg-[#F8FAFC] hover:bg-[#BDDDFC]/25 hover:border-[#88BDF2] transition-all text-left cursor-pointer group"
+                                            >
+                                              <div className="flex items-center gap-2.5">
+                                                <div className="w-7 h-7 rounded-lg bg-[#384959]/10 text-[#384959] flex items-center justify-center shrink-0 group-hover:bg-[#384959] group-hover:text-white transition-colors">
+                                                  <Plus className="w-4 h-4" />
+                                                </div>
+                                                <div>
+                                                  <div className="text-xs font-heading font-extrabold text-[#384959]">
+                                                    Add Delivery
+                                                  </div>
+                                                  <div className="text-[10px] text-[#6A89A7]">
+                                                    Add a new delivery location
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <span className="w-5 h-5 rounded bg-white border border-[#DCE8F2] text-[10px] font-mono font-bold text-[#6A89A7] flex items-center justify-center">
+                                                {destIdx < editDestinations.length - 1 ? '3' : '2'}
+                                              </span>
+                                            </button>
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+
+                                    <div className="col-span-2 text-right">
+                                      <div className="font-mono font-bold text-[#384959] text-xs py-1.5">
+                                        ₹{(item.quantity * item.costPerItem).toLocaleString('en-IN')}
+                                      </div>
+                                    </div>
+
+                                    <div className="col-span-1 text-center">
+                                      {dest.items.length > 1 && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleEditRemoveItem(destIdx, itemIdx)}
+                                          className="text-slate-300 hover:text-rose-600 p-1 cursor-pointer transition-colors"
+                                          title="Delete item"
+                                        >
+                                          ✕
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+
+                            {/* Place Subtotal */}
+                            <div className="text-right text-xs font-bold text-[#384959] pt-2">
+                              Place Subtotal: <span className="font-mono text-[#384959] font-black text-sm">₹{dest.destinationTotalAmount.toLocaleString('en-IN')}</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Action Buttons */}
@@ -1896,7 +2189,10 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => setEditingTripForDestinations(null)}
+                    onClick={() => {
+                      setEditingTripForDestinations(null);
+                      setSmartEnterPrompt(null);
+                    }}
                     className="px-4 py-2 font-bold text-[#384959] bg-[#F0F4F8] rounded-xl hover:bg-[#DCE8F2] cursor-pointer font-heading transition-colors"
                   >
                     Cancel
@@ -1912,13 +2208,13 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
               </div>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
 
       {/* Modal 2: Add Return Load with Multi-Location Delivery (User Requirement: How many location to delivered on which location) */}
-      {selectedTripForReturn && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden text-xs animate-in fade-in duration-100">
+      <ModalPortal isOpen={Boolean(selectedTripForReturn)} onClose={() => setSelectedTripForReturn(null)}>
+        {selectedTripForReturn && (
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden text-xs my-auto animate-in fade-in duration-100">
             {/* Modal Header */}
             <div className="px-5 py-4 bg-[#384959] text-white flex items-center justify-between border-b border-[#2C3A47]">
               <div className="flex items-center gap-2.5">
@@ -2290,13 +2586,13 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
               </div>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
 
       {/* Modal 3: Settle Return Load Payment with (Settled) Tag */}
-      {settlingTrip && settlingTrip.returnLoad && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs">
+      <ModalPortal isOpen={Boolean(settlingTrip && settlingTrip.returnLoad)} onClose={() => setSettlingTrip(null)}>
+        {settlingTrip && settlingTrip.returnLoad && (
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs my-auto">
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <h3 className="font-heading font-bold text-sm text-[#384959]">
                 Settle Payment for {settlingTrip.returnLoad.loadingPartyName}
@@ -2349,8 +2645,8 @@ const MAHARASHTRA_RETURN_DROPS: Array<{ city: string; placeName: string; consign
               </div>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
     </div>
   );
 };

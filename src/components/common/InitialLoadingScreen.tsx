@@ -13,7 +13,7 @@ export const InitialLoadingScreen: React.FC = () => {
           ariaLabel="FleetPulse Loading"
         />
         <div className="space-y-1.5">
-          <h2 className="font-heading font-black text-lg text-[#1E293B] tracking-tight">
+          <h2 className="font-heading font-black text-lg text-[#384959] tracking-tight">
             FleetPulse TMS
           </h2>
           <p className="text-xs text-[#6A89A7] font-medium">

@@ -20,6 +20,7 @@ import {
 import { useTMS } from '../context/TMSContext';
 import { Driver, VerificationStatus } from '../types/tms';
 import { handleFormKeyDown } from '../utils/keyboardNavigation';
+import { ModalPortal } from './common/ModalPortal';
 
 export const DriversView: React.FC = () => {
   const {
@@ -390,9 +391,8 @@ export const DriversView: React.FC = () => {
       </div>
 
       {/* Add Driver Modal with Enter Key Navigation */}
-      {isAddDriverOpen && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs my-6">
+      <ModalPortal isOpen={isAddDriverOpen} onClose={() => setIsAddDriverOpen(false)}>
+        <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs my-auto max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-[#6A89A7]" />
@@ -580,13 +580,12 @@ export const DriversView: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
-      )}
+      </ModalPortal>
 
       {/* Review KYC Modal for Admin */}
-      {selectedDriverForReview && (
-        <div className="fixed inset-0 z-60 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs animate-in zoom-in-95">
+      <ModalPortal isOpen={Boolean(selectedDriverForReview)} onClose={() => setSelectedDriverForReview(null)} zIndex="z-[110]">
+        {selectedDriverForReview && (
+          <div className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-lg p-5 space-y-4 text-xs my-auto max-h-[92vh] overflow-y-auto animate-in zoom-in-95">
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-[#6A89A7]" />
@@ -671,15 +670,15 @@ export const DriversView: React.FC = () => {
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
 
       {/* Driver Document Replacement Modal */}
-      {replaceDocDriver && (
-        <div className="fixed inset-0 z-60 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4">
+      <ModalPortal isOpen={Boolean(replaceDocDriver)} onClose={() => setReplaceDocDriver(null)} zIndex="z-[110]">
+        {replaceDocDriver && (
           <form
             onSubmit={handleReplaceDocument}
-            className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs animate-in zoom-in-95"
+            className="bg-white rounded-2xl border border-[#DCE8F2] shadow-2xl w-full max-w-md p-5 space-y-4 text-xs my-auto animate-in zoom-in-95"
           >
             <div className="flex items-center justify-between border-b border-[#DCE8F2] pb-3">
               <div className="flex items-center gap-2">
@@ -732,8 +731,8 @@ export const DriversView: React.FC = () => {
               </button>
             </div>
           </form>
-        </div>
-      )}
+        )}
+      </ModalPortal>
     </div>
   );
 };

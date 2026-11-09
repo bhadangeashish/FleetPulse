@@ -62,7 +62,7 @@ export const FleetPulseLandingView: React.FC = () => {
     <div className="min-h-screen luminous-bg font-body text-slate-800 antialiased selection:bg-[#BDDDFC] selection:text-[#384959] pb-20 relative overflow-hidden">
       {/* Soft Ambient Chromatic Blur Blobs (Inspired by screenshot's liquid background) */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#BDDDFC]/30 rounded-full blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-48 right-10 w-[30rem] h-[30rem] bg-purple-200/25 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute top-48 right-10 w-[30rem] h-[30rem] bg-[#88BDF2]/20 rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute top-[60rem] left-10 w-[28rem] h-[28rem] bg-[#BDDDFC]/30 rounded-full blur-3xl pointer-events-none -z-10" />
 
       {/* ========================================================
@@ -131,7 +131,7 @@ export const FleetPulseLandingView: React.FC = () => {
             {/* Tagline Pill */}
             <div className="inline-flex items-center gap-2 glass-pill px-3.5 py-1.5 rounded-full">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[11px] font-heading font-extrabold uppercase tracking-widest bg-gradient-to-r from-indigo-600 via-purple-600 to-[#6A89A7] bg-clip-text text-transparent">
+              <span className="text-[11px] font-heading font-extrabold uppercase tracking-widest bg-gradient-to-r from-[#384959] via-[#6A89A7] to-[#88BDF2] bg-clip-text text-transparent">
                 Maharashtra ⇄ Gujarat Freight Highway
               </span>
             </div>
@@ -139,7 +139,7 @@ export const FleetPulseLandingView: React.FC = () => {
             {/* Main Title with Gradient Accent */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black text-[#384959] tracking-tight leading-[1.12]">
               Intelligent Freight & Fleet{' '}
-              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-[#6A89A7] bg-clip-text text-transparent block sm:inline">
+              <span className="bg-gradient-to-r from-[#384959] via-[#6A89A7] to-[#88BDF2] bg-clip-text text-transparent block sm:inline">
                 Operations Console
               </span>
             </h1>
@@ -175,7 +175,7 @@ export const FleetPulseLandingView: React.FC = () => {
               </span>
               <div className="flex flex-wrap items-center gap-4 sm:gap-6 opacity-70 grayscale hover:grayscale-0 transition-all text-xs font-heading font-extrabold text-slate-700">
                 <span className="flex items-center gap-1.5"><Building className="w-3.5 h-3.5 text-[#6A89A7]" /> Pune APMC</span>
-                <span className="flex items-center gap-1.5"><Building className="w-3.5 h-3.5 text-purple-500" /> Surat Ring Road</span>
+                <span className="flex items-center gap-1.5"><Building className="w-3.5 h-3.5 text-[#384959]" /> Surat Ring Road</span>
                 <span className="flex items-center gap-1.5"><Building className="w-3.5 h-3.5 text-[#6A89A7]" /> Vapi Wholesale</span>
                 <span className="flex items-center gap-1.5"><Building className="w-3.5 h-3.5 text-emerald-500" /> Ahmedabad Naroda</span>
                 <span className="flex items-center gap-1.5"><Building className="w-3.5 h-3.5 text-amber-500" /> Bhiwandi Hub</span>
@@ -186,7 +186,7 @@ export const FleetPulseLandingView: React.FC = () => {
           {/* Right Column: Floating Glass Visual Showcase (Matches Portrait & Floating Stat Chips in screenshot) */}
           <div className="lg:col-span-5 relative flex items-center justify-center pt-6 lg:pt-0">
             {/* Ambient Glass Orb Behind */}
-            <div className="w-64 h-64 bg-gradient-to-br from-indigo-300/40 via-purple-300/30 to-[#BDDDFC]/40 rounded-full blur-2xl absolute -top-4 -right-4 -z-10" />
+            <div className="w-64 h-64 bg-gradient-to-br from-[#BDDDFC]/40 via-[#88BDF2]/30 to-[#BDDDFC]/40 rounded-full blur-2xl absolute -top-4 -right-4 -z-10" />
 
             {/* Main Frosted Glass Card Container */}
             <div className="glass-panel p-4 sm:p-5 rounded-3xl w-full max-w-md shadow-[0_20px_50px_rgba(15,23,42,0.08)] border border-white/90 relative">
@@ -212,7 +212,7 @@ export const FleetPulseLandingView: React.FC = () => {
 
               {/* Central Graphic: Rig Illustration & Operational Health */}
               <div className="py-4 space-y-3">
-                <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-slate-900 via-[#2C3A47] to-indigo-950 p-5 text-white shadow-inner">
+                <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#384959] via-[#2C3A47] to-[#384959] p-5 text-white shadow-inner">
                   <div className="flex items-center justify-between text-xs font-mono text-[#BDDDFC] mb-2">
                     <span>Tata Signa 2823 HD</span>
                     <span className="font-bold text-white bg-white/20 px-2 py-0.5 rounded-md">24-TON RIG</span>
@@ -319,7 +319,7 @@ export const FleetPulseLandingView: React.FC = () => {
             </div>
 
             <div className="glass-panel-subtle p-4 rounded-2xl border border-white/80 space-y-1">
-              <div className="flex items-center justify-between text-purple-600">
+              <div className="flex items-center justify-between text-[#6A89A7]">
                 <Truck className="w-4 h-4" />
                 <span className="text-[10px] font-mono font-bold uppercase text-slate-400">Dispatch Count</span>
               </div>
@@ -382,10 +382,10 @@ export const FleetPulseLandingView: React.FC = () => {
             className="glass-panel p-5 rounded-2xl border border-white/80 space-y-3 hover:-translate-y-1 transition-all duration-300 cursor-pointer group flex flex-col justify-between"
           >
             <div className="space-y-3">
-              <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600">
-                <Truck className="w-4 h-4" />
+              <div className="w-9 h-9 rounded-xl bg-[#E8F2FA] border border-[#BDDDFC] flex items-center justify-center text-[#384959]">
+                <Truck className="w-4 h-4 text-[#384959]" />
               </div>
-              <h3 className="font-heading font-extrabold text-sm text-[#384959] group-hover:text-purple-600 transition-colors">
+              <h3 className="font-heading font-extrabold text-sm text-[#384959] group-hover:text-[#6A89A7] transition-colors">
                 Backhaul Return Matching
               </h3>
               <p className="text-xs text-slate-600 leading-relaxed font-normal">
@@ -393,7 +393,7 @@ export const FleetPulseLandingView: React.FC = () => {
               </p>
             </div>
             <div className="pt-2 flex justify-end">
-              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#6A89A7] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </div>
           </div>
 
@@ -527,14 +527,14 @@ export const FleetPulseLandingView: React.FC = () => {
             onClick={() => handleLaunchPortal('driver', 'driver_portal')}
             className="glass-panel p-4 rounded-3xl border border-white/80 space-y-3 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
           >
-            <div className="rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-900 to-purple-900 p-4 text-white relative h-40 flex flex-col justify-between">
-              <div className="flex justify-between items-center text-[10px] font-mono text-purple-200">
+            <div className="rounded-2xl overflow-hidden bg-gradient-to-br from-[#384959] to-[#2C3A47] p-4 text-white relative h-40 flex flex-col justify-between">
+              <div className="flex justify-between items-center text-[10px] font-mono text-[#BDDDFC]">
                 <span>Mobile PWA Console</span>
                 <span className="bg-white/20 text-white px-2 py-0.5 rounded-full">IndexedDB</span>
               </div>
               <div>
                 <span className="text-sm font-heading font-bold block text-white">Driver Offline Portal</span>
-                <span className="text-[11px] text-purple-200">Trip logging, tyre changes & scans</span>
+                <span className="text-[11px] text-[#BDDDFC]">Trip logging, tyre changes & scans</span>
               </div>
             </div>
             <div className="flex items-center justify-between pt-1">
@@ -542,7 +542,7 @@ export const FleetPulseLandingView: React.FC = () => {
                 <h4 className="font-heading font-bold text-xs text-[#384959]">Driver Companion App</h4>
                 <span className="text-[11px] text-slate-500">Highway low-signal ready</span>
               </div>
-              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-purple-600 transition-colors" />
+              <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-[#6A89A7] transition-colors" />
             </div>
           </div>
 
@@ -668,7 +668,7 @@ export const FleetPulseLandingView: React.FC = () => {
               "The backhaul return load matching has cut our empty running miles down to zero. Drivers easily update work logs and tyre replacements directly from highway stops."
             </p>
             <div className="pt-2 border-t border-slate-100 flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center font-heading">
+              <div className="w-8 h-8 rounded-full bg-[#384959] text-white font-bold text-xs flex items-center justify-center font-heading">
                 SS
               </div>
               <div>
@@ -702,7 +702,7 @@ export const FleetPulseLandingView: React.FC = () => {
       <section id="contact" className="py-12 px-4 sm:px-6 max-w-6xl mx-auto">
         <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-white/80 shadow-[0_20px_60px_rgba(15,23,42,0.06)] relative overflow-hidden">
           {/* Subtle 3D Glass Ribbon Glow Accent */}
-          <div className="w-64 h-64 bg-gradient-to-tr from-indigo-200/40 via-purple-200/30 to-[#BDDDFC]/40 rounded-full blur-2xl absolute -bottom-10 -right-10 pointer-events-none -z-10" />
+          <div className="w-64 h-64 bg-gradient-to-tr from-[#BDDDFC]/40 via-[#88BDF2]/30 to-[#BDDDFC]/40 rounded-full blur-2xl absolute -bottom-10 -right-10 pointer-events-none -z-10" />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left: Contact Info */}
@@ -745,7 +745,7 @@ export const FleetPulseLandingView: React.FC = () => {
                       placeholder="e.g. Suresh Patel"
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-white/70 border border-white/90 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-400 text-xs text-[#384959] shadow-2xs font-medium"
+                      className="w-full px-3.5 py-2.5 bg-white/70 border border-white/90 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#88BDF2] text-xs text-[#384959] shadow-2xs font-medium"
                     />
                   </div>
                   <div>
@@ -756,7 +756,7 @@ export const FleetPulseLandingView: React.FC = () => {
                       placeholder="e.g. suresh@apmc.in"
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-white/70 border border-white/90 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-400 text-xs text-[#384959] shadow-2xs font-medium"
+                      className="w-full px-3.5 py-2.5 bg-white/70 border border-white/90 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#88BDF2] text-xs text-[#384959] shadow-2xs font-medium"
                     />
                   </div>
                 </div>
@@ -766,7 +766,7 @@ export const FleetPulseLandingView: React.FC = () => {
                   <select
                     value={contactCategory}
                     onChange={(e) => setContactCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white/70 border border-white/90 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-400 text-xs text-[#384959] shadow-2xs font-medium"
+                    className="w-full px-3.5 py-2.5 bg-white/70 border border-white/90 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#88BDF2] text-xs text-[#384959] shadow-2xs font-medium"
                   >
                     <option value="Interstate Fruit Transport">Interstate Fruit Transport (MH ➔ GJ)</option>
                     <option value="Backhaul Return Load Booking">Backhaul Return Load Booking (GJ ➔ MH)</option>
@@ -783,7 +783,7 @@ export const FleetPulseLandingView: React.FC = () => {
                     placeholder="Provide details about loading dates, goods description, and delivery destination..."
                     value={contactMessage}
                     onChange={(e) => setContactMessage(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white/70 border border-white/90 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-indigo-400 text-xs text-[#384959] shadow-2xs font-medium resize-none"
+                    className="w-full px-3.5 py-2.5 bg-white/70 border border-white/90 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#88BDF2] text-xs text-[#384959] shadow-2xs font-medium resize-none"
                   />
                 </div>
 
@@ -881,11 +881,11 @@ export const FleetPulseLandingView: React.FC = () => {
                 className="w-full p-3.5 rounded-2xl glass-panel-subtle hover:bg-white text-left border border-white/80 transition-all flex items-center justify-between group cursor-pointer"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-heading font-bold text-xs">
-                    <Smartphone className="w-4 h-4" />
+                  <div className="w-9 h-9 rounded-xl bg-[#384959] text-white flex items-center justify-center font-heading font-bold text-xs">
+                    <Smartphone className="w-4 h-4 text-[#BDDDFC]" />
                   </div>
                   <div>
-                    <span className="font-heading font-bold text-xs text-[#384959] block group-hover:text-purple-600 transition-colors">
+                    <span className="font-heading font-bold text-xs text-[#384959] block group-hover:text-[#6A89A7] transition-colors">
                       Driver Mobile PWA
                     </span>
                     <span className="text-[10px] text-slate-500 font-medium">
@@ -893,7 +893,7 @@ export const FleetPulseLandingView: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all" />
+                <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#384959] group-hover:translate-x-0.5 transition-all" />
               </button>
             </div>
           </div>

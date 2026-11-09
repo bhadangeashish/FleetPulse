@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: fleetpulse-api
+    env: node
+    region: oregon
+    plan: starter
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://fleetpulse-tms.vercel.app,http://localhost:3000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fleetpulse-postgres
+          property: connectionString
+
+databases:
+  - name: fleetpulse-postgres
+    region: oregon
+    plan: starter
+    databaseName: fleetpulse_tms
+    user: fleetpulse_user
+

@@ -44,7 +44,7 @@ export const AuditLogView: React.FC = () => {
       case 'vehicles':
         return <span className="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Vehicles</span>;
       case 'drivers':
-        return <span className="bg-purple-100 text-purple-800 border border-purple-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Drivers</span>;
+        return <span className="bg-[#E8F2FA] text-[#384959] border border-[#BDDDFC] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Drivers</span>;
       case 'documents':
         return <span className="bg-[#BDDDFC]/30 text-[#384959] border border-[#DCE8F2] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Documents</span>;
       default:

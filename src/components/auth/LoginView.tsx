@@ -23,6 +23,7 @@ import { FleetPulseLogo } from './FleetPulseLogo';
 import { AuthFeatureCard } from './AuthFeatureCard';
 import { AuthSecurityBadges } from './AuthSecurityBadges';
 import { LanguageSelector } from './LanguageSelector';
+import { ModalPortal } from '../common/ModalPortal';
 
 export const LoginView: React.FC = () => {
   const {
@@ -462,32 +463,39 @@ export const LoginView: React.FC = () => {
       {/* =================================================================== */}
       {/* MODAL 1: FORGOT PASSWORD, EMAIL VERIFICATION & OTP LIFECYCLE */}
       {/* =================================================================== */}
-      {isForgotPasswordOpen && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-[#DCE8F2]">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#DCE8F2]">
-              <div className="flex items-center gap-2">
-                <KeyRound className="w-5 h-5 text-[#384959]" />
-                <h3 className="text-base font-extrabold text-[#384959] font-heading">
-                  {resetStep === 'email' && 'Verify Registered Email'}
-                  {resetStep === 'otp' && 'Enter Verification OTP'}
-                  {resetStep === 'new_password' && 'Create New Password'}
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsForgotPasswordOpen(false);
-                  setResetStep('email');
-                  setResetError(null);
-                  setResetSuccess(null);
-                }}
-                className="text-[#6A89A7] hover:text-[#384959] cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
+      <ModalPortal
+        isOpen={isForgotPasswordOpen}
+        onClose={() => {
+          setIsForgotPasswordOpen(false);
+          setResetStep('email');
+          setResetError(null);
+          setResetSuccess(null);
+        }}
+      >
+        <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-[#DCE8F2] my-auto">
+          {/* Modal Header */}
+          <div className="flex items-center justify-between pb-3 border-b border-[#DCE8F2]">
+            <div className="flex items-center gap-2">
+              <KeyRound className="w-5 h-5 text-[#384959]" />
+              <h3 className="text-base font-extrabold text-[#384959] font-heading">
+                {resetStep === 'email' && 'Verify Registered Email'}
+                {resetStep === 'otp' && 'Enter Verification OTP'}
+                {resetStep === 'new_password' && 'Create New Password'}
+              </h3>
             </div>
+            <button
+              type="button"
+              onClick={() => {
+                setIsForgotPasswordOpen(false);
+                setResetStep('email');
+                setResetError(null);
+                setResetSuccess(null);
+              }}
+              className="text-[#6A89A7] hover:text-[#384959] cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
             {/* Error & Success Feedback Alerts */}
             {resetError && (
@@ -650,26 +658,24 @@ export const LoginView: React.FC = () => {
               </form>
             )}
           </div>
-        </div>
-      )}
+        </ModalPortal>
 
       {/* =================================================================== */}
       {/* MODAL 2: CREATE ACCOUNT REGISTRATION */}
       {/* =================================================================== */}
-      {isRegisterModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#384959]/40 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[#DCE8F2]">
-            <div className="flex items-center justify-between pb-3 border-b border-[#DCE8F2]">
-              <div className="flex items-center gap-2">
-                <UserPlus className="w-5 h-5 text-[#384959]" />
-                <h3 className="text-base font-extrabold text-[#384959] font-heading">
-                  Create FleetPulse Account
-                </h3>
-              </div>
-              <button
-                onClick={() => setIsRegisterModalOpen(false)}
-                className="text-[#6A89A7] hover:text-[#384959] cursor-pointer"
-              >
+      <ModalPortal isOpen={isRegisterModalOpen} onClose={() => setIsRegisterModalOpen(false)}>
+        <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-[#DCE8F2] my-auto">
+          <div className="flex items-center justify-between pb-3 border-b border-[#DCE8F2]">
+            <div className="flex items-center gap-2">
+              <UserPlus className="w-5 h-5 text-[#384959]" />
+              <h3 className="text-base font-extrabold text-[#384959] font-heading">
+                Create FleetPulse Account
+              </h3>
+            </div>
+            <button
+              onClick={() => setIsRegisterModalOpen(false)}
+              className="text-[#6A89A7] hover:text-[#384959] cursor-pointer"
+            >
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -752,8 +758,7 @@ export const LoginView: React.FC = () => {
               </div>
             </form>
           </div>
-        </div>
-      )}
+        </ModalPortal>
     </div>
   );
 };

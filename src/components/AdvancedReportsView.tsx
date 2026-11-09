@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useTMS } from '../context/TMSContext';
 import { PartyPaymentRecord } from '../types/tms';
+import { ModalPortal } from './common/ModalPortal';
 
 type ReportPreset =
   | 'pending'
@@ -611,7 +612,7 @@ export const AdvancedReportsView: React.FC = () => {
       <div className="hidden print:block border-b-2 border-slate-800 pb-4 mb-4">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-xl font-bold font-heading text-slate-900 uppercase tracking-tight">
+            <h1 className="text-xl font-bold font-heading text-[#384959] uppercase tracking-tight">
               {companyName}
             </h1>
             <p className="text-xs text-slate-600">
@@ -769,7 +770,7 @@ export const AdvancedReportsView: React.FC = () => {
                       </td>
 
                       {/* 10. Total Transport Amount */}
-                      <td className="py-3 px-3 text-right font-mono font-bold text-slate-900 whitespace-nowrap">
+                      <td className="py-3 px-3 text-right font-mono font-bold text-[#384959] whitespace-nowrap">
                         ₹{totalAmt.toLocaleString('en-IN')}
                       </td>
 
@@ -839,9 +840,9 @@ export const AdvancedReportsView: React.FC = () => {
       </div>
 
       {/* PARTIAL PAYMENT MODAL (Master Prompt Section 9) */}
-      {paymentToRecord && (
-        <div className="fixed inset-0 bg-[#384959]/50 backdrop-blur-xs flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#DCE8F2] space-y-4">
+      <ModalPortal isOpen={Boolean(paymentToRecord)} onClose={() => setPaymentToRecord(null)}>
+        {paymentToRecord && (
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-[#DCE8F2] space-y-4 my-auto">
             <div className="flex items-center justify-between pb-2 border-b border-[#DCE8F2]">
               <div className="flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-[#6A89A7]" />
@@ -851,7 +852,7 @@ export const AdvancedReportsView: React.FC = () => {
               </div>
               <button
                 onClick={() => setPaymentToRecord(null)}
-                className="text-slate-400 hover:text-slate-600 p-1 text-sm font-bold"
+                className="text-slate-400 hover:text-slate-600 p-1 text-sm font-bold cursor-pointer"
               >
                 ✕
               </button>
@@ -961,8 +962,8 @@ export const AdvancedReportsView: React.FC = () => {
               </button>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </ModalPortal>
     </div>
   );
 };
